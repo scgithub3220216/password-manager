@@ -37,8 +37,8 @@ function createWindow() {
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.mjs'),
-            nodeIntegration: true,
-            contextIsolation: false
+            // nodeIntegration: true,
+            // contextIsolation: false
         },
     })
 
@@ -103,7 +103,11 @@ app.on('activate', () => {
         createWindow()
     }
 })
-
+ipcMain.on('channel-name', (event, arg) => {
+    console.log(`Received message from renderer: ${arg}`);
+    // 可以在这里处理消息，并通过 event.reply 回复给渲染进程
+    event.reply('channel-reply', 'Hello from Main');
+});
 
 ipcMain.handle('get-data', (_, ...args) => {
     console.log('get-data', ...args)

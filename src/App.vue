@@ -1,24 +1,28 @@
 <script setup lang="js">
 import HelloWorld from './components/HelloWorld.vue'
 // 获取 用户数据
-import {ipcRenderer} from 'electron';
-import {useDataInfoStore} from "./store/useDataInfo";
-import {storeToRefs} from "pinia";
+// import {ipcRenderer} from 'electron';
+// import {useDataInfoStore} from "./store/useDataInfo";
+// import {storeToRefs} from "pinia";
+function sendMessageToMain() {
+  window.ipcRenderer.send('channel-name', 'Hello from Renderer');
+}
 
-const getData = async () => {
-
-  const userInfoData = await ipcRenderer.invoke('get-data');
-  // let userInfoStr
-  let userInfo;
-  if (!userInfoData) {
-    const userInfoStore = useDataInfoStore();
-    userInfo = storeToRefs(userInfoStore);
-    // userInfoStr = JSON.stringify(userInfo);
-    await ipcRenderer.invoke('save-data', JSON.stringify(userInfo));
-  }
-  console.log('userInfo', userInfo)
-
-};
+sendMessageToMain();
+// const getData = async () => {
+//
+//   const userInfoData = await ipcRenderer.invoke('get-data');
+//   // let userInfoStr
+//   let userInfo;
+//   if (!userInfoData) {
+//     const userInfoStore = useDataInfoStore();
+//     userInfo = storeToRefs(userInfoStore);
+//     // userInfoStr = JSON.stringify(userInfo);
+//     await ipcRenderer.invoke('save-data', JSON.stringify(userInfo));
+//   }
+//   console.log('userInfo', userInfo)
+//
+// };
 
 </script>
 
