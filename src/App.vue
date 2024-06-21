@@ -1,17 +1,29 @@
 <script setup lang="js">
 import HelloWorld from './components/HelloWorld.vue'
+// 获取 用户数据
+import {ipcRenderer} from 'electron';
+import {useDataInfoStore} from "./store/useDataInfo";
+import {storeToRefs} from "pinia";
+
+const getData = async () => {
+
+  const userInfoData = await ipcRenderer.invoke('get-data');
+  // let userInfoStr
+  let userInfo;
+  if (!userInfoData) {
+    const userInfoStore = useDataInfoStore();
+    userInfo = storeToRefs(userInfoStore);
+    // userInfoStr = JSON.stringify(userInfo);
+    await ipcRenderer.invoke('save-data', JSON.stringify(userInfo));
+  }
+  console.log('userInfo', userInfo)
+
+};
+
 </script>
 
 <template>
-  <div>
-    <a href="https://electron-vite.github.io" target="_blank">
-      <img src="/electron-vite.svg" class="logo" alt="Vite logo"/>
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue"/>
+  <HelloWorld msg="Hello World !"/>
 </template>
 
 <style scoped>
