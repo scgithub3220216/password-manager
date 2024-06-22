@@ -30,8 +30,8 @@ let win: BrowserWindow | null
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1400,
-        height: 1000,
+        width: 1000,
+        height: 800,
         // 菜单是否隐藏
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),

@@ -39,6 +39,8 @@ export class UserInfo {
 export class PwdInfo {
     id: number;
 
+    groupId: number;
+
     title: string;
 
     username: string;
@@ -50,8 +52,9 @@ export class PwdInfo {
     remark: string;
 
 
-    constructor(id: number, title: string, username: string, password: string, link: string, remark: string) {
+    constructor(id: number, groupId: number, title: string, username: string, password: string, link: string, remark: string) {
         this.id = id;
+        this.groupId = groupId;
         this.title = title;
         this.username = username;
         this.password = password;

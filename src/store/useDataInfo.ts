@@ -1,5 +1,6 @@
 // 引入defineStore用于创建store
 import {defineStore} from 'pinia'
+import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
 
 // 存放用户的一些设置数据
 export const useDataInfoStore = defineStore('useDataInfo', {
@@ -9,6 +10,26 @@ export const useDataInfoStore = defineStore('useDataInfo', {
             this.userInfo = fileDataObj.userInfo;
             this.pwdInfoList = fileDataObj.pwdInfoList;
             this.pwdGroupList = fileDataObj.pwdGroupList;
+        },
+        updatePwdInfo(pwdInfo: PwdInfo) {
+            if (!pwdInfo) {
+                return;
+            }
+            // 修改 pwdGroupList 中的 pwdList
+            this.pwdGroupList.forEach(pwdGroup => {
+                console.log('pwdGroup.id:', pwdGroup.id, 'pwdInfo.groupId:', pwdInfo.groupId)
+                if (pwdGroup.id === pwdInfo.groupId) {
+                    pwdGroup.pwdList.forEach(pwd => {
+                        if (pwd.id === pwdInfo.id) {
+                            pwd.title = pwdInfo.title;
+                            pwd.username = pwdInfo.username;
+                            pwd.password = pwdInfo.password;
+                            pwd.link = pwdInfo.link;
+                            pwd.remark = pwdInfo.remark;
+                        }
+                    })
+                }
+            })
         }
     },
     // 状态
@@ -31,6 +52,7 @@ export const useDataInfoStore = defineStore('useDataInfo', {
                     pwdList: [
                         {
                             id: 1,
+                            groupId: 1,
                             title: '百度',
                             username: 'admin',
                             password: '123456',
@@ -39,6 +61,7 @@ export const useDataInfoStore = defineStore('useDataInfo', {
                         },
                         {
                             id: 2,
+                            groupId: 1,
                             title: '谷歌',
                             username: 'admin',
                             password: '123456',
