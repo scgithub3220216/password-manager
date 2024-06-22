@@ -1,28 +1,37 @@
-<script setup lang="js">
+<script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-// 获取 用户数据
-// import {ipcRenderer} from 'electron';
-// import {useDataInfoStore} from "./store/useDataInfo";
-// import {storeToRefs} from "pinia";
-function sendMessageToMain() {
-  window.ipcRenderer.send('channel-name', 'Hello from Renderer');
+import {useDataInfoStore} from "./store/useDataInfo";
+import {FileDataObj} from "./store/type";
+import {onBeforeUnmount} from "vue";
+
+
+async function sendMessageToMain() {
+
+  const userDataJson = await window.ipcRenderer.invoke('init-data');
+  console.log('fileDataStr:', userDataJson)
+  if (!userDataJson) {
+    return;
+  }
+  const fileDataObj = JSON.parse(userDataJson);
+  console.log('fileDataObj:', fileDataObj)
+  // 把数据放到 pinia 中
+  const userInfoStore = useDataInfoStore();
+  userInfoStore.setUserInfo(fileDataObj);
 }
 
 sendMessageToMain();
-// const getData = async () => {
-//
-//   const userInfoData = await ipcRenderer.invoke('get-data');
-//   // let userInfoStr
-//   let userInfo;
-//   if (!userInfoData) {
-//     const userInfoStore = useDataInfoStore();
-//     userInfo = storeToRefs(userInfoStore);
-//     // userInfoStr = JSON.stringify(userInfo);
-//     await ipcRenderer.invoke('save-data', JSON.stringify(userInfo));
-//   }
-//   console.log('userInfo', userInfo)
-//
-// };
+
+
+onBeforeUnmount(() => {
+  console.log('卸载之前')
+  console.log('userInfoData')
+  const userDataInfoStore = useDataInfoStore();
+  let fileDataObj = new FileDataObj(userDataInfoStore.userInfo, userDataInfoStore.pwdInfoList, userDataInfoStore.pwdGroupList);
+  // save-data
+  const fileDataObjJson = JSON.stringify(fileDataObj);
+
+  window.ipcRenderer.invoke('save-data', fileDataObjJson);
+})
 
 </script>
 

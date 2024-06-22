@@ -4,13 +4,20 @@ import {defineStore} from 'pinia'
 // 存放用户的一些设置数据
 export const useDataInfoStore = defineStore('useDataInfo', {
     // 动作
-    actions: {},
+    actions: {
+        setUserInfo(fileDataObj: FileDataObj) {
+            this.userInfo = fileDataObj.userInfo;
+            this.pwdInfoList = fileDataObj.pwdInfoList;
+            this.pwdGroupList = fileDataObj.pwdGroupList;
+        }
+    },
     // 状态
-    state() {
+    state(): { userInfo: UserInfo, pwdInfoList: PwdInfo[], pwdGroupList: PwdGroup[] } {
         return {
             userInfo: {
                 startup: 1,
                 pwd: '123456',
+                firstLoginFlag: 1,
                 pwdInfoId: 1,
                 pwdGroupId: 1
             },
@@ -18,23 +25,25 @@ export const useDataInfoStore = defineStore('useDataInfo', {
             pwdGroupList: [
                 {
                     id: 1,
-                    name: '默认分组',
-                    pwdInfoList: [
+                    title: '默认分组',
+                    fatherId: 0,
+                    subList: [],
+                    pwdList: [
                         {
                             id: 1,
-                            name: '百度',
-                            account: 'admin',
-                            pwd: '123456',
-                            url: 'https://www.baidu.com',
-                            note: '这是百度的密码'
+                            title: '百度',
+                            username: 'admin',
+                            password: '123456',
+                            link: 'https://www.baidu.com',
+                            remark: '这是百度的密码'
                         },
                         {
                             id: 2,
-                            name: '谷歌',
-                            account: 'admin',
-                            pwd: '123456',
-                            url: 'https://www.google.com',
-                            note: '这是谷歌的密码'
+                            title: '谷歌',
+                            username: 'admin',
+                            password: '123456',
+                            link: 'https://www.google.com',
+                            remark: '这是谷歌的密码'
                         }
                     ]
                 }

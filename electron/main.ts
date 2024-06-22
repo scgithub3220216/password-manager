@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain, Menu, nativeImage, Tray} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import * as fs from "fs";
+import {readFile, writeFile} from "../src/utils/fileUtils.ts";
 /* 引入storeToRefs */
 
 const require = createRequire(import.meta.url)
@@ -30,8 +30,8 @@ let win: BrowserWindow | null
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1000,
-        height: 600,
+        width: 1400,
+        height: 1000,
         // 菜单是否隐藏
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
@@ -41,6 +41,7 @@ function createWindow() {
             // contextIsolation: false
         },
     })
+    win.webContents.openDevTools()
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
@@ -68,7 +69,7 @@ function createTrayMenu() {
     const trayMenu = Menu.buildFromTemplate([
         {
             label: '离开', click() {
-                app.quit()
+                quit()
             }
         },
         {label: '设置'},
@@ -83,16 +84,41 @@ function createTrayMenu() {
 app.whenReady().then(() => {
     createWindow()
     createTrayMenu()
+
 })
 
+
+function getFilePath() {
+    const userDataPath = app.getPath('userData');
+    console.log('path:', userDataPath);
+    return path.join(userDataPath, 'example.txt');
+}
+
+function quit() {
+
+    app.quit()
+    win = null
+}
+
+app.on('before-quit', () => {
+    console.log('before-quit2~~~~~~~~~')
+})
+
+function saveInfoToDB(fileDataObjJson: string) {
+    // 把 pinia 中的数据保存到本地文件中
+
+    // 读取 pinia 数据
+    console.log('quit fileDataObjJson:', fileDataObjJson);
+    // 写入文件
+    writeFile(getFilePath(), fileDataObjJson)
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
-        win = null
+        quit();
     }
 })
 
@@ -103,70 +129,16 @@ app.on('activate', () => {
         createWindow()
     }
 })
-ipcMain.on('channel-name', (event, arg) => {
+ipcMain.handle('init-data', async (event, arg) => {
     console.log(`Received message from renderer: ${arg}`);
-    // 可以在这里处理消息，并通过 event.reply 回复给渲染进程
-    event.reply('channel-reply', 'Hello from Main');
+    return await readFile(getFilePath());
 });
 
-ipcMain.handle('get-data', (_, ...args) => {
-    console.log('get-data', ...args)
-    const userDataPath = app.getPath('userData');
-    console.log('path:', userDataPath);
-    const filePath = path.join(userDataPath, 'example.txt');
-    return readFile(filePath);
-})
-// ipcMain.on('save-data', (event, data) => {
-//     const userDataPath = app.getPath('userData');
-//     console.log('path:', userDataPath);
-//     const filePath = path.join(userDataPath, 'example.txt');
-//
-//     fs.writeFile(filePath, data, (err) => {
-//         if (err) {
-//             event.reply('save-data-reply', '写入文件时出错: ' + err);
-//         } else {
-//             event.reply('save-data-reply', '文件写入成功');
-//         }
-//     });
-// });
+ipcMain.handle('save-data', (event, arg) => {
+    console.log(`Received save-data: ${arg}`);
+    saveInfoToDB(arg);
+});
 
-// export function readFileDataToPinia() {
-//     const userDataPath = app.getPath('userData');
-//     console.log('path:', userDataPath);
-//     const filePath = path.join(userDataPath, 'example.txt');
-//
-//     try {
-//         fs.accessSync(filePath, fs.constants.F_OK);
-//         console.log("文件存在！");
-//         // 读取示例
-//         readFile(filePath);
-//     } catch (err) {
-//         console.error("文件不存在！");
-//
-//         // 写入示例
-//         writeFile(filePath, getUserInfoStr());
-//     }
-// }
-//
-function readFile(filePath) {
-    fs.readFile(filePath, 'utf-8', (err, data) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log(data);
-        return data;
-    });
-}
 
-//
-// // 写入文件
-// function writeFile(filePath, content) {
-//     fs.writeFile(filePath, content, 'utf-8', (err) => {
-//         if (err) {
-//             console.error(err);
-//             return;
-//         }
-//         console.log('文件写入成功');
-//     });
-// }
+
+
