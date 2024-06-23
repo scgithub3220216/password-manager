@@ -248,10 +248,10 @@ function searchAction() {
 
       </div>
       <div v-if="searchResultShowFlag" class="search-result">
-        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%">
-          <el-table-column prop="groupTitle" label="分组" width="180"/>
-          <el-table-column prop="title" label="标题" width="180"/>
-          <el-table-column prop="username" label="用户名"/>
+        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%;height: calc(100vh - 50px)">
+          <el-table-column prop="groupTitle" label="分组" :min-width="100"/>
+          <el-table-column prop="title" label="标题" show-overflow-tooltip :min-width="100"/>
+          <el-table-column prop="username" label="用户名" show-overflow-tooltip :min-width="100"/>
         </el-table>
       </div>
       <div class="detail">
