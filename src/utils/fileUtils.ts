@@ -7,7 +7,6 @@ const readFileAsync = util.promisify(fs.readFile);
 async function readFile(filePath: string): Promise<string> {
     try {
         const data = await readFileAsync(filePath, 'utf-8');
-        console.log('fileData:', data);
         return data;
     } catch (err) {
         console.error(err);

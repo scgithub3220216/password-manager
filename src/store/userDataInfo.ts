@@ -3,13 +3,52 @@ import {defineStore} from 'pinia'
 import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
 
 // 存放用户的一些设置数据
-export const useDataInfoStore = defineStore('useDataInfo', {
+export const userDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        insertGroup(pwdGroup: PwdGroup) {
+            this.pwdGroupList.push(pwdGroup);
+        },
+
+        deleteGroup(groupId: number) {
+            this.pwdGroupList = this.pwdGroupList.filter(pwdGroup => pwdGroup.id !== groupId);
+        },
+        editGroupFlag(groupId: number, flag: boolean) {
+            if (!groupId) {
+                return;
+            }
+            this.pwdGroupList.forEach(pwdGroup => {
+                if (pwdGroup.id === groupId) {
+                    pwdGroup.editFlag = flag;
+                }
+            })
+        },
+        getGroupId() {
+            return ++this.userInfo.pwdGroupId;
+        },
+        getPwdInfoId() {
+            return ++this.userInfo.pwdInfoId;
+        },
         setUserInfo(fileDataObj: FileDataObj) {
             this.userInfo = fileDataObj.userInfo;
-            this.pwdInfoList = fileDataObj.pwdInfoList;
             this.pwdGroupList = fileDataObj.pwdGroupList;
+        },
+        getPwdInfoListByGroupId(groupId: number) {
+            let pwdList: PwdInfo[] = [];
+            this.pwdGroupList.forEach(pwdGroup => {
+                if (pwdGroup.id === groupId) {
+                    pwdList = pwdGroup.pwdList;
+                }
+            })
+            return pwdList;
+
+        },
+        insertPwdInfo(pwdInfo: PwdInfo) {
+            this.pwdGroupList.forEach(pwdGroup => {
+                if (pwdGroup.id === pwdInfo.groupId) {
+                    pwdGroup.pwdList.push(pwdInfo);
+                }
+            })
         },
         updatePwdInfo(pwdInfo: PwdInfo) {
             if (!pwdInfo) {
@@ -30,10 +69,15 @@ export const useDataInfoStore = defineStore('useDataInfo', {
                     })
                 }
             })
-        }
+        },
+        deletePwdInfo(pwdInfoId: number) {
+            this.pwdGroupList.forEach(pwdGroup => {
+                pwdGroup.pwdList = pwdGroup.pwdList.filter(pwd => pwd.id !== pwdInfoId);
+            })
+        },
     },
     // 状态
-    state(): { userInfo: UserInfo, pwdInfoList: PwdInfo[], pwdGroupList: PwdGroup[] } {
+    state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[] } {
         return {
             userInfo: {
                 startup: 1,
@@ -42,18 +86,19 @@ export const useDataInfoStore = defineStore('useDataInfo', {
                 pwdInfoId: 1,
                 pwdGroupId: 1
             },
-            pwdInfoList: [],
             pwdGroupList: [
                 {
                     id: 1,
                     title: '默认分组',
-                    fatherId: 0,
-                    subList: [],
+                    editFlag: false,
+                    // fatherId: 0,
+                    // subList: [],
                     pwdList: [
                         {
                             id: 1,
                             groupId: 1,
                             title: '百度',
+                            groupTitle: '默认分组',
                             username: 'admin',
                             password: '123456',
                             link: 'https://www.baidu.com',
@@ -63,6 +108,7 @@ export const useDataInfoStore = defineStore('useDataInfo', {
                             id: 2,
                             groupId: 1,
                             title: '谷歌',
+                            groupTitle: '默认分组',
                             username: 'admin',
                             password: '123456',
                             link: 'https://www.google.com',

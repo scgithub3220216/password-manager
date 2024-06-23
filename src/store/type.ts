@@ -1,11 +1,10 @@
 export class FileDataObj {
     userInfo: UserInfo;
-    pwdInfoList: PwdInfo[];
     pwdGroupList: PwdGroup[];
 
-    constructor(userInfo: UserInfo, pwdInfoList: PwdInfo[], pwdGroupList: PwdGroup[]) {
+
+    constructor(userInfo: UserInfo, pwdGroupList: PwdGroup[]) {
         this.userInfo = userInfo;
-        this.pwdInfoList = pwdInfoList;
         this.pwdGroupList = pwdGroupList;
     }
 }
@@ -41,6 +40,8 @@ export class PwdInfo {
 
     groupId: number;
 
+    groupTitle: string;
+
     title: string;
 
     username: string;
@@ -51,10 +52,10 @@ export class PwdInfo {
 
     remark: string;
 
-
-    constructor(id: number, groupId: number, title: string, username: string, password: string, link: string, remark: string) {
+    constructor(id: number, groupId: number, groupTitle: string, title: string, username: string, password: string, link: string, remark: string) {
         this.id = id;
         this.groupId = groupId;
+        this.groupTitle = groupTitle;
         this.title = title;
         this.username = username;
         this.password = password;
@@ -66,20 +67,20 @@ export class PwdInfo {
 export class PwdGroup {
     id: number;
 
-    fatherId: number;
+    // fatherId: number;
 
     title: string;
 
     pwdList: PwdInfo[];
 
-    subList: PwdGroup[];
+    editFlag: boolean = false;
+
+    // subList: PwdGroup[];
 
 
-    constructor(id: number, fatherId: number, title: string, pwdList: PwdInfo[], subList: PwdGroup[]) {
+    constructor(id: number, title: string, pwdList: PwdInfo[]) {
         this.id = id;
-        this.fatherId = fatherId;
         this.title = title;
         this.pwdList = pwdList;
-        this.subList = subList;
     }
 }

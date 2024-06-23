@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {useDataInfoStore} from "../store/useDataInfo.ts";
+import {userDataInfoStore} from "../store/userDataInfo.ts";
 
 const pwd = ref('')
-const userInfoStore = useDataInfoStore();
+const userInfoStore = userDataInfoStore();
 
 function login() {
   console.log('login')
@@ -44,6 +44,7 @@ function pwdError() {
         placeholder="开门密码"
         show-password
         @keyup.enter="handleEnter"
+        autofocus
     >
       <template #suffix>
         <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
@@ -60,6 +61,7 @@ function pwdError() {
 <style scoped>
 
 .pwd-outer {
+  background: #282c34;
   transition: background-color 1s;
   width: 100vw;
   height: 100vh;
@@ -96,7 +98,4 @@ function pwdError() {
 
 }
 
-#app {
-  padding: 0;
-}
 </style>

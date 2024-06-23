@@ -30,8 +30,8 @@ let win: BrowserWindow | null
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1000,
-        height: 800,
+        width: 800,
+        height: 600,
         // 菜单是否隐藏
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
@@ -41,7 +41,7 @@ function createWindow() {
             // contextIsolation: false
         },
     })
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
@@ -105,10 +105,6 @@ app.on('before-quit', () => {
 })
 
 function saveInfoToDB(fileDataObjJson: string) {
-    // 把 pinia 中的数据保存到本地文件中
-
-    // 读取 pinia 数据
-    console.log('quit fileDataObjJson:', fileDataObjJson);
     // 写入文件
     writeFile(getFilePath(), fileDataObjJson)
 }
@@ -130,12 +126,12 @@ app.on('activate', () => {
     }
 })
 ipcMain.handle('init-data', async (event, arg) => {
-    console.log(`Received message from renderer: ${arg}`);
+    console.log(`Received message from renderer:`);
     return await readFile(getFilePath());
 });
 
 ipcMain.handle('save-data', (event, arg) => {
-    console.log(`Received save-data: ${arg}`);
+    console.log(`Received save-data:`);
     saveInfoToDB(arg);
 });
 

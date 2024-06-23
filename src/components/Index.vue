@@ -1,49 +1,205 @@
 <script setup lang="ts">
 
 // 把数据放到 pinia 中
-import {useDataInfoStore} from "../store/useDataInfo.ts";
-import {PwdInfo} from "../store/type.ts";
+import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
-import {Search} from '@element-plus/icons-vue'
+import {Delete, Edit, Plus, Search} from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
+import "element-plus/theme-chalk/el-message.css";
 
+const userInfoStore = userDataInfoStore();
+let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');
-
-const userInfoStore = useDataInfoStore();
-let pwdGroupList = userInfoStore.pwdGroupList;
+const searchResultShowFlag = ref(false);
+const groupInputShowFlag = ref(0);
+const groupInputValue = ref('');
+let curGroup = reactive<PwdGroup>({})
+let curPwdInfo = reactive<PwdInfo>({})
 const pwdInfoList = reactive<PwdInfo[]>([]);
+const searchResultList = reactive<PwdInfo[]>([]);
 const pwdInfoDetail = reactive<PwdInfo>({});
-onMounted(() => {
-  console.log('挂载完毕')
-  if (!(pwdGroupList && pwdGroupList.length > 0)) {
-    console.log('pwdGroupList 为空')
-    return;
-  }
-  let pwdList = pwdGroupList[0].pwdList;
-  Object.assign(pwdInfoList, pwdList);
-  Object.assign(pwdInfoDetail, pwdList[0]);
-})
 
 function logout() {
   console.log('logout')
   window.location.hash = '/login'
 }
 
-function transData(pwdList: PwdInfo[]) {
-  console.log('transData')
-  console.log(pwdList)
+
+onMounted(() => {
+
+  Object.assign(pwdGroupList, userInfoStore.pwdGroupList);
+  if (!(pwdGroupList && pwdGroupList.length > 0)) {
+    console.log('pwdGroupList 为空')
+    return;
+  }
+  let pwdList = pwdGroupList[0].pwdList;
+  Object.assign(curGroup, pwdGroupList[0]);
+  Object.assign(curPwdInfo, pwdList[0]);
   Object.assign(pwdInfoList, pwdList);
+  Object.assign(pwdInfoDetail, pwdList[0]);
+
+  dongtaicss();
+
+  console.log('挂载完毕')
+})
+
+
+/**
+ * group
+ */
+function clickGroup(group: PwdGroup) {
+  console.log('showPwdList')
+  console.log('group.editFlag', group.editFlag)
+  pwdInfoList.length = 0
+  Object.assign(curGroup, group);
+  // curGroup = group;
+  Object.assign(pwdInfoList, group.pwdList);
 }
 
-function showDetail(pwdInfo: PwdInfo) {
+function triggerGroupsInsert() {
+  console.log('triggerGroupsInsert')
+  groupInputShowFlag.value = 1;
+}
+
+function groupInputChange() {
+  console.log('groupInputChange')
+  if (!(groupInputValue.value && groupInputValue.value.trim())) {
+    groupInputShowFlag.value = 0;
+    return;
+  }
+  console.log('groupInputChange2')
+
+  let pwdGroup = new PwdGroup(userInfoStore.getGroupId(), groupInputValue.value, []);
+  pwdGroupList.push(pwdGroup)
+  userInfoStore.insertGroup(pwdGroup)
+  groupInputShowFlag.value = 0;
+  groupInputValue.value = '';
+}
+
+function triggerGroupEdit() {
+  console.log('triggerGroupEdit')
+  userInfoStore.editGroupFlag(curGroup.id, true);
+}
+
+function editGroups() {
+  console.log('editGroups')
+  userInfoStore.editGroupFlag(curGroup.id, false);
+}
+
+function deleteGroup() {
+  console.log('deleteGroup')
+  let flag = false;
+  pwdGroupList.forEach(pwdGroup => {
+    if (flag) {
+      return;
+    }
+    if (pwdGroup.id === curGroup.id) {
+      if (pwdGroup.pwdList.length > 0) {
+        flag = true;
+      }
+    }
+  })
+  if (flag) {
+    ElMessage.error('删除失败, 该分组下还有数据')
+    return false;
+  }
+  userInfoStore.deleteGroup(curGroup.id);
+  //  删除 pwdGroupList 中的数据
+  pwdGroupList.splice(0, pwdGroupList.length, ...userInfoStore.pwdGroupList);
+  // ElMessage.success('删除成功')
+}
+
+/**
+ * pwdInfo
+ */
+function clickPwdInfo(pwdInfo: PwdInfo) {
   console.log('showDetail')
-  console.log(pwdInfo)
+  Object.assign(pwdInfoDetail, pwdInfo);
+  Object.assign(curPwdInfo, pwdInfo);
+}
+
+function insertPwdInfo() {
+  console.log('insertPwdInfo')
+  let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
+  pwdInfoList.push(pwdInfo)
+  userInfoStore.insertPwdInfo(pwdInfo)
   Object.assign(pwdInfoDetail, pwdInfo);
 }
 
+function deletePwdInfo() {
+  console.log('deletePwdInfo')
+  userInfoStore.deletePwdInfo(pwdInfoDetail.id);
+  //  删除 pwdGroupList 中的数据
+  pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
+}
+
+
+/**
+ * detail
+ */
 function pwdInfoChange() {
+  console.log('pwdInfoChange')
   userInfoStore.updatePwdInfo(pwdInfoDetail)
 }
 
+
+/**
+ * 动态 样式
+ */
+function dongtaicss() {
+  document.getElementById('group-ul').addEventListener('click', function (e) {
+    // 移除之前所有li的高亮
+    var items = this.getElementsByTagName('li');
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.remove('selected');
+    }
+    // 给当前点击的li添加高亮
+    e.target.classList.add('selected');
+  });
+  document.getElementById('pwd-ul').addEventListener('click', function (e) {
+    // 移除之前所有li的高亮
+    var items = this.getElementsByTagName('li');
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.remove('selected');
+    }
+    // 给当前点击的li添加高亮
+    e.target.classList.add('selected');
+  });
+}
+
+function searchTableClick(row: PwdInfo, column: any, event: Event) {
+  console.log('searchTableClick,row:', row)
+  if (!row) {
+    return;
+  }
+  Object.assign(pwdInfoDetail, row);
+}
+
+function searchAction() {
+  console.log('search')
+  // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
+  let searchValue = search.value;
+  if (!searchValue.trim()) {
+    searchResultShowFlag.value = false;
+    searchResultList.splice(0, searchResultList.length);
+    return;
+  }
+  // 如果有值
+  searchResultShowFlag.value = true;
+
+  // 将 pwdGroupList 全部转为 pwdInfoList
+  let pwdInfoListTemp = pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
+  console.log('pwdInfoListTemp', pwdInfoListTemp.length)
+  // 在 pwdInfoList 中查找
+  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
+  console.log('searchResultListTemp', searchResultListTemp.length)
+  if (searchResultListTemp.length === 0) {
+    return;
+  }
+  searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
+  Object.assign(pwdInfoDetail, searchResultListTemp[0]);
+}
 
 </script>
 
@@ -55,28 +211,53 @@ function pwdInfoChange() {
           style="width: 500px"
           placeholder="标题/用户名搜索"
           :prefix-icon="Search"
+          type="search"
+          @search="searchAction()"
+          autofocus
       />
     </div>
     <div class="content">
-      <div class="group">
+      <div v-if="!searchResultShowFlag" class="group">
         <div class="group-data">
-          <ul>
-            <li v-for="group in pwdGroupList" :key="group.id" @click="transData(group.pwdList)">{{ group.title }}</li>
+          <ul id="group-ul">
+            <li v-for="group in pwdGroupList" :key="group.id" @click="clickGroup(group)">
+              <span v-if="!group.editFlag"> {{ group.title }}</span>
+              <el-input v-else v-model="group.title" @blur="editGroups()"></el-input>
+            </li>
           </ul>
+          <el-input v-model="groupInputValue" v-if="groupInputShowFlag" id="group-input" @change="groupInputChange()"/>
+        </div>
+
+        <div class="group-tools">
+          <span @click="triggerGroupsInsert()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          <span @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          <span @click="deleteGroup()"> <Delete style="width: 20px; height: 20px;"/></span>
 
         </div>
-        <div class="group-tools"></div>
       </div>
-      <div class="pwd">
-        <ul>
-          <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="showDetail(pwdInfo)">{{ pwdInfo.title }}</li>
-        </ul>
+      <div v-if="!searchResultShowFlag" class="pwd">
+        <div class="pwd-item">
+          <ul id="pwd-ul">
+            <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="clickPwdInfo(pwdInfo)">{{ pwdInfo.title }}</li>
+          </ul>
+        </div>
+        <div class="pwd-tools">
+          <span @click="insertPwdInfo()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          <span @click="deletePwdInfo()"> <Delete style="width: 20px; height: 20px;"/></span>
+        </div>
+
+      </div>
+      <div v-if="searchResultShowFlag" class="search-result">
+        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%">
+          <el-table-column prop="groupTitle" label="分组" width="180"/>
+          <el-table-column prop="title" label="标题" width="180"/>
+          <el-table-column prop="username" label="用户名"/>
+        </el-table>
       </div>
       <div class="detail">
-
         <div class="detail-item">
           <span>标题</span>
-          <el-input v-model="pwdInfoDetail.title" @change="pwdInfoChange()" autofocus/>
+          <el-input v-model="pwdInfoDetail.title" @change="pwdInfoChange()"/>
         </div>
 
         <div class="detail-item">
@@ -101,7 +282,7 @@ function pwdInfoChange() {
                 class="item-textarea"
                 v-model="pwdInfoDetail.remark"
                 @change="pwdInfoChange()"
-                :rows="10"
+                :rows="5"
                 type="textarea"
             />
           </div>
@@ -115,9 +296,11 @@ function pwdInfoChange() {
 <style scoped>
 
 .outer {
+  background: rgba(40, 44, 52, 0.93);
   width: 100vw;
   height: 100vh;
   flex: 1 1 auto;
+  color: rgba(255, 255, 255, 0.66);
 }
 
 .search {
@@ -131,18 +314,50 @@ function pwdInfoChange() {
   height: calc(100vh - 50px);
 }
 
+.search-result {
+  width: 60%;
+  border-right: 1px #cab8b8 solid;
+}
+
 .group {
-  background: rgba(85, 168, 204, 0.59);
   width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.group-tools span {
+  padding: 8px 8px 0 8px;
+  margin-left: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.group-tools span:hover {
+  box-shadow: #213547;
 }
 
 .pwd {
-  background: rgba(234, 238, 134, 0.57);
   width: 35%;
+  border-left: 1px #cab8b8 solid;
+  border-right: 1px #cab8b8 solid;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pwd-item {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.pwd-tools span {
+  padding: 8px 8px 0 8px;
+  margin-left: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .detail {
-  background: rgba(103, 194, 58, 0.48);
   width: 40%;
 }
 
@@ -153,17 +368,34 @@ ul {
 }
 
 li {
+  margin-left: 15px;
+  margin-right: 15px;
   text-align: left;
   padding: 5px 0 5px 20px;
+  border-bottom: 1px #45484c solid;
 }
 
 li:first-child {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
+li:last-child {
+  border-bottom: 0 #cab8b8 solid;
+
+}
+
+
 li:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
+}
+
+li.selected {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#pwd-ul li {
+  height: 35px;
 }
 
 .detail {
@@ -172,7 +404,7 @@ li:hover {
 }
 
 .detail-item {
-  margin-top: 15px;
+  margin-top: 0px;
   display: flex;
   padding: 10px;
   border-bottom: 1px solid #000000;
@@ -189,7 +421,7 @@ li:hover {
 }
 
 .item-textarea {
-  width: 375px;
+  width: 292px;
   color: white;
   font-size: 16px;
   border: 0 none;

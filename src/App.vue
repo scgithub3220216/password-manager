@@ -1,22 +1,20 @@
 <script setup lang="ts">
 import Index from './components/Index.vue'
-import {useDataInfoStore} from "./store/useDataInfo";
+import {userDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 
+const userInfoStore = userDataInfoStore();
 
 async function sendMessageToMain() {
 
   const userDataJson = await window.ipcRenderer.invoke('init-data');
-  console.log('fileDataStr:', userDataJson)
   if (!userDataJson) {
     return;
   }
   const fileDataObj = JSON.parse(userDataJson);
-  console.log('fileDataObj:', fileDataObj)
   // 把数据放到 pinia 中
-  const userInfoStore = useDataInfoStore();
   userInfoStore.setUserInfo(fileDataObj);
 }
 
@@ -24,8 +22,7 @@ sendMessageToMain();
 
 function saveData() {
   console.log('saveData')
-  const userDataInfoStore = useDataInfoStore();
-  let fileDataObj = new FileDataObj(userDataInfoStore.userInfo, userDataInfoStore.pwdInfoList, userDataInfoStore.pwdGroupList);
+  let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
   // save-data
   const fileDataObjJson = JSON.stringify(fileDataObj);
 
@@ -38,7 +35,7 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
-  const intervalId = setInterval(() => saveData(), 5000);
+  const intervalId = setInterval(() => saveData(), 2000);
   // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
   return () => clearInterval(intervalId);
 });
