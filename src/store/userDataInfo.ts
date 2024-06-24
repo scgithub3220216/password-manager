@@ -56,7 +56,6 @@ export const userDataInfoStore = defineStore('userDataInfo', {
             }
             // 修改 pwdGroupList 中的 pwdList
             this.pwdGroupList.forEach(pwdGroup => {
-                console.log('pwdGroup.id:', pwdGroup.id, 'pwdInfo.groupId:', pwdInfo.groupId)
                 if (pwdGroup.id === pwdInfo.groupId) {
                     pwdGroup.pwdList.forEach(pwd => {
                         if (pwd.id === pwdInfo.id) {

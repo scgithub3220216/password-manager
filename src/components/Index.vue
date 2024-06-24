@@ -12,22 +12,28 @@ const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');
 const searchResultShowFlag = ref(false);
-const groupInputShowFlag = ref(0);
+const groupInputShowFlag = ref(false);
 const groupInputValue = ref('');
 let curGroup = reactive<PwdGroup>({})
 let curPwdInfo = reactive<PwdInfo>({})
 const pwdInfoList = reactive<PwdInfo[]>([]);
 const searchResultList = reactive<PwdInfo[]>([]);
 const pwdInfoDetail = reactive<PwdInfo>({});
-
-function logout() {
-  console.log('logout')
-  window.location.hash = '/login'
-}
-
+const searchInputRef = ref(null);
+const groupInputRef = ref(null);
+const detailInputRef = ref(null);
+const passwordVisible = ref(false);
 
 onMounted(() => {
+  initData();
+  transferInputFocus(1);
+  dynamicClickCss();
+  // 启动键盘事件
+  document.addEventListener('keydown', keydown);
+  console.log('挂载完毕')
+})
 
+function initData() {
   Object.assign(pwdGroupList, userInfoStore.pwdGroupList);
   if (!(pwdGroupList && pwdGroupList.length > 0)) {
     console.log('pwdGroupList 为空')
@@ -38,11 +44,63 @@ onMounted(() => {
   Object.assign(curPwdInfo, pwdList[0]);
   Object.assign(pwdInfoList, pwdList);
   Object.assign(pwdInfoDetail, pwdList[0]);
+}
 
-  dongtaicss();
+function logout() {
+  console.log('logout')
+  window.location.hash = '/login'
+}
 
-  console.log('挂载完毕')
-})
+/**
+ * 切换input 的光标位置
+ * @param type 1: searchInputRef 2:groupInputRef  3: detailInputRef
+ */
+function transferInputFocus(type: number) {
+  if (type === 1 && searchInputRef.value) {
+    searchInputRef.value.focus();
+  } else if (type === 2 && groupInputRef.value) {
+    groupInputRef.value.focus();
+  } else if (type === 3 && detailInputRef.value) {
+    detailInputRef.value.focus();
+  }
+}
+
+
+/**
+ * search
+ */
+function searchTableClick(row: PwdInfo, column: any, event: Event) {
+  console.log('searchTableClick,row:', row)
+  if (!row) {
+    return;
+  }
+  Object.assign(pwdInfoDetail, row);
+}
+
+function searchAction() {
+  console.log('search')
+  // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
+  let searchValue = search.value;
+  if (!searchValue.trim()) {
+    searchResultShowFlag.value = false;
+    searchResultList.splice(0, searchResultList.length);
+    return;
+  }
+  // 如果有值
+  searchResultShowFlag.value = true;
+
+  // 将 pwdGroupList 全部转为 pwdInfoList
+  let pwdInfoListTemp = pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
+  console.log('pwdInfoListTemp', pwdInfoListTemp.length)
+  // 在 pwdInfoList 中查找
+  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
+  console.log('searchResultListTemp', searchResultListTemp.length)
+  if (searchResultListTemp.length === 0) {
+    return;
+  }
+  searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
+  Object.assign(pwdInfoDetail, searchResultListTemp[0]);
+}
 
 
 /**
@@ -50,22 +108,45 @@ onMounted(() => {
  */
 function clickGroup(group: PwdGroup) {
   console.log('showPwdList')
-  console.log('group.editFlag', group.editFlag)
   pwdInfoList.length = 0
   Object.assign(curGroup, group);
   // curGroup = group;
   Object.assign(pwdInfoList, group.pwdList);
+
+  Object.assign(curPwdInfo, group.pwdList[0]);
+  Object.assign(pwdInfoDetail, group.pwdList[0]);
+
+  // 单击样式
+  setTimeout(() => {
+    clickGroupCss();
+  }, 100)
+
+}
+
+function clickGroupCss() {
+  let items = document.getElementById('pwd-ul').getElementsByTagName('li');
+  console.log('items:', items.length)
+  for (var i = 0; i < items.length; i++) {
+    if (i === 0) {
+      console.log('selected')
+      items[i].classList.add('selected');
+      continue;
+    }
+    items[i].classList.remove('selected');
+  }
 }
 
 function triggerGroupsInsert() {
   console.log('triggerGroupsInsert')
-  groupInputShowFlag.value = 1;
+  groupInputShowFlag.value = true;
+  transferInputFocus(2);
+  // groupInputRef.value.focus();
 }
 
 function groupInputChange() {
   console.log('groupInputChange')
   if (!(groupInputValue.value && groupInputValue.value.trim())) {
-    groupInputShowFlag.value = 0;
+    groupInputShowFlag.value = false;
     return;
   }
   console.log('groupInputChange2')
@@ -73,7 +154,7 @@ function groupInputChange() {
   let pwdGroup = new PwdGroup(userInfoStore.getGroupId(), groupInputValue.value, []);
   pwdGroupList.push(pwdGroup)
   userInfoStore.insertGroup(pwdGroup)
-  groupInputShowFlag.value = 0;
+  groupInputShowFlag.value = false;
   groupInputValue.value = '';
 }
 
@@ -122,9 +203,11 @@ function clickPwdInfo(pwdInfo: PwdInfo) {
 function insertPwdInfo() {
   console.log('insertPwdInfo')
   let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
-  pwdInfoList.push(pwdInfo)
   userInfoStore.insertPwdInfo(pwdInfo)
+  // pwdInfoList.push(pwdInfo)
+  pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
   Object.assign(pwdInfoDetail, pwdInfo);
+  transferInputFocus(3);
 }
 
 function deletePwdInfo() {
@@ -134,7 +217,6 @@ function deletePwdInfo() {
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
 }
 
-
 /**
  * detail
  */
@@ -143,62 +225,70 @@ function pwdInfoChange() {
   userInfoStore.updatePwdInfo(pwdInfoDetail)
 }
 
+function copyValue(value: string) {
+  console.log('copyValue')
+  navigator.clipboard.writeText(value).then(() => {
+    console.log('复制成功')
+  }, () => {
+    console.log('复制失败')
+  })
+}
+
+function clickPwdImg() {
+  console.log('clickPwdImg')
+  passwordVisible.value = !passwordVisible.value;
+}
+
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+function clickRandomImg() {
+  console.log('clickRandomImg')
+  // 生成随机密码
+  let password = '';
+  for (let i = 0; i < 15; i++) {
+    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  pwdInfoDetail.password = password;
+}
 
 /**
  * 动态 样式
  */
-function dongtaicss() {
+function dynamicClickCss() {
   document.getElementById('group-ul').addEventListener('click', function (e) {
     // 移除之前所有li的高亮
     var items = this.getElementsByTagName('li');
-    for (var i = 0; i < items.length; i++) {
-      items[i].classList.remove('selected');
-    }
-    // 给当前点击的li添加高亮
-    e.target.classList.add('selected');
+    addLiCss(items, e);
   });
   document.getElementById('pwd-ul').addEventListener('click', function (e) {
     // 移除之前所有li的高亮
     var items = this.getElementsByTagName('li');
-    for (var i = 0; i < items.length; i++) {
-      items[i].classList.remove('selected');
-    }
-    // 给当前点击的li添加高亮
-    e.target.classList.add('selected');
+    addLiCss(items, e);
   });
 }
 
-function searchTableClick(row: PwdInfo, column: any, event: Event) {
-  console.log('searchTableClick,row:', row)
-  if (!row) {
-    return;
+function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: MouseEvent) {
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('selected');
   }
-  Object.assign(pwdInfoDetail, row);
+  // 给当前点击的li添加高亮
+  e.target.classList.add('selected');
 }
 
-function searchAction() {
-  console.log('search')
-  // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
-  let searchValue = search.value;
-  if (!searchValue.trim()) {
-    searchResultShowFlag.value = false;
-    searchResultList.splice(0, searchResultList.length);
-    return;
-  }
-  // 如果有值
-  searchResultShowFlag.value = true;
+/**
+ * 快捷键
+ */
+function keydown(e: KeyboardEvent) {
+  // 监听键盘事件 Ctrl + P 复制密码
 
-  // 将 pwdGroupList 全部转为 pwdInfoList
-  let pwdInfoListTemp = pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
-  console.log('pwdInfoListTemp', pwdInfoListTemp.length)
-  // 在 pwdInfoList 中查找
-  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  console.log('searchResultListTemp', searchResultListTemp.length)
-  if (searchResultListTemp.length === 0) {
-    return;
+  // 监听键盘事件 Ctrl + U 复制用户名
+
+  console.log('keydown', e)
+  if (e.ctrlKey && e.key === 'p') {
+    copyValue(pwdInfoDetail.password);
+  } else if (e.ctrlKey && e.key === 'u') {
+    copyValue(pwdInfoDetail.username);
   }
-  searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
-  Object.assign(pwdInfoDetail, searchResultListTemp[0]);
 }
 
 </script>
@@ -207,6 +297,7 @@ function searchAction() {
   <div class="outer">
     <div class="search">
       <el-input
+          ref="searchInputRef"
           v-model="search"
           style="width: 500px"
           placeholder="标题/用户名搜索"
@@ -225,13 +316,35 @@ function searchAction() {
               <el-input v-else v-model="group.title" @blur="editGroups()"></el-input>
             </li>
           </ul>
-          <el-input v-model="groupInputValue" v-if="groupInputShowFlag" id="group-input" @change="groupInputChange()"/>
+          <el-input ref="groupInputRef" v-model="groupInputValue" v-show="groupInputShowFlag" @change="groupInputChange()"
+                    @blur="groupInputChange()"/>
         </div>
 
         <div class="group-tools">
-          <span @click="triggerGroupsInsert()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
-          <span @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
-          <span @click="deleteGroup()"> <Delete style="width: 20px; height: 20px;"/></span>
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="新增"
+              placement="top"
+          >
+            <span @click="triggerGroupsInsert()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          </el-tooltip>
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="修改"
+              placement="top"
+          >
+            <span @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          </el-tooltip>
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="删除"
+              placement="top"
+          >
+            <span @click="deleteGroup()"> <Delete style="width: 20px; height: 20px;"/></span>
+          </el-tooltip>
 
         </div>
       </div>
@@ -242,8 +355,22 @@ function searchAction() {
           </ul>
         </div>
         <div class="pwd-tools">
-          <span @click="insertPwdInfo()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
-          <span @click="deletePwdInfo()"> <Delete style="width: 20px; height: 20px;"/></span>
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="新增"
+              placement="top"
+          >
+            <span @click="insertPwdInfo()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+          </el-tooltip>
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="删除"
+              placement="top"
+          >
+            <span @click="deletePwdInfo()"> <Delete style="width: 20px; height: 20px;"/></span>
+          </el-tooltip>
         </div>
 
       </div>
@@ -257,22 +384,71 @@ function searchAction() {
       <div class="detail">
         <div class="detail-item">
           <span>标题</span>
-          <el-input v-model="pwdInfoDetail.title" @change="pwdInfoChange()"/>
+          <el-input ref="detailInputRef" v-model="pwdInfoDetail.title" @change="pwdInfoChange()"/>
         </div>
 
         <div class="detail-item">
           <span>用户名</span>
-          <el-input v-model="pwdInfoDetail.username" @change="pwdInfoChange()"/>
+          <el-input v-model="pwdInfoDetail.username" @change="pwdInfoChange()">
+            <template #suffix>
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="复制用户名,快捷键 Ctrl+U"
+                  placement="top"
+              >
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.username)" class="copy">
+              </el-tooltip>
+            </template>
+          </el-input>
         </div>
 
         <div class="detail-item">
           <span>密码</span>
-          <el-input v-model="pwdInfoDetail.password" @change="pwdInfoChange()" type="password" show-password class="input-pwd"/>
+          <el-input v-model="pwdInfoDetail.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
+            <template #suffix>
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="明文展示"
+                  placement="top"
+              >
+                <img src="../../public/ic_view.svg" alt="enter" @click="clickPwdImg" class="copy">
+              </el-tooltip>
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="生成随机密码"
+                  placement="top"
+              >
+                <img src="../../public/random.svg" alt="enter" @click="clickRandomImg" class="copy">
+              </el-tooltip>
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="复制密码,快捷键 Ctrl+P"
+                  placement="top"
+              >
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.password)" class="copy">
+              </el-tooltip>
+            </template>
+          </el-input>
         </div>
 
         <div class="detail-item">
           <span> 链接</span>
-          <el-input v-model="pwdInfoDetail.link" @change="pwdInfoChange()"/>
+          <el-input v-model="pwdInfoDetail.link" @change="pwdInfoChange()">
+            <template #suffix>
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="复制链接"
+                  placement="top"
+              >
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.link)" class="copy">
+              </el-tooltip>
+            </template>
+          </el-input>
         </div>
 
         <div class="detail-item">
@@ -426,5 +602,23 @@ li.selected {
   font-size: 16px;
   border: 0 none;
   background: transparent;
+}
+
+.copy {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(204, 204, 204, 0);
+  border-radius: 50%;
+  padding: 1px;
+  opacity: 0.4;
+
+}
+
+.copy:hover {
+  opacity: 0.4;
+  background: #79797BFF;
+  box-shadow: #888888 0px 0px 5px 0px;
+  cursor: pointer;
+
 }
 </style>

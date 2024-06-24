@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, Menu, nativeImage, Tray} from 'electron'
+import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, Tray} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
@@ -54,6 +54,7 @@ function createWindow() {
         // win.loadFile('dist/index.html')
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
+
 }
 
 let tray
@@ -72,20 +73,37 @@ function createTrayMenu() {
                 quit()
             }
         },
-        {label: '设置'},
-        {label: '打开'},
-        {label: '开机启动'},
-        {label: '帮助'},
-        {label: '代码地址'},
+        {label: '设置', type: 'radio'},
+        {label: '开机启动', type: 'radio'},
+        {label: '帮助', type: 'radio', checked: true},
+        {label: '支持/捐赠'},
     ])
     tray.setContextMenu(trayMenu)
+    tray.setToolTip('密码管理器')
+    tray.setTitle('密码管理器')
 }
 
-app.whenReady().then(() => {
-    createWindow()
-    createTrayMenu()
+app.whenReady()
+    .then(() => {
+        globalShortcut.register('Alt+CommandOrControl+E', () => {
+            console.log('Electron loves global shortcuts!')
+            //  打开窗口 ,如果已经打开了, 则缩小
+            if (win) {
+                if (win.isMinimized()) {
+                    win.restore()
+                } else {
+                    win.minimize()
+                }
+            } else {
+                createWindow()
+            }
 
-})
+        })
+    })
+    .then(() => {
+        createWindow()
+        createTrayMenu()
+    })
 
 
 function getFilePath() {

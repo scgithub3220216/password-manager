@@ -7,18 +7,7 @@ import Login from './components/Login.vue'
 
 const userInfoStore = userDataInfoStore();
 
-async function sendMessageToMain() {
 
-  const userDataJson = await window.ipcRenderer.invoke('init-data');
-  if (!userDataJson) {
-    return;
-  }
-  const fileDataObj = JSON.parse(userDataJson);
-  // 把数据放到 pinia 中
-  userInfoStore.setUserInfo(fileDataObj);
-}
-
-sendMessageToMain();
 
 function saveData() {
   console.log('saveData')

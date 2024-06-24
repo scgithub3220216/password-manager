@@ -1,9 +1,88 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {onBeforeMount, onMounted, reactive, ref} from 'vue'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
+import type {FormInstance, FormRules} from 'element-plus'
+import {FileDataObj} from "../store/type.ts";
 
+const ruleFormRef = ref<FormInstance>()
 const pwd = ref('')
+const pwdDialogVisible = ref(false)
 const userInfoStore = userDataInfoStore();
+onBeforeMount(()=>{
+  console.log('挂载之前')
+
+})
+
+onMounted(() => {
+  sendMessageToMain().then(()=>{
+    console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
+    // 判断用户是否第一次登录 , 如果是 设置登录密码
+    if (userInfoStore.userInfo.firstLoginFlag != 0) {
+      pwdDialogVisible.value = true
+    }
+  })
+
+})
+
+async function sendMessageToMain() {
+
+  const userDataJson = await window.ipcRenderer.invoke('init-data');
+  if (!userDataJson) {
+    return;
+  }
+  console.log('userDataJson:', userDataJson)
+  const fileDataObj:FileDataObj = JSON.parse(userDataJson);
+  // 把数据放到 pinia 中
+  console.log('fileDataObj.userInfo.firstLoginFlag:', fileDataObj.userInfo.firstLoginFlag)
+  userInfoStore.setUserInfo(fileDataObj);
+}
+
+
+
+const validatePass = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入密码'))
+  } else {
+    if (ruleForm.checkPass !== '') {
+      if (!ruleFormRef.value) return
+      ruleFormRef.value.validateField('checkPass')
+    }
+    callback()
+  }
+}
+const validatePass2 = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请重新输入密码'))
+  } else if (value !== ruleForm.pass) {
+    callback(new Error("两次输入不匹配!"))
+  } else {
+    callback()
+  }
+}
+
+const ruleForm = reactive({
+  pass: '',
+  checkPass: '',
+})
+
+const rules = reactive<FormRules<typeof ruleForm>>({
+  pass: [{validator: validatePass, trigger: 'blur'}],
+  checkPass: [{validator: validatePass2, trigger: 'blur'}],
+})
+
+const submitForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate((valid) => {
+    if (valid) {
+      console.log('submit!')
+      userInfoStore.userInfo.pwd = ruleForm.pass
+      userInfoStore.userInfo.firstLoginFlag = 0
+      pwdDialogVisible.value = false
+    } else {
+      console.log('error submit!')
+    }
+  })
+}
 
 function login() {
   console.log('login')
@@ -11,10 +90,8 @@ function login() {
 }
 
 function handleEnter() {
-  console.log('handleEnter')
-  // todo dev 暂时关闭
-  // userInfoStore.userInfo.pwd == pwd.value ? login() : pwdError()
-  login()
+  console.log('handleEnter userInfo.pwd:', userInfoStore.userInfo.pwd, ', pwd.value:', pwd.value)
+  userInfoStore.userInfo.pwd == pwd.value ? login() : pwdError()
 }
 
 function pwdError() {
@@ -35,7 +112,39 @@ function pwdError() {
 </script>
 
 <template>
-
+  <el-dialog
+      v-model="pwdDialogVisible"
+      title="设置登录密码"
+      width="400"
+  >
+    <el-form
+        ref="ruleFormRef"
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        label-width="auto"
+        class="demo-ruleForm"
+    >
+      <el-form-item label="密码" prop="pass">
+        <el-input v-model="ruleForm.pass" type="password" show-password autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="再次输入" prop="checkPass">
+        <el-input
+            v-model="ruleForm.checkPass"
+            type="password"
+            autocomplete="off"
+            show-password
+        />
+      </el-form-item>
+      <el-form-item>
+        <div style="width:100%;display: flex;justify-content:flex-end">
+          <el-button type="primary" @click="submitForm(ruleFormRef)">
+            确认
+          </el-button>
+        </div>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
   <div id="myElement" class="pwd-outer">
     <el-input
         class="input-pwd"
@@ -53,7 +162,6 @@ function pwdError() {
     <!--    <div>-->
     <!--      <button @click="login">跳转到首页</button>-->
     <!--    </div>-->
-
   </div>
 
 </template>

@@ -18,7 +18,7 @@ export class UserInfo {
     pwd: string;
 
     // 1 第一次登录 ,  0 不是第一次登录
-    firstLoginFlag: 1;
+    firstLoginFlag: number;
 
     pwdInfoId: number;
 
