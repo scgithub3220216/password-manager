@@ -21,6 +21,7 @@ const searchResultList = reactive<PwdInfo[]>([]);
 const pwdInfoDetail = reactive<PwdInfo>({});
 const searchInputRef = ref(null);
 const groupInputRef = ref(null);
+const groupInput2Ref = ref(null);
 const detailInputRef = ref(null);
 const passwordVisible = ref(false);
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
@@ -141,7 +142,6 @@ function triggerGroupsInsert() {
   console.log('triggerGroupsInsert')
   groupInputShowFlag.value = true;
   transferInputFocus(2);
-  // groupInputRef.value.focus();
 }
 
 function groupInputChange() {
@@ -160,8 +160,8 @@ function groupInputChange() {
   userInfoStore.editAction()
 }
 
-function triggerGroupEdit() {
-  console.log('triggerGroupEdit')
+async function triggerGroupEdit() {
+  console.log('triggerGroupEdit1')
   userInfoStore.editGroupFlag(curGroup.id, true);
 }
 
@@ -317,8 +317,8 @@ function keydown(e: KeyboardEvent) {
         <div class="group-data">
           <ul id="group-ul">
             <li v-for="group in pwdGroupList" :key="group.id" @click="clickGroup(group)">
-              <span v-if="!group.editFlag"> {{ group.title }}</span>
-              <el-input v-else v-model="group.title" @blur="editGroups()"></el-input>
+              <span v-show="!group.editFlag"> {{ group.title }}</span>
+              <el-input v-show="group.editFlag" ref="groupInput2Ref" v-model="group.title" @change="editGroups()" @blur="editGroups()"></el-input>
             </li>
           </ul>
           <el-input ref="groupInputRef" v-model="groupInputValue" v-show="groupInputShowFlag" @change="groupInputChange()"
@@ -482,11 +482,13 @@ function keydown(e: KeyboardEvent) {
   height: 100vh;
   flex: 1 1 auto;
   color: rgba(255, 255, 255, 0.66);
+  overflow: hidden;
 }
 
 .search {
-  height: 50px;
+  height: 45px;
   width: 100vw;
+  margin-top:5px;
 }
 
 .content {
