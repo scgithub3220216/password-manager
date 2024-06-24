@@ -276,13 +276,9 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
 }
 
 /**
- * 快捷键
+ * 快捷键 Ctrl + P 复制密码 Ctrl + U 复制用户名
  */
 function keydown(e: KeyboardEvent) {
-  // 监听键盘事件 Ctrl + P 复制密码
-
-  // 监听键盘事件 Ctrl + U 复制用户名
-
   console.log('keydown', e)
   if (e.ctrlKey && e.key === 'p') {
     copyValue(pwdInfoDetail.password);
@@ -299,7 +295,7 @@ function keydown(e: KeyboardEvent) {
       <el-input
           ref="searchInputRef"
           v-model="search"
-          style="width: 500px"
+          style="width: 500px;font-size: 16px; height: 40px"
           placeholder="标题/用户名搜索"
           :prefix-icon="Search"
           type="search"
