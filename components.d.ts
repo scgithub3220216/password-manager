@@ -17,5 +17,6 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Index: typeof import('./src/components/Index.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
+    Setting: typeof import('./src/components/Setting.vue')['default']
   }
 }

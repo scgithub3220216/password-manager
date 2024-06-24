@@ -1,4 +1,5 @@
 import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, Tray} from 'electron'
+import {exec} from 'child_process'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
@@ -73,7 +74,18 @@ function createTrayMenu() {
                 quit()
             }
         },
-        {label: '设置', type: 'radio'},
+        {
+            label: '设置', click() {
+                // 先发送消息跳转到设置页面
+                toSettingView()
+                // 再打开页面
+                win.show(); // 如果窗口未显示或被隐藏，则显示
+                if (process.platform === 'darwin') {
+                    app.dock.show(); // 在macOS上，从Dock中显示应用
+                }
+
+            }
+        },
         {label: '开机启动', type: 'radio'},
         {label: '帮助', type: 'radio', checked: true},
         {label: '支持/捐赠'},
@@ -81,23 +93,36 @@ function createTrayMenu() {
     tray.setContextMenu(trayMenu)
     tray.setToolTip('密码管理器')
     tray.setTitle('密码管理器')
+
+    tray.on('click', () => {
+        showWindows()
+    });
+}
+
+//  打开窗口 ,如果已经打开了, 则缩小
+function showWindows() {
+    if (win) {
+        if (win.isVisible()) {
+            win.hide(); // 如果窗口已显示，则隐藏
+        } else {
+            win.show(); // 如果窗口未显示或被隐藏，则显示
+            if (process.platform === 'darwin') {
+                app.dock.show(); // 在macOS上，从Dock中显示应用
+            }
+        }
+    } else {
+        createWindow()
+    }
+}
+
+function toSettingView() {
+    win?.webContents.send('to-setting-view')
 }
 
 app.whenReady()
     .then(() => {
         globalShortcut.register('Alt+CommandOrControl+E', () => {
-            console.log('Electron loves global shortcuts!')
-            //  打开窗口 ,如果已经打开了, 则缩小
-            if (win) {
-                if (win.isMinimized()) {
-                    win.restore()
-                } else {
-                    win.minimize()
-                }
-            } else {
-                createWindow()
-            }
-
+            showWindows()
         })
     })
     .then(() => {
@@ -154,5 +179,22 @@ ipcMain.handle('save-data', (event, arg) => {
 });
 
 
+function setAutoStart(autoStart) {
+    const appName = app.getName();
+    const key = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`;
+    const value = `"${app.getPath('exe')} --hidden"`; // `--hidden` 可选，使应用后台启动
+
+    const command = autoStart
+        ? `reg add "${key}" /v "${appName}" /t REG_SZ /d "${value}"`
+        : `reg delete "${key}" /v "${appName}" /f`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Failed to set auto start: ${error}`);
+        } else {
+            console.log(`Auto start set successfully.`);
+        }
+    });
+}
 
 

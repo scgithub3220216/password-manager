@@ -19,16 +19,22 @@ export class UserInfo {
 
     // 1 第一次登录 ,  0 不是第一次登录
     firstLoginFlag: number;
+    // 1 登录  0 下线
+    curLoginStatus: number;
+    // 保存标志 (修改了内容就是true  否则false)
+    saveFlag: boolean;
 
     pwdInfoId: number;
 
     pwdGroupId: number;
 
 
-    constructor(startup: number, pwd: string, firstLoginFlag: 1, pwdInfoId: number, pwdGroupId: number) {
+    constructor(startup: number, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number) {
         this.startup = startup;
         this.pwd = pwd;
         this.firstLoginFlag = firstLoginFlag;
+        this.curLoginStatus = curLoginStatus;
+        this.saveFlag = saveFlag;
         this.pwdInfoId = pwdInfoId;
         this.pwdGroupId = pwdGroupId;
     }

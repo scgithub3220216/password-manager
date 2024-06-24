@@ -23,6 +23,7 @@ const searchInputRef = ref(null);
 const groupInputRef = ref(null);
 const detailInputRef = ref(null);
 const passwordVisible = ref(false);
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
 onMounted(() => {
   initData();
@@ -156,6 +157,7 @@ function groupInputChange() {
   userInfoStore.insertGroup(pwdGroup)
   groupInputShowFlag.value = false;
   groupInputValue.value = '';
+  userInfoStore.editAction()
 }
 
 function triggerGroupEdit() {
@@ -166,6 +168,7 @@ function triggerGroupEdit() {
 function editGroups() {
   console.log('editGroups')
   userInfoStore.editGroupFlag(curGroup.id, false);
+  userInfoStore.editAction()
 }
 
 function deleteGroup() {
@@ -189,6 +192,8 @@ function deleteGroup() {
   //  删除 pwdGroupList 中的数据
   pwdGroupList.splice(0, pwdGroupList.length, ...userInfoStore.pwdGroupList);
   // ElMessage.success('删除成功')
+  userInfoStore.editAction()
+
 }
 
 /**
@@ -208,6 +213,8 @@ function insertPwdInfo() {
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
   Object.assign(pwdInfoDetail, pwdInfo);
   transferInputFocus(3);
+
+  userInfoStore.editAction()
 }
 
 function deletePwdInfo() {
@@ -215,6 +222,8 @@ function deletePwdInfo() {
   userInfoStore.deletePwdInfo(pwdInfoDetail.id);
   //  删除 pwdGroupList 中的数据
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
+
+  userInfoStore.editAction()
 }
 
 /**
@@ -223,6 +232,7 @@ function deletePwdInfo() {
 function pwdInfoChange() {
   console.log('pwdInfoChange')
   userInfoStore.updatePwdInfo(pwdInfoDetail)
+  userInfoStore.editAction()
 }
 
 function copyValue(value: string) {
@@ -239,7 +249,6 @@ function clickPwdImg() {
   passwordVisible.value = !passwordVisible.value;
 }
 
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
 function clickRandomImg() {
   console.log('clickRandomImg')

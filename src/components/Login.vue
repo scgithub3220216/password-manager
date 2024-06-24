@@ -8,13 +8,13 @@ const ruleFormRef = ref<FormInstance>()
 const pwd = ref('')
 const pwdDialogVisible = ref(false)
 const userInfoStore = userDataInfoStore();
-onBeforeMount(()=>{
+onBeforeMount(() => {
   console.log('挂载之前')
 
 })
 
 onMounted(() => {
-  sendMessageToMain().then(()=>{
+  sendMessageToMain().then(() => {
     console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
     // 判断用户是否第一次登录 , 如果是 设置登录密码
     if (userInfoStore.userInfo.firstLoginFlag != 0) {
@@ -31,12 +31,11 @@ async function sendMessageToMain() {
     return;
   }
   console.log('userDataJson:', userDataJson)
-  const fileDataObj:FileDataObj = JSON.parse(userDataJson);
+  const fileDataObj: FileDataObj = JSON.parse(userDataJson);
   // 把数据放到 pinia 中
   console.log('fileDataObj.userInfo.firstLoginFlag:', fileDataObj.userInfo.firstLoginFlag)
   userInfoStore.setUserInfo(fileDataObj);
 }
-
 
 
 const validatePass = (rule: any, value: any, callback: any) => {
@@ -75,8 +74,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       console.log('submit!')
-      userInfoStore.userInfo.pwd = ruleForm.pass
-      userInfoStore.userInfo.firstLoginFlag = 0
+      userInfoStore.setInitPwd(ruleForm.pass)
       pwdDialogVisible.value = false
     } else {
       console.log('error submit!')
@@ -91,8 +89,11 @@ function login() {
 
 function handleEnter() {
   console.log('handleEnter userInfo.pwd:', userInfoStore.userInfo.pwd, ', pwd.value:', pwd.value)
+  userInfoStore.userInfo.curLoginStatus = 1;
   userInfoStore.userInfo.pwd == pwd.value ? login() : pwdError()
 }
+
+
 
 function pwdError() {
   let element = document.getElementById('myElement');

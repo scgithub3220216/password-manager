@@ -6,6 +6,14 @@ import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
 export const userDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        editAction() {
+            this.userInfo.saveFlag = true;
+        },
+        setInitPwd(pass: string) {
+            this.userInfo.pwd = pass
+            this.userInfo.firstLoginFlag = 0
+            this.editAction()
+        },
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
         },
@@ -82,8 +90,10 @@ export const userDataInfoStore = defineStore('userDataInfo', {
                 startup: 1,
                 pwd: '123456',
                 firstLoginFlag: 1,
+                curLoginStatus: 0,
                 pwdInfoId: 1,
-                pwdGroupId: 1
+                pwdGroupId: 1,
+                saveFlag: false
             },
             pwdGroupList: [
                 {
