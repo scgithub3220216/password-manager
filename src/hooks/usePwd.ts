@@ -5,6 +5,7 @@ import {userDataInfoStore} from "../store/userDataInfo.ts";
 export default function () {
 
     const userInfoStore = userDataInfoStore();
+    const pwdDialogVisible = ref(false)
 
     const ruleFormRef = ref<FormInstance>()
     const passForm = reactive({
@@ -12,6 +13,20 @@ export default function () {
         newPassword: '',
         confirmPassword: '',
     })
+
+
+    const loginSubmitForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return
+        formEl.validate((valid) => {
+            if (valid) {
+                console.log('submit!')
+                userInfoStore.setInitPwd(passForm.newPassword)
+                pwdDialogVisible.value = false
+            } else {
+                console.log('error submit!')
+            }
+        })
+    }
 
     const validatePass = (rule: any, value: string, callback: any) => {
         if (value === '') {
@@ -68,5 +83,21 @@ export default function () {
         if (!formEl) return
         formEl.resetFields()
     }
-    return {passForm, ruleFormRef, validatePass, validatePass2, rules, submitForm, resetForm}
+
+
+    function pwdError() {
+        let element = document.getElementById('myElement');
+
+        // 存储原始背景颜色
+        let originalColor = element.style.backgroundColor;
+
+// 设置新的背景色触发过渡效果
+        element.style.backgroundColor = '#ea918b';
+
+        // 过渡完成后恢复原背景色
+        setTimeout(function () {
+            element.style.backgroundColor = originalColor;
+        }, 1000);
+    }
+    return {pwdError,loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, validatePass, validatePass2, rules, submitForm, resetForm}
 }

@@ -1,0 +1,46 @@
+<script setup lang="ts">
+import usePwd from "../../hooks/usePwd.ts";
+
+const {loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, rules} = usePwd()
+
+</script>
+
+<template>
+  <el-dialog
+      v-model="pwdDialogVisible"
+      title="设置登录密码"
+      width="400"
+  >
+    <el-form
+        ref="ruleFormRef"
+        :model="passForm"
+        status-icon
+        :rules="rules"
+        label-width="auto"
+        class="demo-ruleForm"
+    >
+      <el-form-item label="密码" prop="pass">
+        <el-input v-model="passForm.newPassword" type="password" show-password autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="再次输入" prop="checkPass">
+        <el-input
+            v-model="passForm.confirmPassword"
+            type="password"
+            autocomplete="off"
+            show-password
+        />
+      </el-form-item>
+      <el-form-item>
+        <div style="width:100%;display: flex;justify-content:flex-end">
+          <el-button type="primary" @click="loginSubmitForm(ruleFormRef)">
+            确认
+          </el-button>
+        </div>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
+</template>
+
+<style scoped>
+
+</style>
