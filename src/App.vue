@@ -4,6 +4,7 @@ import {userDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
+import {saveTime} from "./config/config.ts";
 
 const userInfoStore = userDataInfoStore();
 
@@ -24,16 +25,17 @@ onBeforeUnmount(() => {
 })
 
 onMounted(() => {
-  const intervalId = setInterval(() => saveData(), 2000);
+  const intervalId = setInterval(() => saveData(), saveTime);
   // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
   return () => clearInterval(intervalId);
 });
 
 function saveData() {
-  console.log('saveData')
   if (!userInfoStore.userInfo.saveFlag) {
     return;
   }
+  console.log('saveData 改动')
+
   let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
   // save-data
   const fileDataObjJson = JSON.stringify(fileDataObj);

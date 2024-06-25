@@ -1,7 +1,7 @@
 // 引入defineStore用于创建store
 import {defineStore} from 'pinia'
 import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
-import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMainWinShortcutKey} from "../config/config.ts";
+import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMainWinShortcutKey, defaultPwd} from "../config/config.ts";
 
 // 存放用户的一些设置数据
 export const userDataInfoStore = defineStore('userDataInfo', {
@@ -14,6 +14,17 @@ export const userDataInfoStore = defineStore('userDataInfo', {
             this.userInfo.pwd = pass
             this.userInfo.firstLoginFlag = 0
             this.editAction()
+        },
+        setPwd(oldPwd: string, newPwd: string) {
+            console.log('setPwd')
+            if (this.userInfo.pwd === oldPwd) {
+                this.userInfo.pwd = newPwd
+                this.editAction()
+                console.log('setPwd success newPwd:',newPwd)
+                return true;
+            }else {
+                return false;
+            }
         },
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
@@ -89,7 +100,7 @@ export const userDataInfoStore = defineStore('userDataInfo', {
         return {
             userInfo: {
                 autoStart: true,
-                pwd: '123456',
+                pwd: defaultPwd,
                 firstLoginFlag: 1,
                 curLoginStatus: 0,
                 pwdInfoId: 1,
