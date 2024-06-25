@@ -6,15 +6,17 @@ import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
 
 const pwd = ref('')
+const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
-const {pwdDialogVisible, pwdError} = usePwd()
+const {pwdError} = usePwd()
 
 onMounted(() => {
   sendMessageToMain().then(() => {
     console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
     // 判断用户是否第一次登录 , 如果是 设置登录密码
     if (userInfoStore.userInfo.firstLoginFlag != 0) {
-      pwdDialogVisible.value = true
+      console.log('设置登录密码')
+      initSetPwd.value.pwdDialogVisible = true
     }
   })
 })
@@ -45,7 +47,7 @@ function handleEnter() {
 </script>
 
 <template>
-  <InitSetPwd/>
+  <InitSetPwd ref="initSetPwd"/>
 
   <div id="myElement" class="pwd-outer">
     <el-input

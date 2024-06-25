@@ -2,7 +2,10 @@
 import usePwd from "../../hooks/usePwd.ts";
 
 const {loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, rules} = usePwd()
-
+// 暴露方法给父组件
+defineExpose({
+  pwdDialogVisible
+})
 </script>
 
 <template>
@@ -19,16 +22,11 @@ const {loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, rules} = usePwd
         label-width="auto"
         class="demo-ruleForm"
     >
-      <el-form-item label="密码" prop="pass">
-        <el-input v-model="passForm.newPassword" type="password" show-password autocomplete="off"/>
+      <el-form-item label="密码" prop="newPassword">
+        <el-input v-model="passForm.newPassword" type="password" autocomplete="off" show-password/>
       </el-form-item>
-      <el-form-item label="再次输入" prop="checkPass">
-        <el-input
-            v-model="passForm.confirmPassword"
-            type="password"
-            autocomplete="off"
-            show-password
-        />
+      <el-form-item label="再次确认" prop="confirmPassword">
+        <el-input v-model="passForm.confirmPassword" type="password" autocomplete="off" show-password/>
       </el-form-item>
       <el-form-item>
         <div style="width:100%;display: flex;justify-content:flex-end">
