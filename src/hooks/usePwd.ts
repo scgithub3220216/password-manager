@@ -87,7 +87,9 @@ export default function () {
 
     function pwdError() {
         let element = document.getElementById('myElement');
-
+        if (!element) {
+            return;
+        }
         // 存储原始背景颜色
         let originalColor = element.style.backgroundColor;
 
@@ -99,5 +101,6 @@ export default function () {
             element.style.backgroundColor = originalColor;
         }, 1000);
     }
-    return {pwdError,loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, validatePass, validatePass2, rules, submitForm, resetForm}
+
+    return {pwdError, loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, validatePass, validatePass2, rules, submitForm, resetForm}
 }

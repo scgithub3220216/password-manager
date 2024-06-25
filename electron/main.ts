@@ -4,7 +4,7 @@ import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "../src/utils/fileUtils.ts";
-import {FileDataObj} from "../src/store/type.ts";
+import useCrypto from "../src/hooks/useCrypto.ts";
 /* 引入storeToRefs */
 
 const require = createRequire(import.meta.url)
@@ -128,6 +128,7 @@ function showWindows() {
     }
 }
 
+const {decryptData} = useCrypto();
 
 app.whenReady()
     // 读取 文件内容, 然后根据一些设置进行一些操作
@@ -140,7 +141,9 @@ app.whenReady()
             return;
         }
         // 解析数据
-        const fileDataObj: FileDataObj = JSON.parse(initDataStr);
+        let text = decryptData(initDataStr);
+        console.log('text',text)
+        const fileDataObj = JSON.parse(text);
         let userInfo = fileDataObj.userInfo
         // 如果是第一次登录
         if (userInfo.firstLoginFlag) {
@@ -157,12 +160,12 @@ app.whenReady()
         createTrayMenu()
     })
 
-function registerGlobalShortcut(openMainWindows:string) {
-    if (!openMainWindows){
+function registerGlobalShortcut(openMainWindows: string) {
+    if (!openMainWindows) {
         return;
     }
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
-    let openMainWindows1 =openMainWindows ? openMainWindows : 'Ctrl + Alt + E';
+    let openMainWindows1 = openMainWindows ? openMainWindows : 'Ctrl + Alt + E';
     let openMainWindows2 = openMainWindows1.replace('Ctrl', 'CommandOrControl')
 
     globalShortcut.register(openMainWindows2, () => {

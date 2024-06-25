@@ -4,11 +4,13 @@ import {userDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
 import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
+import useCrypto from "../hooks/useCrypto.ts";
 
 const pwd = ref('')
 const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
 const {pwdError} = usePwd()
+const {decryptData} = useCrypto();
 
 onMounted(() => {
   sendMessageToMain().then(() => {
@@ -27,8 +29,10 @@ async function sendMessageToMain() {
   if (!userDataJson) {
     return;
   }
-  // console.log('userDataJson:', userDataJson)
-  const fileDataObj: FileDataObj = JSON.parse(userDataJson);
+  // 解密
+  let decryptData1 = decryptData(userDataJson);
+  console.log('decryptData1:', decryptData1)
+  const fileDataObj: FileDataObj = JSON.parse(decryptData1);
   // 把数据放到 pinia 中
   userInfoStore.setUserInfo(fileDataObj);
 }

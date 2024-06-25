@@ -28,7 +28,6 @@ declare module 'vue' {
     Index: typeof import('./src/components/Index.vue')['default']
     InitSetPwd: typeof import('./src/components/settools/InitSetPwd.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
-    Setting: typeof import('./src/components/Setting.vue')['default']
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
     ShortcutKeys: typeof import('./src/components/settools/ShortcutKeys.vue')['default']
     Support: typeof import('./src/components/settools/Support.vue')['default']

@@ -5,8 +5,10 @@ import {FileDataObj} from "./store/type";
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
+import useCrypto from "./hooks/useCrypto.ts";
 
 const userInfoStore = userDataInfoStore();
+const {encryptData} = useCrypto();
 
 // 简单的路由
 const routes = {
@@ -14,11 +16,6 @@ const routes = {
   '/index': Index,
 }
 
-
-// window.ipcRenderer.on('to-setting-view', () => {
-//   console.log('to-setting-view')
-//   toSettingView()
-// })
 onBeforeUnmount(() => {
   console.log('卸载之前')
   saveData()
@@ -30,6 +27,7 @@ onMounted(() => {
   return () => clearInterval(intervalId);
 });
 
+
 function saveData() {
   if (!userInfoStore.userInfo.saveFlag) {
     return;
@@ -40,7 +38,9 @@ function saveData() {
   // save-data
   const fileDataObjJson = JSON.stringify(fileDataObj);
 
-  window.ipcRenderer.invoke('save-data', fileDataObjJson);
+  let encryptData1 = encryptData(fileDataObjJson);
+  console.log('encryptData1:', encryptData1)
+  window.ipcRenderer.invoke('save-data', encryptData1);
   userInfoStore.userInfo.saveFlag = false;
 }
 
@@ -50,26 +50,13 @@ window.addEventListener('hashchange', () => {
   currentPath.value = window.location.hash
 })
 const currentView = computed(() => {
-  // return '/login';
   return routes[currentPath.value.slice(1) || '/'] || Login
 })
 
-// function toSettingView() {
-//   console.log('toSettingView')
-//   // 判断是否登录, 未登录跳转到登录页面
-//   if (userInfoStore.userInfo.curLoginStatus !== 1) {
-//     window.location.hash = '/login'
-//     return
-//   }
-//
-//   window.location.hash = '/setting'
-// }
 
 </script>
 
 <template>
-  <!--  <a href="#/login">Login</a> |-->
-  <!--  <a href="#/index">Index</a> |-->
   <component :is="currentView"/>
 </template>
 
