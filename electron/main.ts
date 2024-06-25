@@ -4,6 +4,7 @@ import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "../src/utils/fileUtils.ts";
+import {FileDataObj} from "../src/store/type.ts";
 /* 引入storeToRefs */
 
 const require = createRequire(import.meta.url)
@@ -27,6 +28,7 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
+let initDataStr = '';
 let win: BrowserWindow | null
 
 function createWindow() {
@@ -69,26 +71,32 @@ function createTrayMenu() {
     tray.setToolTip('密码管理器')
 
     const trayMenu = Menu.buildFromTemplate([
+
+
         {
-            label: '离开', click() {
+            label: '显示主界面', click() {
+                win.show();
+            }
+        },
+        // {
+        //     label: '设置', click() {
+        //         // 先发送消息跳转到设置页面
+        //         toSettingView()
+        //         // 再打开页面
+        //         win.show(); // 如果窗口未显示或被隐藏，则显示
+        //         if (process.platform === 'darwin') {
+        //             app.dock.show(); // 在macOS上，从Dock中显示应用
+        //         }
+        //
+        //     }
+        // },
+        {label: '帮助'},
+        {label: '支持/捐赠'},
+        {
+            label: '退出', click() {
                 quit()
             }
         },
-        {
-            label: '设置', click() {
-                // 先发送消息跳转到设置页面
-                toSettingView()
-                // 再打开页面
-                win.show(); // 如果窗口未显示或被隐藏，则显示
-                if (process.platform === 'darwin') {
-                    app.dock.show(); // 在macOS上，从Dock中显示应用
-                }
-
-            }
-        },
-        {label: '开机启动', type: 'radio'},
-        {label: '帮助', type: 'radio', checked: true},
-        {label: '支持/捐赠'},
     ])
     tray.setContextMenu(trayMenu)
     tray.setToolTip('密码管理器')
@@ -98,6 +106,11 @@ function createTrayMenu() {
         showWindows()
     });
 }
+
+// function toSettingView() {
+//     win?.webContents.send('to-setting-view')
+// }
+
 
 //  打开窗口 ,如果已经打开了, 则缩小
 function showWindows() {
@@ -115,21 +128,47 @@ function showWindows() {
     }
 }
 
-function toSettingView() {
-    win?.webContents.send('to-setting-view')
-}
 
 app.whenReady()
-    .then(() => {
-        globalShortcut.register('Alt+CommandOrControl+E', () => {
-            showWindows()
-        })
+    // 读取 文件内容, 然后根据一些设置进行一些操作
+    .then(async () => {
+        console.log('准备读取数据')
+        initDataStr = await readFile(getFilePath());
+        console.log('数据读取成功')
+        if (!initDataStr) {
+            console.log('数据为空')
+            return;
+        }
+        // 解析数据
+        const fileDataObj: FileDataObj = JSON.parse(initDataStr);
+        let userInfo = fileDataObj.userInfo
+        // 如果是第一次登录
+        if (userInfo.firstLoginFlag) {
+            // 设置开机启动
+            setAutoStart(true)
+        }
+
+        // 设置快捷键
+        registerGlobalShortcut(userInfo.shortcutKey?.openMainWindows);
+
     })
     .then(() => {
         createWindow()
         createTrayMenu()
     })
 
+function registerGlobalShortcut(openMainWindows:string) {
+    if (!openMainWindows){
+        return;
+    }
+    // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
+    let openMainWindows1 =openMainWindows ? openMainWindows : 'Ctrl + Alt + E';
+    let openMainWindows2 = openMainWindows1.replace('Ctrl', 'CommandOrControl')
+
+    globalShortcut.register(openMainWindows2, () => {
+        showWindows()
+    })
+}
 
 function getFilePath() {
     const userDataPath = app.getPath('userData');
@@ -138,7 +177,6 @@ function getFilePath() {
 }
 
 function quit() {
-
     app.quit()
     win = null
 }
@@ -168,9 +206,9 @@ app.on('activate', () => {
         createWindow()
     }
 })
-ipcMain.handle('init-data', async (event, arg) => {
+ipcMain.handle('init-data', (event, arg) => {
     console.log(`Received message from renderer:`);
-    return await readFile(getFilePath());
+    return initDataStr;
 });
 
 ipcMain.handle('save-data', (event, arg) => {
@@ -178,8 +216,18 @@ ipcMain.handle('save-data', (event, arg) => {
     saveInfoToDB(arg);
 });
 
+ipcMain.handle('save-shortcuts', (event, arg) => {
+    console.log(`Received auto-start: ${arg}`);
+    registerGlobalShortcut(arg)
+});
 
-function setAutoStart(autoStart) {
+ipcMain.handle('auto-start', (event, arg) => {
+    console.log(`Received auto-start: ${arg}`);
+    setAutoStart(arg);
+});
+
+// todo 有问题
+function setAutoStart(autoStart: boolean) {
     const appName = app.getName();
     const key = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`;
     const value = `"${app.getPath('exe')} --hidden"`; // `--hidden` 可选，使应用后台启动

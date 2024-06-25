@@ -7,6 +7,7 @@ import {onMounted, reactive, ref} from "vue";
 import {Delete, Edit, Plus, Search} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
+import SettingDialog from "./SettingDialog.vue";
 
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -26,6 +27,7 @@ const detailInputRef = ref(null);
 const passwordVisible = ref(false);
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
+let settingDialog = ref();
 onMounted(() => {
   initData();
   transferInputFocus(1);
@@ -296,21 +298,37 @@ function keydown(e: KeyboardEvent) {
   }
 }
 
+function clickSwitch() {
+  console.log('clickSwitch')
+
+}
+
+function openSettingDialog() {
+  console.log('openSettingDialog')
+  settingDialog.value.openSettingDialog();
+
+}
 </script>
 
 <template>
+  <SettingDialog ref="settingDialog"/>
   <div class="outer">
     <div class="search">
+      <div></div>
       <el-input
           ref="searchInputRef"
           v-model="search"
-          style="width: 500px;font-size: 16px; height: 40px"
+          style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
           placeholder="标题/用户名搜索"
           :prefix-icon="Search"
           type="search"
           @search="searchAction()"
           autofocus
       />
+      <div>
+        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">
+        <img src="../../public/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
+      </div>
     </div>
     <div class="content">
       <div v-if="!searchResultShowFlag" class="group">
@@ -488,7 +506,32 @@ function keydown(e: KeyboardEvent) {
 .search {
   height: 45px;
   width: 100vw;
-  margin-top:5px;
+  margin-top: 5px;
+  display: flex;
+justify-content: space-between;
+}
+
+.search-image {
+  width: 30px;
+  border: 1px solid rgba(204, 204, 204, 0);
+  border-radius: 50%;
+  padding: 1px;
+  opacity: 0.4;
+  margin-right: 10px;
+
+}
+
+.search-image:hover {
+  opacity: 0.4;
+  background: #79797BFF;
+  box-shadow: #888888 0px 0px 5px 0px;
+  cursor: pointer;
+
+}
+
+.search-result {
+  width: 60%;
+  border-right: 1px #cab8b8 solid;
 }
 
 .content {
@@ -497,10 +540,6 @@ function keydown(e: KeyboardEvent) {
   height: calc(100vh - 50px);
 }
 
-.search-result {
-  width: 60%;
-  border-right: 1px #cab8b8 solid;
-}
 
 .group {
   width: 25%;
@@ -628,4 +667,6 @@ li.selected {
   cursor: pointer;
 
 }
+
+
 </style>

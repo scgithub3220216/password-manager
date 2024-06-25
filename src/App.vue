@@ -4,7 +4,6 @@ import {userDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
-import Setting from './components/Setting.vue'
 
 const userInfoStore = userDataInfoStore();
 
@@ -12,14 +11,13 @@ const userInfoStore = userDataInfoStore();
 const routes = {
   '/login': Login,
   '/index': Index,
-  '/setting': Setting
 }
 
 
-window.ipcRenderer.on('to-setting-view', () => {
-  console.log('to-setting-view')
-  toSettingView()
-})
+// window.ipcRenderer.on('to-setting-view', () => {
+//   console.log('to-setting-view')
+//   toSettingView()
+// })
 onBeforeUnmount(() => {
   console.log('卸载之前')
   saveData()
@@ -41,7 +39,7 @@ function saveData() {
   const fileDataObjJson = JSON.stringify(fileDataObj);
 
   window.ipcRenderer.invoke('save-data', fileDataObjJson);
-  userInfoStore.userInfo.saveFlag= false;
+  userInfoStore.userInfo.saveFlag = false;
 }
 
 // 监听路由哈希
@@ -54,16 +52,16 @@ const currentView = computed(() => {
   return routes[currentPath.value.slice(1) || '/'] || Login
 })
 
-function toSettingView() {
-  console.log('toSettingView')
-  // 判断是否登录, 未登录跳转到登录页面
-  if (userInfoStore.userInfo.curLoginStatus !== 1) {
-    window.location.hash = '/login'
-    return
-  }
-
-  window.location.hash = '/setting'
-}
+// function toSettingView() {
+//   console.log('toSettingView')
+//   // 判断是否登录, 未登录跳转到登录页面
+//   if (userInfoStore.userInfo.curLoginStatus !== 1) {
+//     window.location.hash = '/login'
+//     return
+//   }
+//
+//   window.location.hash = '/setting'
+// }
 
 </script>
 

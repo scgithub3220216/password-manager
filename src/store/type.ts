@@ -12,8 +12,8 @@ export class FileDataObj {
 // 存放用户的一些设置数据
 export class UserInfo {
 
-    // 1 启动 0 不启动
-    startup: number;
+    // true 启动 ; false 不启动
+    autoStart: boolean;
 
     pwd: string;
 
@@ -28,15 +28,33 @@ export class UserInfo {
 
     pwdGroupId: number;
 
+    shortcutKey: ShortcutKey;
 
-    constructor(startup: number, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number) {
-        this.startup = startup;
+
+    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, shortcutKey: ShortcutKey) {
+        this.autoStart = autoStart;
         this.pwd = pwd;
         this.firstLoginFlag = firstLoginFlag;
         this.curLoginStatus = curLoginStatus;
         this.saveFlag = saveFlag;
         this.pwdInfoId = pwdInfoId;
         this.pwdGroupId = pwdGroupId;
+        this.shortcutKey = shortcutKey;
+    }
+}
+
+export class ShortcutKey {
+    openMainWindows: string;
+
+    copyUsername: string;
+
+    copyPwd: string;
+
+
+    constructor(openMainWindows: string, copyUsername: string, copyPwd: string) {
+        this.openMainWindows = openMainWindows;
+        this.copyUsername = copyUsername;
+        this.copyPwd = copyPwd;
     }
 }
 

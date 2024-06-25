@@ -30,7 +30,7 @@ async function sendMessageToMain() {
   if (!userDataJson) {
     return;
   }
-  console.log('userDataJson:', userDataJson)
+  // console.log('userDataJson:', userDataJson)
   const fileDataObj: FileDataObj = JSON.parse(userDataJson);
   // 把数据放到 pinia 中
   console.log('fileDataObj.userInfo.firstLoginFlag:', fileDataObj.userInfo.firstLoginFlag)

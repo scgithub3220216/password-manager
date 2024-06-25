@@ -10,7 +10,7 @@ async function readFile(filePath: string): Promise<string> {
         return data;
     } catch (err) {
         console.error(err);
-        throw err; // 重新抛出错误或自定义处理
+        // throw err; // 重新抛出错误或自定义处理
     }
 }
 
