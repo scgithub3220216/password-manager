@@ -30,6 +30,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 let initDataStr = '';
 let win: BrowserWindow | null
+let tray
 
 function createWindow() {
     win = new BrowserWindow({
@@ -40,6 +41,7 @@ function createWindow() {
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.mjs'),
+            spellcheck: false, // 关闭拼写检查
             // nodeIntegration: true,
             // contextIsolation: false
         },
@@ -59,8 +61,6 @@ function createWindow() {
     }
 
 }
-
-let tray
 
 function createTrayMenu() {
     let trayIcon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'icon.png'))
