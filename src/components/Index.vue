@@ -5,9 +5,16 @@ import {userDataInfoStore} from "../store/userDataInfo.ts";
 import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
 import {Delete, Edit, Plus, Search} from '@element-plus/icons-vue'
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 import SettingDialog from "./SettingDialog.vue";
+import "element-plus/theme-chalk/el-loading.css";
+
+import "element-plus/theme-chalk/el-notification.css";
+
+import "element-plus/theme-chalk/el-message-box.css";
+
+import "element-plus/theme-chalk/el-drawer.css";
 
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -228,6 +235,27 @@ function deletePwdInfo() {
   userInfoStore.editAction()
 }
 
+const openDelPwdInfoMsgBox = () => {
+  ElMessageBox.confirm(
+      '确认删除此帐号?',
+
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+        draggable: true,
+        customStyle: {
+          width: '250px'
+        }
+      }
+  )
+      .then(() => {
+        deletePwdInfo()
+      })
+      .catch(() => {
+      })
+}
+
 /**
  * detail
  */
@@ -392,7 +420,7 @@ function openSettingDialog() {
               content="删除"
               placement="top"
           >
-            <span @click="deletePwdInfo()"> <Delete style="width: 20px; height: 20px;"/></span>
+            <span @click="openDelPwdInfoMsgBox()"> <Delete style="width: 20px; height: 20px;"/></span>
           </el-tooltip>
         </div>
 
@@ -508,7 +536,7 @@ function openSettingDialog() {
   width: 100vw;
   margin-top: 5px;
   display: flex;
-justify-content: space-between;
+  justify-content: space-between;
 }
 
 .search-image {
