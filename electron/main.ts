@@ -5,6 +5,7 @@ import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "../src/utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
+import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 /* 引入storeToRefs */
 
 const require = createRequire(import.meta.url)
@@ -48,6 +49,7 @@ function createWindow() {
     })
     // win.webContents.openDevTools()
 
+
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
         win?.webContents.send('main-process-message', (new Date).toLocaleString())
@@ -59,6 +61,16 @@ function createWindow() {
         // win.loadFile('dist/index.html')
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
+
+    win.on('close', (e) => {
+        console.log('close event')
+        // 阻止默认的关闭操作
+        e.preventDefault();
+        // todo 如果是第一次关闭, 则询问用户是关闭系统还是最小化到托盘
+
+        // 最小化窗口到系统托盘
+        win.hide();
+    });
 
 }
 
@@ -142,7 +154,6 @@ app.whenReady()
         }
         // 解析数据
         let text = decryptData(initDataStr);
-        console.log('text',text)
         const fileDataObj = JSON.parse(text);
         let userInfo = fileDataObj.userInfo
         // 如果是第一次登录
@@ -165,7 +176,7 @@ function registerGlobalShortcut(openMainWindows: string) {
         return;
     }
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
-    let openMainWindows1 = openMainWindows ? openMainWindows : 'Ctrl + Alt + E';
+    let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
     let openMainWindows2 = openMainWindows1.replace('Ctrl', 'CommandOrControl')
 
     globalShortcut.register(openMainWindows2, () => {
@@ -197,6 +208,7 @@ function saveInfoToDB(fileDataObjJson: string) {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+    console.log('退出之前')
     if (process.platform !== 'darwin') {
         quit();
     }
