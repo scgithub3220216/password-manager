@@ -18,7 +18,7 @@ import "element-plus/theme-chalk/el-drawer.css";
 import useLogin from "../hooks/useLogin.ts";
 
 const {logout} = useLogin();
-
+const themeSwitch = ref(true)
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');
@@ -346,7 +346,19 @@ function openSettingDialog() {
   <div class="outer">
     <div class="search">
       <div>
-        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">
+        <!--        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">-->
+        <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="切换主题"
+            placement="right"
+        >
+          <el-switch
+              v-model="themeSwitch"
+              class="ml-2"
+              style="--el-switch-on-color: rgba(255,255,255,0.72); --el-switch-off-color: rgba(0,0,0,0.5); margin-left: 10px"
+          />
+        </el-tooltip>
       </div>
       <el-input
           ref="searchInputRef"
@@ -526,6 +538,7 @@ function openSettingDialog() {
 </template>
 
 <style scoped>
+
 
 .outer {
   background: rgba(40, 44, 52, 0.93);

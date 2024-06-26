@@ -95,6 +95,11 @@ button:focus-visible {
 }
 
 
-div.msg-tips{
+div.msg-tips {
     --el-messagebox-width: 700px;
+}
+
+/*index 页面 主题按钮颜色*/
+.el-switch.is-checked .el-switch__core .el-switch__action {
+    background-color: rgba(239, 127, 52, 0.68);
 }
