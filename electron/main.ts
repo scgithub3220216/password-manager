@@ -112,7 +112,6 @@ function createTrayMenu() {
         //     }
         // },
         {label: '帮助'},
-        {label: '支持/捐赠'},
         {
             label: '退出', click() {
                 clickExitTime = new Date().getTime()

@@ -13,7 +13,6 @@ npm run build
 
 # 待做事项
 - 帮助
-- 支持/捐赠
 
 
 ## style
