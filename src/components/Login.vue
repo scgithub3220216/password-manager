@@ -41,12 +41,12 @@ async function sendMessageToMain() {
 }
 
 function login() {
-  console.log('login')
+  console.log('login success')
+  userInfoStore.login();
   window.location.hash = '/index'
 }
 
 function handleEnter() {
-  userInfoStore.userInfo.curLoginStatus = 1;
   userInfoStore.userInfo.pwd == pwd.value ? login() : pwdError()
 }
 

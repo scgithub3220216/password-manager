@@ -20,9 +20,9 @@ export const userDataInfoStore = defineStore('userDataInfo', {
             if (this.userInfo.pwd === oldPwd) {
                 this.userInfo.pwd = newPwd
                 this.editAction()
-                console.log('setPwd success newPwd:',newPwd)
+                console.log('setPwd success newPwd:', newPwd)
                 return true;
-            }else {
+            } else {
                 return false;
             }
         },
@@ -94,6 +94,13 @@ export const userDataInfoStore = defineStore('userDataInfo', {
                 pwdGroup.pwdList = pwdGroup.pwdList.filter(pwd => pwd.id !== pwdInfoId);
             })
         },
+        login() {
+            this.userInfo.curLoginStatus = 1;
+        },
+        logout() {
+            this.userInfo.curLoginStatus = 0;
+        }
+
     },
     // 状态
     state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[] } {

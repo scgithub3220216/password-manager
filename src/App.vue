@@ -53,6 +53,23 @@ const currentView = computed(() => {
   return routes[currentPath.value.slice(1) || '/'] || Login
 })
 
+// 规定时间中不操作, 默认退出 (自动回登录页面)
+let timeoutId;
+
+function resetTimer() {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+    userInfoStore.logout();
+    window.location.hash = '/login'
+  }, 1 * 60 * 1000);
+}
+
+document.addEventListener('mousemove', resetTimer);
+document.addEventListener('keydown', resetTimer);
+document.addEventListener('scroll', resetTimer);
+
+resetTimer(); // 初始化定时器
+
 
 </script>
 
