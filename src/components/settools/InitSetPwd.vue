@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import usePwd from "../../hooks/usePwd.ts";
 
-const {loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, rules} = usePwd()
+const {handleClose, loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, rules} = usePwd()
 // 暴露方法给父组件
 defineExpose({
   pwdDialogVisible
 })
+
 </script>
 
 <template>
@@ -13,6 +14,7 @@ defineExpose({
       v-model="pwdDialogVisible"
       title="设置登录密码"
       width="400"
+      :before-close="handleClose"
   >
     <el-form
         ref="ruleFormRef"

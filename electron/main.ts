@@ -150,6 +150,8 @@ app.whenReady()
         console.log('数据读取成功')
         if (!initDataStr) {
             console.log('数据为空')
+            setAutoStart(true)
+            registerGlobalShortcut(defaultOpenMainWinShortcutKey);
             return;
         }
         // 解析数据
@@ -172,9 +174,7 @@ app.whenReady()
     })
 
 function registerGlobalShortcut(openMainWindows: string) {
-    if (!openMainWindows) {
-        return;
-    }
+    console.log('openMainWindows:', openMainWindows)
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
     let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
     let openMainWindows2 = openMainWindows1.replace('Ctrl', 'CommandOrControl')

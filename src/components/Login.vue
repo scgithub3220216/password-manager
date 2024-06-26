@@ -23,6 +23,8 @@ onMounted(() => {
   })
 })
 
+
+
 async function sendMessageToMain() {
 
   const userDataJson = await window.ipcRenderer.invoke('init-data');

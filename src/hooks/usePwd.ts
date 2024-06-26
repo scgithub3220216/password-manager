@@ -1,5 +1,5 @@
 import {reactive, ref} from 'vue'
-import {ElMessage, FormInstance, FormRules} from 'element-plus'
+import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
 
 export default function () {
@@ -102,5 +102,39 @@ export default function () {
         }, 1000);
     }
 
-    return {pwdError, loginSubmitForm, pwdDialogVisible, passForm, ruleFormRef, validatePass, validatePass2, rules, submitForm, resetForm}
+    const handleClose = (done: () => void) => {
+        ElMessageBox.confirm('你确定要离开设置初始密码吗?',
+            {
+                confirmButtonText: '确认',
+                cancelButtonText: '取消',
+                type: 'warning',
+                draggable: true,
+                customStyle: {
+                    width: '350px'
+                }
+            })
+            .then(() => {
+                done()
+                ElMessageBox.alert('初始密码为 123456', {
+                    confirmButtonText: '确认'
+                })
+            })
+            .catch(() => {
+                // catch error
+            })
+    }
+
+    return {
+        handleClose,
+        pwdError,
+        loginSubmitForm,
+        pwdDialogVisible,
+        passForm,
+        ruleFormRef,
+        validatePass,
+        validatePass2,
+        rules,
+        submitForm,
+        resetForm
+    }
 }
