@@ -1,3 +1,4 @@
+// @ts-ignore 
 import CryptoJS from 'crypto-js';
 import {aesIv, aesKey} from "../config/config.ts";
 

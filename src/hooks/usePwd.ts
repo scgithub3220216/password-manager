@@ -2,6 +2,7 @@ import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
 import {setPwdMsgTipsStr} from "../config/config.ts";
+import {InternalRuleItem} from "async-validator/dist-types/interface";
 
 export default function () {
 
@@ -28,8 +29,8 @@ export default function () {
             }
         })
     }
-
-    const validatePass = (rule: any, value: string, callback: any) => {
+    // @ts-ignore
+    const validatePass = (rule: InternalRuleItem, value: string, callback: any) => {
         if (value === '') {
             callback(new Error('请输入密码'))
         } else {
@@ -38,12 +39,15 @@ export default function () {
             }
             if (passForm.confirmPassword !== '') {
                 if (!ruleFormRef.value) return
-                ruleFormRef.value.validateField('confirmPassword', () => null)
+                ruleFormRef.value.validateField('confirmPassword', () => {
+                })
+
             }
             callback()
         }
     }
-    const validatePass2 = (rule: any, value: string, callback: any) => {
+    // @ts-ignore
+    const validatePass2 = (rule: InternalRuleItem, value: string, callback: any) => {
         if (value === '') {
             callback(new Error('请再次输入密码'))
         } else if (value.length < 6) {
@@ -75,7 +79,7 @@ export default function () {
                 }
             } else {
                 console.log('error submit!')
-                return false
+                // return false
             }
         })
     }
@@ -125,7 +129,7 @@ export default function () {
             })
     }
 
-    const setPwdMsgTips  = () => {
+    const setPwdMsgTips = () => {
         ElMessageBox.alert(setPwdMsgTipsStr, {
             confirmButtonText: '确认',
             dangerouslyUseHTMLString: true,
@@ -134,7 +138,8 @@ export default function () {
         })
     }
 
-    return {setPwdMsgTips,
+    return {
+        setPwdMsgTips,
         handleClose,
         pwdError,
         loginSubmitForm,
