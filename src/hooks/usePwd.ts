@@ -1,12 +1,12 @@
 import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
 
 export default function () {
 
-    const userInfoStore = userDataInfoStore();
+    const userInfoStore = useUserDataInfoStore();
     const pwdDialogVisible = ref(false)
 
     const ruleFormRef = ref<FormInstance>()

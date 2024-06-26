@@ -1,7 +1,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {FileDataObj} from "../store/type.ts";
 import useCrypto from "./useCrypto.ts";
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
 
@@ -9,7 +9,7 @@ export default function () {
 
     const capsLockFlag = ref(false)
     const {decryptData} = useCrypto();
-    const userInfoStore = userDataInfoStore();
+    const userInfoStore = useUserDataInfoStore();
 
     onMounted(() => {
         console.log('useCapsLock onMounted')

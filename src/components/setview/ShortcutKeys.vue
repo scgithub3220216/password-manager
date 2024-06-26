@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from 'vue';
-import {userDataInfoStore} from "../../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {defaultOpenMainWinShortcutKey} from "../../config/config.ts";
 
 const saveButtonDisabled = ref(true);
 const resetDisabled = ref(false);
 const currentOpenMainKeys = ref<string[]>([]);
 const mainShortcuts = ref('');
-const userInfoStore = userDataInfoStore();
+const userInfoStore = useUserDataInfoStore();
 
 onMounted(() => {
-  console.log('shorcutKeys onMounted')
+  console.log('shorCutKeys onMounted')
   currentOpenMainKeys.value = userInfoStore.userInfo.shortcutKey?.openMainWindows?.split(' + ');
   mainShortcuts.value = userInfoStore.userInfo.shortcutKey.openMainWindows;
 })

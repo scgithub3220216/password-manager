@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 // 把数据放到 pinia 中
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
 import {Delete, Download, Edit, Plus, Search} from '@element-plus/icons-vue'
@@ -20,7 +20,7 @@ import {toggleDark} from "../styles/dark/dark.ts";
 import useExcel from "../hooks/useExcel.ts";
 
 const {logout} = useLoginAction();
-const userInfoStore = userDataInfoStore();
+const userInfoStore = useUserDataInfoStore();
 const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');

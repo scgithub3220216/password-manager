@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx';
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 
 export default function () {
 
@@ -10,7 +10,7 @@ export default function () {
             ['分组', '标题', '用户名', '密码', '链接', '说明']
         ];
         // 获取 所有数据
-        let userDataInfo = userDataInfoStore();
+        let userDataInfo = useUserDataInfoStore();
         // 将 userDataInfo.pwdGroupList 转成 dataList 格式的数据
         userDataInfo.pwdGroupList.forEach((group) => {
             group.pwdList.forEach((pwd) => {

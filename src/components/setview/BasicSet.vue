@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
-import {userDataInfoStore} from "../../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useUserInfo from "../../hooks/useUserInfo.ts";
 
 const {setLockTime} = useUserInfo()
 
-const userInfoStore = userDataInfoStore();
+const userInfoStore = useUserDataInfoStore();
 const autoStart = ref()
 const lockTime = ref()
 const timeUnit = ref();

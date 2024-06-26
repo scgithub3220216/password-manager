@@ -1,7 +1,7 @@
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 
 export default function () {
-    const userInfoStore = userDataInfoStore();
+    const userInfoStore = useUserDataInfoStore();
 
 
     function getLockTime() {

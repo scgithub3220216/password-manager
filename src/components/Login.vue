@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
-import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
@@ -8,7 +8,7 @@ import {toggleDark} from "../styles/dark/dark.ts";
 import {useDark} from "@vueuse/core";
 
 const initSetPwd = ref()
-const userInfoStore = userDataInfoStore();
+const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 
 

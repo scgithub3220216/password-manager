@@ -4,7 +4,7 @@ import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
 import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMainWinShortcutKey, defaultPwd} from "../config/config.ts";
 
 // 存放用户的一些设置数据
-export const userDataInfoStore = defineStore('userDataInfo', {
+export const useUserDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
         setDarkSwitch(darkSwitch: boolean) {

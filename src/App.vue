@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Index from './components/Index.vue'
-import {userDataInfoStore} from "./store/userDataInfo.ts";
+import {useUserDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
 import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
@@ -9,7 +9,7 @@ import useCrypto from "./hooks/useCrypto.ts";
 import useLoginAction from "./hooks/useLoginAction.ts";
 import useUserInfo from "./hooks/useUserInfo.ts";
 
-const userInfoStore = userDataInfoStore();
+const userInfoStore = useUserDataInfoStore();
 const {encryptData} = useCrypto();
 const {logout} = useLoginAction();
 const {getLockTime} = useUserInfo()
@@ -20,7 +20,7 @@ const routes = {
   '/index': Index,
 }
 
-onBeforeMount(()=>{
+onBeforeMount(() => {
   console.log('onBeforeMount')
 })
 onMounted(() => {
