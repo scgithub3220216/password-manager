@@ -16,7 +16,7 @@ import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
 import useLoginAction from "../hooks/useLoginAction.ts";
-import {toggleDark} from "../config/config.ts";
+import {toggleDark} from "../dark/dark.ts";
 import useExcel from "../hooks/useExcel.ts";
 
 const {logout} = useLoginAction();
@@ -559,11 +559,9 @@ function openSettingDialog() {
 
 
 .outer {
-  background: rgba(40, 44, 52, 0.93);
   width: 100vw;
   height: 100vh;
   flex: 1 1 auto;
-  color: rgba(255, 255, 255, 0.66);
   overflow: hidden;
 }
 

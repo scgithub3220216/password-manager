@@ -1,7 +1,3 @@
-import {useDark, useToggle} from "@vueuse/core";
-
-export const isDark = useDark();
-export const toggleDark = useToggle(isDark);
 // Aes 加密 Key
 export const aesKey = '0iq5<`fn"iaj4nD>';
 
