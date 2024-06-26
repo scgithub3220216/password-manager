@@ -138,7 +138,10 @@ function clickGroup(group: PwdGroup) {
 }
 
 function clickGroupCss() {
-  let items = document.getElementById('pwd-ul').getElementsByTagName('li');
+  let items = document.getElementById('pwd-ul')?.getElementsByTagName('li');
+  if (!items) {
+    return;
+  }
   console.log('items:', items.length)
   for (var i = 0; i < items.length; i++) {
     if (i === 0) {
@@ -297,12 +300,12 @@ function clickRandomImg() {
  * 动态 样式
  */
 function dynamicClickCss() {
-  document.getElementById('group-ul').addEventListener('click', function (e) {
+  document.getElementById('group-ul')?.addEventListener('click', function (e) {
     // 移除之前所有li的高亮
     var items = this.getElementsByTagName('li');
     addLiCss(items, e);
   });
-  document.getElementById('pwd-ul').addEventListener('click', function (e) {
+  document.getElementById('pwd-ul')?.addEventListener('click', function (e) {
     // 移除之前所有li的高亮
     var items = this.getElementsByTagName('li');
     addLiCss(items, e);
@@ -314,7 +317,7 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
     items[i].classList.remove('selected');
   }
   // 给当前点击的li添加高亮
-  e.target.classList.add('selected');
+  e.target?.classList.add('selected');
 }
 
 /**
