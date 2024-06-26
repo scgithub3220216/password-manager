@@ -15,7 +15,7 @@ import "element-plus/theme-chalk/el-notification.css";
 import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
-import useLogin from "../hooks/useLogin.ts";
+import useLogin from "../hooks/useLoginAction.ts";
 
 const {logout} = useLogin();
 const themeSwitch = ref(true)

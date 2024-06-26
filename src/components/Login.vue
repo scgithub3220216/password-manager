@@ -5,7 +5,7 @@ import usePwd from "../hooks/usePwd.ts";
 import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
 import useCrypto from "../hooks/useCrypto.ts";
-import useLogin from "../hooks/useLogin.ts";
+import useLogin from "../hooks/useLoginAction.ts";
 import useCapsLock from "../hooks/useCapsLock.ts";
 
 const pwd = ref('')
