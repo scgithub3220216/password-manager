@@ -1,13 +1,3 @@
-// Aes 加密 Key
-const aesKey = '0iq5<`fn"iaj4nD>';
-const aesIv = '|T@R>0@/:i+(ox,&';
-// 文件自动保存时间, 单位: ms
-const saveTime = 1000;
-const defaultPwd = '123456';
-const defaultOpenMainWinShortcutKey = 'Ctrl + Alt + E';
-const defaultCopyUsernameShortcutKey = 'Ctrl + U';
-const defaultCopyPwdShortcutKey = 'Ctrl + P';
-
 const setPwdMsgTipsStr = '<!DOCTYPE html>\n' +
     '<html lang="en">\n' +
     '<head>\n' +
@@ -68,4 +58,34 @@ const setPwdMsgTipsStr = '<!DOCTYPE html>\n' +
     '</style>\n' +
     '\n';
 
-export {setPwdMsgTipsStr,aesKey, aesIv, saveTime, defaultOpenMainWinShortcutKey, defaultCopyUsernameShortcutKey, defaultCopyPwdShortcutKey, defaultPwd};
+// Aes 加密 Key
+const aesKey = '0iq5<`fn"iaj4nD>';
+
+const aesIv = '|T@R>0@/:i+(ox,&';
+// 文件自动保存时间, 单位: ms
+const saveTime = 1000;
+
+const defaultPwd = '123456';
+
+const defaultOpenMainWinShortcutKey = 'Ctrl + Alt + E';
+
+const defaultCopyUsernameShortcutKey = 'Ctrl + U';
+
+const defaultCopyPwdShortcutKey = 'Ctrl + P';
+
+const supportLink = 'https://blog.csdn.net/OnMyWaySc/article/details/139989454?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22139989454%22%2C%22source%22%3A%22OnMyWaySc%22%7D';
+
+const helpLink = 'https://blog.csdn.net/OnMyWaySc/article/details/139990076?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22139990076%22%2C%22source%22%3A%22OnMyWaySc%22%7D';
+
+export {
+    helpLink,
+    supportLink,
+    setPwdMsgTipsStr,
+    aesKey,
+    aesIv,
+    saveTime,
+    defaultOpenMainWinShortcutKey,
+    defaultCopyUsernameShortcutKey,
+    defaultCopyPwdShortcutKey,
+    defaultPwd
+};

@@ -1,11 +1,11 @@
-import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, Tray} from 'electron'
+import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, shell, Tray} from 'electron'
 import {exec} from 'child_process'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "../src/utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
-import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
+import {defaultOpenMainWinShortcutKey, helpLink, supportLink} from "../src/config/config.ts";
 /* 引入storeToRefs */
 
 const require = createRequire(import.meta.url)
@@ -92,26 +92,16 @@ function createTrayMenu() {
     tray.setToolTip('密码管理器')
 
     const trayMenu = Menu.buildFromTemplate([
-
-
         {
             label: '显示主界面', click() {
-                win.show();
+                win?.show();
             }
         },
-        // {
-        //     label: '设置', click() {
-        //         // 先发送消息跳转到设置页面
-        //         toSettingView()
-        //         // 再打开页面
-        //         win.show(); // 如果窗口未显示或被隐藏，则显示
-        //         if (process.platform === 'darwin') {
-        //             app.dock.show(); // 在macOS上，从Dock中显示应用
-        //         }
-        //
-        //     }
-        // },
-        {label: '帮助'},
+        {
+            label: '帮助', click() {
+                shell.openExternal(helpLink);
+            }
+        },
         {
             label: '退出', click() {
                 clickExitTime = new Date().getTime()
@@ -249,6 +239,13 @@ ipcMain.handle('auto-start', (event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
 });
+
+ipcMain.handle('Jump-support-doc', () => {
+    console.log(`Jump-support-doc: `);
+    shell.openExternal(supportLink);
+});
+
+
 
 // todo 有问题
 function setAutoStart(autoStart: boolean) {
