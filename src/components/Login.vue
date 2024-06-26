@@ -6,6 +6,7 @@ import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
 import useCrypto from "../hooks/useCrypto.ts";
 import useLogin from "../hooks/useLogin.ts";
+import useCapsLock from "../hooks/useCapsLock.ts";
 
 const pwd = ref('')
 const initSetPwd = ref()
@@ -13,6 +14,7 @@ const userInfoStore = userDataInfoStore();
 const {pwdError, setPwdMsgTips} = usePwd()
 const {decryptData} = useCrypto();
 const {login} = useLogin()
+const {capsLockFlag} = useCapsLock()
 
 onMounted(() => {
   sendMessageToMain().then(() => {
@@ -55,21 +57,25 @@ function handleEnter() {
 
 <template>
   <InitSetPwd ref="initSetPwd"/>
-
   <div id="myElement" class="pwd-outer">
-    <el-input
-        class="input-pwd"
-        v-model="pwd"
-        type="password"
-        placeholder="开门密码"
-        show-password
-        @keyup.enter="handleEnter"
-        autofocus
-    >
-      <template #suffix>
-        <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
-      </template>
-    </el-input>
+    <div class="inner-div">
+      <el-input
+          class="input-pwd"
+          v-model="pwd"
+          type="password"
+          placeholder="开门密码"
+          show-password
+          @keyup.enter="handleEnter"
+          autofocus
+      >
+        <template #suffix>
+          <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
+        </template>
+      </el-input>
+      <div v-if="capsLockFlag">
+        键盘大写锁定已打开
+      </div>
+    </div>
   </div>
 
 </template>
@@ -81,10 +87,11 @@ function handleEnter() {
   transition: background-color 1s;
   width: 100vw;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+}
 
+.inner-div {
+  position: relative;
+  top: 42vh;
 }
 
 .input-pwd {
