@@ -7,6 +7,10 @@ import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMa
 export const userDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        setDarkSwitch(darkSwitch: boolean) {
+            this.userInfo.darkSwitch = darkSwitch;
+            this.editAction()
+        },
         setAutoStart(flag: boolean) {
             this.userInfo.autoStart = flag;
             this.editAction()
@@ -118,6 +122,7 @@ export const userDataInfoStore = defineStore('userDataInfo', {
     state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[] } {
         return {
             userInfo: {
+                darkSwitch: true,
                 autoStart: true,
                 pwd: defaultPwd,
                 firstLoginFlag: 1,

@@ -7,7 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    BasicSet: typeof import('./src/components/settools/BasicSet.vue')['default']
+    BasicSet: typeof import('./src/components/setview/BasicSet.vue')['default']
     Detail: typeof import('./src/components/main/Detail.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -24,11 +24,11 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Index: typeof import('./src/components/Index.vue')['default']
-    InitSetPwd: typeof import('./src/components/settools/InitSetPwd.vue')['default']
+    InitSetPwd: typeof import('./src/components/setview/InitSetPwd.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
-    ShortcutKeys: typeof import('./src/components/settools/ShortcutKeys.vue')['default']
-    Support: typeof import('./src/components/settools/Support.vue')['default']
-    UpdatePwd: typeof import('./src/components/settools/UpdatePwd.vue')['default']
+    ShortcutKeys: typeof import('./src/components/setview/ShortcutKeys.vue')['default']
+    Support: typeof import('./src/components/setview/Support.vue')['default']
+    UpdatePwd: typeof import('./src/components/setview/UpdatePwd.vue')['default']
   }
 }

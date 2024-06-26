@@ -1,7 +1,7 @@
 import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
-import {setPwdMsgTipsStr} from "../config/config.ts";
+import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
 
 export default function () {
@@ -119,6 +119,9 @@ export default function () {
                 }
             })
             .then(() => {
+                // 设置已经进行初始化了
+                userInfoStore.setInitPwd(defaultPwd)
+
                 done()
                 ElMessageBox.alert('初始密码为 123456', {
                     confirmButtonText: '确认'

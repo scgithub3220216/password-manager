@@ -2,8 +2,10 @@
 import {onMounted, ref} from 'vue'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
-import InitSetPwd from "./settools/InitSetPwd.vue";
+import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
+import {toggleDark} from "../styles/dark/dark.ts";
+import {useDark} from "@vueuse/core";
 
 const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
@@ -13,15 +15,34 @@ const {setPwdMsgTips} = usePwd()
 const {handleEnter, sendMessageToMain, capsLockFlag, pwd} = useLoginView()
 
 onMounted(() => {
-  sendMessageToMain().then(() => {
-    console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
-    // 判断用户是否第一次登录 , 如果是 设置登录密码
-    if (userInfoStore.userInfo.firstLoginFlag != 0) {
-      console.log('设置登录密码')
-      initSetPwd.value.pwdDialogVisible = true
-      setPwdMsgTips();
-    }
-  })
+  sendMessageToMain()
+      .then(() => {
+        // 设置主题
+        console.log('darkSwitch:', userInfoStore.userInfo.darkSwitch)
+        // darkFlag 当前值  : false 白色  ; true 黑色
+        let darkFlag = useDark();
+        console.log('darkFlag:', darkFlag.value)
+        // useToggle(false)
+        //  darkFlag = useDark();
+        // console.log('darkFlag:', darkFlag.value)
+        if (userInfoStore.userInfo.darkSwitch && !darkFlag.value) {
+          console.log('darkSwitch')
+          toggleDark();
+        }
+      })
+      .then(() => {
+        console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
+        // 判断用户是否第一次登录 , 如果是 设置登录密码
+        if (userInfoStore.userInfo.firstLoginFlag != 0) {
+          console.log('设置登录密码')
+          initSetPwd.value.pwdDialogVisible = true
+          setPwdMsgTips();
+          /*      setTimeout(() => {
+                  toggleDark();
+
+                }, 2000)*/
+        }
+      })
 })
 
 
@@ -63,7 +84,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  flex:auto
+  flex: auto
 }
 
 .input-pwd {

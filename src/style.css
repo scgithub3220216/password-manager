@@ -101,6 +101,6 @@ div.msg-tips {
 }
 
 /*index 页面 主题按钮颜色*/
-.search .el-switch.is-checked .el-switch__core .el-switch__action {
+.search .el-switch__core .el-switch__action {
     background-color: rgba(239, 127, 52, 0.68);
 }

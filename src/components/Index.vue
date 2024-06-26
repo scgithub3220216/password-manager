@@ -16,12 +16,12 @@ import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
 import useLoginAction from "../hooks/useLoginAction.ts";
-import {toggleDark} from "../dark/dark.ts";
+import {toggleDark} from "../styles/dark/dark.ts";
 import useExcel from "../hooks/useExcel.ts";
 
 const {logout} = useLoginAction();
-const themeSwitch = ref(false)
 const userInfoStore = userDataInfoStore();
+const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');
 const searchResultShowFlag = ref(false);
@@ -41,6 +41,7 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 
 let settingDialog = ref();
 onMounted(() => {
+  console.log('onMounted',userInfoStore.userInfo.darkSwitch)
   initData();
   transferInputFocus(1);
   dynamicClickCss();
@@ -80,6 +81,13 @@ function transferInputFocus(type: number) {
 /**
  * search
  */
+
+function clickDarkSwitch() {
+  console.log('clickDarkSwitch themeSwitch.value:',themeSwitch.value)
+  userInfoStore.setDarkSwitch(themeSwitch.value);
+  toggleDark();
+}
+
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
   if (!row) {
@@ -361,10 +369,10 @@ function openSettingDialog() {
             placement="right"
         >
           <el-switch
-              @click="toggleDark()"
+              @click="clickDarkSwitch()"
               v-model="themeSwitch"
               class="ml-2"
-              style="--el-switch-on-color: rgba(255,255,255,0.72); --el-switch-off-color: rgba(0,0,0,0.5); margin-left: 10px"
+              style="--el-switch-on-color: rgba(0,0,0,0.5); --el-switch-off-color: rgba(255,255,255,0.72); margin-left: 10px"
           />
         </el-tooltip>
       </div>

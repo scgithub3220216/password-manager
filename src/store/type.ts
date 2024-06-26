@@ -28,12 +28,14 @@ export class UserInfo {
 
     pwdGroupId: number;
 
+    darkSwitch: boolean;
+
     autoLock: AutoLock;
 
     shortcutKey: ShortcutKey;
 
 
-    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, autoLock: AutoLock, shortcutKey: ShortcutKey) {
+    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, darkSwitch: boolean, autoLock: AutoLock, shortcutKey: ShortcutKey) {
         this.autoStart = autoStart;
         this.pwd = pwd;
         this.firstLoginFlag = firstLoginFlag;
@@ -41,6 +43,7 @@ export class UserInfo {
         this.saveFlag = saveFlag;
         this.pwdInfoId = pwdInfoId;
         this.pwdGroupId = pwdGroupId;
+        this.darkSwitch = darkSwitch;
         this.autoLock = autoLock;
         this.shortcutKey = shortcutKey;
     }

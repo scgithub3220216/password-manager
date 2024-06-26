@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import Support from "./settools/Support.vue";
-import BasicSet from "./settools/BasicSet.vue";
-import UpdatePwd from "./settools/UpdatePwd.vue";
-import ShortcutKeys from "./settools/ShortcutKeys.vue";
+import Support from "./setview/Support.vue";
+import BasicSet from "./setview/BasicSet.vue";
+import UpdatePwd from "./setview/UpdatePwd.vue";
+import ShortcutKeys from "./setview/ShortcutKeys.vue";
 
 const settingDialogVisible = ref(false);
 

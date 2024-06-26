@@ -2,7 +2,7 @@
 import Index from './components/Index.vue'
 import {userDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
@@ -20,17 +20,22 @@ const routes = {
   '/index': Index,
 }
 
-onBeforeUnmount(() => {
-  console.log('卸载之前')
-  saveData()
+onBeforeMount(()=>{
+  console.log('onBeforeMount')
 })
-
 onMounted(() => {
+  console.log('app onMounted')
+
+
   const intervalId = setInterval(() => saveData(), saveTime);
   // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
   return () => clearInterval(intervalId);
 });
 
+onBeforeUnmount(() => {
+  console.log('卸载之前')
+  saveData()
+})
 
 function saveData() {
   if (!userInfoStore.userInfo.saveFlag) {
