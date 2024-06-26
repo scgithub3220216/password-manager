@@ -224,12 +224,17 @@ function insertPwdInfo() {
   console.log('insertPwdInfo')
   let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
   userInfoStore.insertPwdInfo(pwdInfo)
-  // pwdInfoList.push(pwdInfo)
+  console.log('新增 pinia 完成')
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
+  console.log('新增 pwdInfoList 完成')
+  console.log('pwdInfo:', pwdInfo)
+  console.log('pwdInfoDetail:', pwdInfoDetail)
   Object.assign(pwdInfoDetail, pwdInfo);
-  transferInputFocus(3);
+  console.log('赋值 pwdInfoDetail 完成')
+  console.log('pwdInfo:', pwdInfo)
+  console.log('pwdInfoDetail:', pwdInfoDetail)
 
-  userInfoStore.editAction()
+  transferInputFocus(3);
 }
 
 function deletePwdInfo() {
@@ -393,7 +398,7 @@ function openSettingDialog() {
               content="新增"
               placement="top"
           >
-            <span @click="triggerGroupsInsert()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+            <span @blur="triggerGroupsInsert" @click="triggerGroupsInsert()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
           </el-tooltip>
           <el-tooltip
               class="box-item"
@@ -401,7 +406,7 @@ function openSettingDialog() {
               content="修改"
               placement="top"
           >
-            <span @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
+            <span @blur="triggerGroupEdit" @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
           </el-tooltip>
           <el-tooltip
               class="box-item"

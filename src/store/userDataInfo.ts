@@ -80,6 +80,7 @@ export const userDataInfoStore = defineStore('userDataInfo', {
                     pwdGroup.pwdList.push(pwdInfo);
                 }
             })
+            this.editAction()
         },
         updatePwdInfo(pwdInfo: PwdInfo) {
             if (!pwdInfo) {

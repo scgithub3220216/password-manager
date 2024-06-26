@@ -134,7 +134,7 @@ export default function () {
             confirmButtonText: '确认',
             dangerouslyUseHTMLString: true,
             draggable: true,
-            customClass: 'msg-tips'
+            customClass: 'msg-tips',
         })
     }
 
