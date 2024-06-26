@@ -2,19 +2,15 @@
 import {onMounted, ref} from 'vue'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
-import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
-import useCrypto from "../hooks/useCrypto.ts";
-import useLogin from "../hooks/useLoginAction.ts";
-import useCapsLock from "../hooks/useCapsLock.ts";
+import useLoginView from "../hooks/useLoginView.ts";
 
-const pwd = ref('')
 const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
-const {pwdError, setPwdMsgTips} = usePwd()
-const {decryptData} = useCrypto();
-const {login} = useLogin()
-const {capsLockFlag} = useCapsLock()
+const {setPwdMsgTips} = usePwd()
+
+
+const {handleEnter, sendMessageToMain, capsLockFlag, pwd} = useLoginView()
 
 onMounted(() => {
   sendMessageToMain().then(() => {
@@ -27,30 +23,6 @@ onMounted(() => {
     }
   })
 })
-
-
-async function sendMessageToMain() {
-
-  const userDataJson = await window.ipcRenderer.invoke('init-data');
-  if (!userDataJson) {
-    return;
-  }
-  // 解密
-  let decryptData1 = decryptData(userDataJson);
-  console.log('decryptData1:', decryptData1)
-  const fileDataObj: FileDataObj = JSON.parse(decryptData1);
-  // 把数据放到 pinia 中
-  userInfoStore.setUserInfo(fileDataObj);
-}
-
-function loginSuccess() {
-  console.log('login success')
-  login();
-}
-
-function handleEnter() {
-  userInfoStore.userInfo.pwd == pwd.value ? loginSuccess() : pwdError()
-}
 
 
 </script>
@@ -72,7 +44,7 @@ function handleEnter() {
           <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
         </template>
       </el-input>
-      <div v-if="capsLockFlag">
+      <div v-if="capsLockFlag" style="font-size: 15px;">
         键盘大写锁定已打开
       </div>
     </div>

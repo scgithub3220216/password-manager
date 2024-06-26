@@ -6,12 +6,12 @@ import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
-import useLogin from "./hooks/useLoginAction.ts";
+import useLoginAction from "./hooks/useLoginAction.ts";
 import useUserInfo from "./hooks/useUserInfo.ts";
 
 const userInfoStore = userDataInfoStore();
 const {encryptData} = useCrypto();
-const {logout} = useLogin();
+const {logout} = useLoginAction();
 const {getLockTime}=useUserInfo()
 
 // 简单的路由
@@ -43,7 +43,7 @@ function saveData() {
   const fileDataObjJson = JSON.stringify(fileDataObj);
 
   let encryptData1 = encryptData(fileDataObjJson);
-  console.log('encryptData1:', encryptData1)
+  // console.log('encryptData1:', encryptData1)
   window.ipcRenderer.invoke('save-data', encryptData1);
   userInfoStore.userInfo.saveFlag = false;
 }

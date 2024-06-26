@@ -15,9 +15,9 @@ import "element-plus/theme-chalk/el-notification.css";
 import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
-import useLogin from "../hooks/useLoginAction.ts";
+import useLoginAction from "../hooks/useLoginAction.ts";
 
-const {logout} = useLogin();
+const {logout} = useLoginAction();
 const themeSwitch = ref(true)
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -327,11 +327,6 @@ function keydown(e: KeyboardEvent) {
   } else if (e.ctrlKey && e.key === 'u') {
     copyValue(pwdInfoDetail.username);
   }
-}
-
-function clickSwitch() {
-  console.log('clickSwitch')
-
 }
 
 function openSettingDialog() {
