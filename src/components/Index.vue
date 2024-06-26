@@ -16,9 +16,10 @@ import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
 import useLoginAction from "../hooks/useLoginAction.ts";
+import {toggleDark} from "../config/config.ts";
 
 const {logout} = useLoginAction();
-const themeSwitch = ref(true)
+const themeSwitch = ref(false)
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const search = ref('');
@@ -357,6 +358,7 @@ function openSettingDialog() {
             placement="right"
         >
           <el-switch
+              @click="toggleDark()"
               v-model="themeSwitch"
               class="ml-2"
               style="--el-switch-on-color: rgba(255,255,255,0.72); --el-switch-off-color: rgba(0,0,0,0.5); margin-left: 10px"
