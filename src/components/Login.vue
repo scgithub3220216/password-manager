@@ -28,9 +28,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <InitSetPwd ref="initSetPwd"/>
-
   <div id="myElement" class="pwd-outer">
+
+    <InitSetPwd ref="initSetPwd"/>
+
     <el-input
         class="input-pwd"
         v-model="pwd"
@@ -63,6 +64,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  flex:auto
 }
 
 .input-pwd {
