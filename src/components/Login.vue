@@ -29,25 +29,25 @@ onMounted(() => {
 
 <template>
   <InitSetPwd ref="initSetPwd"/>
+
   <div id="myElement" class="pwd-outer">
-    <div class="inner-div">
-      <el-input
-          class="input-pwd"
-          v-model="pwd"
-          type="password"
-          placeholder="开门密码"
-          show-password
-          @keyup.enter="handleEnter"
-          autofocus
-      >
-        <template #suffix>
-          <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
-        </template>
-      </el-input>
-      <div v-if="capsLockFlag" style="font-size: 15px;">
-        键盘大写锁定已打开
-      </div>
+    <el-input
+        class="input-pwd"
+        v-model="pwd"
+        type="password"
+        placeholder="开门密码"
+        show-password
+        @keyup.enter="handleEnter"
+        autofocus
+    >
+      <template #suffix>
+        <img src="../../public/enter.png" alt="enter" @click="handleEnter" class="enter">
+      </template>
+    </el-input>
+    <div :style="{ visibility: capsLockFlag ? 'visible' : 'hidden'}" style="font-size: 14px">
+      键盘大写锁定已打开
     </div>
+
   </div>
 
 </template>
@@ -59,11 +59,10 @@ onMounted(() => {
   transition: background-color 1s;
   width: 100vw;
   height: 100vh;
-}
-
-.inner-div {
-  position: relative;
-  top: 42vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .input-pwd {

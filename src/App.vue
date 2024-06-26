@@ -12,7 +12,7 @@ import useUserInfo from "./hooks/useUserInfo.ts";
 const userInfoStore = userDataInfoStore();
 const {encryptData} = useCrypto();
 const {logout} = useLoginAction();
-const {getLockTime}=useUserInfo()
+const {getLockTime} = useUserInfo()
 
 // 简单的路由
 const routes = {
@@ -54,11 +54,12 @@ window.addEventListener('hashchange', () => {
   currentPath.value = window.location.hash
 })
 const currentView = computed(() => {
-  return routes[currentPath.value.slice(1) || '/'] || Login
+  let slice = currentPath.value.slice(1);
+  return routes[slice || '/'] || Login
 })
 
 // 规定时间中不操作, 默认退出 (自动回登录页面)
-let timeoutId;
+let timeoutId: NodeJS.Timeout;
 
 function resetTimer() {
   clearTimeout(timeoutId);
