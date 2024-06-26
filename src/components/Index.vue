@@ -15,6 +15,9 @@ import "element-plus/theme-chalk/el-notification.css";
 import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
+import useLogin from "../hooks/useLogin.ts";
+
+const {logout} = useLogin();
 
 const userInfoStore = userDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -55,11 +58,6 @@ function initData() {
   Object.assign(curPwdInfo, pwdList[0]);
   Object.assign(pwdInfoList, pwdList);
   Object.assign(pwdInfoDetail, pwdList[0]);
-}
-
-function logout() {
-  console.log('logout')
-  window.location.hash = '/login'
 }
 
 /**
@@ -111,6 +109,11 @@ function searchAction() {
   }
   searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
   Object.assign(pwdInfoDetail, searchResultListTemp[0]);
+}
+
+
+function clickLock() {
+  logout();
 }
 
 
@@ -342,7 +345,9 @@ function openSettingDialog() {
   <SettingDialog ref="settingDialog"/>
   <div class="outer">
     <div class="search">
-      <div></div>
+      <div>
+        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">
+      </div>
       <el-input
           ref="searchInputRef"
           v-model="search"
@@ -354,7 +359,7 @@ function openSettingDialog() {
           autofocus
       />
       <div>
-        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">
+        <img src="../../public/lock.svg" alt="switch" @click="clickLock" class="search-image">
         <img src="../../public/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
       </div>
     </div>

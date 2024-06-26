@@ -6,9 +6,11 @@ import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
+import useLogin from "./hooks/useLogin.ts";
 
 const userInfoStore = userDataInfoStore();
 const {encryptData} = useCrypto();
+const {logout} = useLogin();
 
 // 简单的路由
 const routes = {
@@ -59,8 +61,7 @@ let timeoutId;
 function resetTimer() {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
-    userInfoStore.logout();
-    window.location.hash = '/login'
+    logout();
   }, 1 * 60 * 1000);
 }
 

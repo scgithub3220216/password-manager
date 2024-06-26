@@ -5,12 +5,14 @@ import usePwd from "../hooks/usePwd.ts";
 import {FileDataObj} from "../store/type.ts";
 import InitSetPwd from "./settools/InitSetPwd.vue";
 import useCrypto from "../hooks/useCrypto.ts";
+import useLogin from "../hooks/useLogin.ts";
 
 const pwd = ref('')
 const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
-const {pwdError,setPwdMsgTips} = usePwd()
+const {pwdError, setPwdMsgTips} = usePwd()
 const {decryptData} = useCrypto();
+const {login} = useLogin()
 
 onMounted(() => {
   sendMessageToMain().then(() => {
@@ -23,7 +25,6 @@ onMounted(() => {
     }
   })
 })
-
 
 
 async function sendMessageToMain() {
@@ -40,14 +41,13 @@ async function sendMessageToMain() {
   userInfoStore.setUserInfo(fileDataObj);
 }
 
-function login() {
+function loginSuccess() {
   console.log('login success')
-  userInfoStore.login();
-  window.location.hash = '/index'
+  login();
 }
 
 function handleEnter() {
-  userInfoStore.userInfo.pwd == pwd.value ? login() : pwdError()
+  userInfoStore.userInfo.pwd == pwd.value ? loginSuccess() : pwdError()
 }
 
 
