@@ -4,7 +4,7 @@
 import {userDataInfoStore} from "../store/userDataInfo.ts";
 import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
-import {Delete, Edit, Plus, Search} from '@element-plus/icons-vue'
+import {Delete, Download, Edit, Plus, Search} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 import SettingDialog from "./SettingDialog.vue";
@@ -17,6 +17,7 @@ import "element-plus/theme-chalk/el-message-box.css";
 import "element-plus/theme-chalk/el-drawer.css";
 import useLoginAction from "../hooks/useLoginAction.ts";
 import {toggleDark} from "../config/config.ts";
+import useExcel from "../hooks/useExcel.ts";
 
 const {logout} = useLoginAction();
 const themeSwitch = ref(false)
@@ -121,6 +122,8 @@ function clickLock() {
 /**
  * group
  */
+const {exportExcel} = useExcel();
+
 function clickGroup(group: PwdGroup) {
   console.log('showPwdList')
   pwdInfoList.length = 0
@@ -410,6 +413,16 @@ function openSettingDialog() {
           >
             <span @blur="triggerGroupEdit" @click="triggerGroupEdit()"> <Edit style="width: 20px; height: 20px; margin-right: 8px"/></span>
           </el-tooltip>
+
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="导出"
+              placement="top"
+          >
+            <span @click="exportExcel"> <Download style="width: 20px; height: 20px;"/></span>
+          </el-tooltip>
+
           <el-tooltip
               class="box-item"
               effect="dark"
@@ -600,8 +613,8 @@ function openSettingDialog() {
 }
 
 .group-tools span {
-  padding: 8px 8px 0 8px;
-  margin-left: 10px;
+  padding: 4px 4px 0 4px;
+  margin-left: 5px;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
