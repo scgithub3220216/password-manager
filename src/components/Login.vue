@@ -56,7 +56,6 @@ onMounted(() => {
 <style scoped>
 
 .pwd-outer {
-  background: #282c34;
   transition: background-color 1s;
   width: 100vw;
   height: 100vh;
@@ -70,8 +69,6 @@ onMounted(() => {
 .input-pwd {
   width: 240px;
   height: 50px;
-  opacity: 0.4;
-  color: white;
   font-size: 15px;
   --el-input-border-radius: 20px;
 
@@ -88,8 +85,8 @@ onMounted(() => {
 
 .enter:hover {
   opacity: 0.4;
-  background: #79797BFF;
-  box-shadow: #888888 0px 0px 5px 0px;
+  background: rgba(121, 121, 123, 0.18);
+  box-shadow: rgba(136, 136, 136, 0.22) 0px 0px 5px 0px;
   cursor: pointer;
 
 }
