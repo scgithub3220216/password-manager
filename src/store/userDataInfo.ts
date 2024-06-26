@@ -7,6 +7,10 @@ import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMa
 export const userDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
+            this.userInfo.autoLock.autoLockTime = autoLockTime ? autoLockTime : 60;
+            this.userInfo.autoLock.autoLockTimeUnit = autoLockTimeUnit ? autoLockTimeUnit : 1000;
+        },
         editAction() {
             this.userInfo.saveFlag = true;
         },
@@ -109,6 +113,10 @@ export const userDataInfoStore = defineStore('userDataInfo', {
                 autoStart: true,
                 pwd: defaultPwd,
                 firstLoginFlag: 1,
+                autoLock: {
+                    autoLockTime: 60,
+                    autoLockTimeUnit: 1000
+                },
                 curLoginStatus: 0,
                 pwdInfoId: 1,
                 pwdGroupId: 1,

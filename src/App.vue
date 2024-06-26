@@ -7,10 +7,12 @@ import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
 import useLogin from "./hooks/useLogin.ts";
+import useUserInfo from "./hooks/useUserInfo.ts";
 
 const userInfoStore = userDataInfoStore();
 const {encryptData} = useCrypto();
 const {logout} = useLogin();
+const {getLockTime}=useUserInfo()
 
 // 简单的路由
 const routes = {
@@ -62,7 +64,7 @@ function resetTimer() {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
     logout();
-  }, 1 * 60 * 1000);
+  }, getLockTime());
 }
 
 document.addEventListener('mousemove', resetTimer);

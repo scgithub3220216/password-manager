@@ -28,10 +28,12 @@ export class UserInfo {
 
     pwdGroupId: number;
 
+    autoLock: AutoLock;
+
     shortcutKey: ShortcutKey;
 
 
-    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, shortcutKey: ShortcutKey) {
+    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, autoLock: AutoLock, shortcutKey: ShortcutKey) {
         this.autoStart = autoStart;
         this.pwd = pwd;
         this.firstLoginFlag = firstLoginFlag;
@@ -39,7 +41,21 @@ export class UserInfo {
         this.saveFlag = saveFlag;
         this.pwdInfoId = pwdInfoId;
         this.pwdGroupId = pwdGroupId;
+        this.autoLock = autoLock;
         this.shortcutKey = shortcutKey;
+    }
+}
+
+export class AutoLock {
+    // 自动锁定时间
+    autoLockTime: number;
+
+    // 自动锁定时间单位
+    autoLockTimeUnit: number;
+
+    constructor(autoLockTime: number, autoLockTimeUnit: number) {
+        this.autoLockTime = autoLockTime;
+        this.autoLockTimeUnit = autoLockTimeUnit;
     }
 }
 
