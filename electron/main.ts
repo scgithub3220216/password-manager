@@ -32,6 +32,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let initDataStr = '';
 let win: BrowserWindow | null
 let tray
+let clickExitTime = 0;
 
 function createWindow() {
     win = new BrowserWindow({
@@ -40,6 +41,8 @@ function createWindow() {
         // 菜单是否隐藏
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
+
+        // skipTaskbar: true, // this will hide the window from the taskbar
         webPreferences: {
             preload: path.join(__dirname, 'preload.mjs'),
             spellcheck: false, // 关闭拼写检查
@@ -64,12 +67,18 @@ function createWindow() {
 
     win.on('close', (e) => {
         console.log('close event')
-        // 阻止默认的关闭操作
-        e.preventDefault();
-        // todo 如果是第一次关闭, 则询问用户是关闭系统还是最小化到托盘
+        // true 说明是 主窗口触发的
+        if (new Date().getTime() - clickExitTime >= 1000) {
+            console.log('主窗口关闭, 最小化到托盘')
+            // 阻止默认的关闭操作
+            e.preventDefault();
 
-        // 最小化窗口到系统托盘
-        win.hide();
+            // 最小化窗口到系统托盘
+            win?.hide();
+            return;
+        }
+
+        quit();
     });
 
 }
@@ -106,7 +115,8 @@ function createTrayMenu() {
         {label: '支持/捐赠'},
         {
             label: '退出', click() {
-                quit()
+                clickExitTime = new Date().getTime()
+                app.quit()
             }
         },
     ])
@@ -195,8 +205,8 @@ function quit() {
     win = null
 }
 
-app.on('before-quit', () => {
-    console.log('before-quit2~~~~~~~~~')
+app.on('before-quit', (e) => {
+    console.log('before-quit')
 })
 
 function saveInfoToDB(fileDataObjJson: string) {
