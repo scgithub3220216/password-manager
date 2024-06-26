@@ -38,7 +38,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 800,
         height: 600,
-        // 菜单是否隐藏
+        // 菜单是否隐藏 按住 Alt 还会展示
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
 
@@ -50,6 +50,8 @@ function createWindow() {
             // contextIsolation: false
         },
     })
+    // 隐藏菜单栏 直接关闭,
+    Menu.setApplicationMenu(null);
     // win.webContents.openDevTools()
 
 
