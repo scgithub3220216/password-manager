@@ -194,7 +194,7 @@ function quit() {
     win = null
 }
 
-app.on('before-quit', (e) => {
+app.on('before-quit', () => {
     console.log('before-quit')
 })
 
@@ -220,21 +220,21 @@ app.on('activate', () => {
         createWindow()
     }
 })
-ipcMain.handle('init-data', (event, arg) => {
-    console.log(`Received message from renderer:`);
+ipcMain.handle('init-data', () => {
+    console.log(`Received message from renderer`);
     return initDataStr;
 });
-
+// @ts-ignore
 ipcMain.handle('save-data', (event, arg) => {
     console.log(`Received save-data:`);
     saveInfoToDB(arg);
 });
-
+// @ts-ignore
 ipcMain.handle('save-shortcuts', (event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     registerGlobalShortcut(arg)
 });
-
+// @ts-ignore
 ipcMain.handle('auto-start', (event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
@@ -244,7 +244,6 @@ ipcMain.handle('Jump-support-doc', () => {
     console.log(`Jump-support-doc: `);
     shell.openExternal(supportLink);
 });
-
 
 
 // todo 有问题
@@ -257,6 +256,7 @@ function setAutoStart(autoStart: boolean) {
         ? `reg add "${key}" /v "${appName}" /t REG_SZ /d "${value}"`
         : `reg delete "${key}" /v "${appName}" /f`;
 
+    // @ts-ignore
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`Failed to set auto start: ${error}`);
