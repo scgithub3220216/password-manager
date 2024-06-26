@@ -1,6 +1,7 @@
 import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
 import {userDataInfoStore} from "../store/userDataInfo.ts";
+import {setPwdMsgTipsStr} from "../config/config.ts";
 
 export default function () {
 
@@ -124,7 +125,16 @@ export default function () {
             })
     }
 
-    return {
+    const setPwdMsgTips  = () => {
+        ElMessageBox.alert(setPwdMsgTipsStr, {
+            confirmButtonText: '确认',
+            dangerouslyUseHTMLString: true,
+            draggable: true,
+            customClass: 'msg-tips'
+        })
+    }
+
+    return {setPwdMsgTips,
         handleClose,
         pwdError,
         loginSubmitForm,

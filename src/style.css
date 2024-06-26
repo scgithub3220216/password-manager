@@ -94,3 +94,7 @@ button:focus-visible {
     font-weight: 550;
 }
 
+
+div.msg-tips{
+    --el-messagebox-width: 700px;
+}

@@ -9,7 +9,7 @@ import useCrypto from "../hooks/useCrypto.ts";
 const pwd = ref('')
 const initSetPwd = ref()
 const userInfoStore = userDataInfoStore();
-const {pwdError} = usePwd()
+const {pwdError,setPwdMsgTips} = usePwd()
 const {decryptData} = useCrypto();
 
 onMounted(() => {
@@ -19,6 +19,7 @@ onMounted(() => {
     if (userInfoStore.userInfo.firstLoginFlag != 0) {
       console.log('设置登录密码')
       initSetPwd.value.pwdDialogVisible = true
+      setPwdMsgTips();
     }
   })
 })
