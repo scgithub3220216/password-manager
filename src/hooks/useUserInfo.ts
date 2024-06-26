@@ -13,6 +13,7 @@ export default function () {
     }
 
     function setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
+        console.log('setLockTime:', autoLockTime,'----', autoLockTimeUnit)
         userInfoStore.setLockTime(autoLockTime, autoLockTimeUnit)
     }
 

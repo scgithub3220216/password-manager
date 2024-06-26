@@ -7,9 +7,16 @@ import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMa
 export const userDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        setAutoStart(flag: boolean) {
+            this.userInfo.autoStart = flag;
+            this.editAction()
+        },
         setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
+            console.log('userDataInfoStore setLockTime:', autoLockTime, '----', autoLockTimeUnit)
             this.userInfo.autoLock.autoLockTime = autoLockTime ? autoLockTime : 60;
             this.userInfo.autoLock.autoLockTimeUnit = autoLockTimeUnit ? autoLockTimeUnit : 1000;
+            console.log('userDataInfoStore setLockTime:', this.userInfo.autoLock.autoLockTime, '----', this.userInfo.autoLock.autoLockTimeUnit)
+            this.editAction()
         },
         editAction() {
             this.userInfo.saveFlag = true;

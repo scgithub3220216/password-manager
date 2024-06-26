@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import {userDataInfoStore} from "../../store/userDataInfo.ts";
 import useUserInfo from "../../hooks/useUserInfo.ts";
 
 const {setLockTime} = useUserInfo()
 
 const userInfoStore = userDataInfoStore();
-const autoStart = ref(userInfoStore.userInfo.autoStart)
-const lockTime = ref(userInfoStore.userInfo.autoLock.autoLockTime)
-const timeUnit = ref(userInfoStore.userInfo.autoLock.autoLockTimeUnit);
+const autoStart = ref()
+const lockTime = ref()
+const timeUnit = ref();
+
+onMounted(() => {
+  console.log('BasicSet 挂载完毕')
+  console.log(userInfoStore.userInfo.autoStart)
+  autoStart.value = userInfoStore.userInfo.autoStart
+  lockTime.value = userInfoStore.userInfo.autoLock.autoLockTime
+  timeUnit.value = userInfoStore.userInfo.autoLock.autoLockTimeUnit
+})
+
 const timeUnits = [{
   label: '秒',
   value: 1000
@@ -29,9 +38,8 @@ function autoStartChange() {
   console.log(`autoStartChange:${autoStart.value}`)
   // 调用方法 通知主进程
   window.ipcRenderer.invoke('auto-start', autoStart.value);
-
   // 修改 数据
-  userInfoStore.userInfo.autoStart = autoStart.value;
+  userInfoStore.setAutoStart(autoStart.value);
 }
 
 </script>
