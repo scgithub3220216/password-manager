@@ -28,7 +28,7 @@ defineExpose({
         <el-input v-model="passForm.newPassword" type="password" autocomplete="off" show-password/>
       </el-form-item>
       <el-form-item label="再次确认" prop="confirmPassword">
-        <el-input v-model="passForm.confirmPassword" type="password" autocomplete="off" show-password/>
+        <el-input v-model="passForm.confirmPassword" type="password" autocomplete="off" @keyup.enter="loginSubmitForm(ruleFormRef)" show-password/>
       </el-form-item>
       <el-form-item>
         <div style="width:100%;display: flex;justify-content:flex-end">
