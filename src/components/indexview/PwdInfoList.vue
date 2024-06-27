@@ -109,4 +109,43 @@ function deletePwdInfo() {
   overflow-y: auto;
   overflow-x: hidden;
 }
+.pwd-tools span {
+  padding: 8px 8px 0 8px;
+  margin-left: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+li {
+  margin-left: 15px;
+  margin-right: 15px;
+  text-align: left;
+  padding: 5px 0 5px 20px;
+  border-bottom: 1px #45484c solid;
+}
+
+li:first-child {
+  margin-top: 0px;
+}
+
+li:last-child {
+  border-bottom: 0 #cab8b8 solid;
+
+}
+
+
+li:hover {
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+li.selected {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 </style>
