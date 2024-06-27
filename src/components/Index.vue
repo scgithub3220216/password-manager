@@ -16,6 +16,7 @@ import "element-plus/theme-chalk/el-message-box.css";
 import "element-plus/theme-chalk/el-drawer.css";
 import useExcel from "../hooks/useExcel.ts";
 import Header from "./indexview/Header.vue";
+import SearchResult from "./indexview/SearchResult.vue";
 
 const userInfoStore = useUserDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -86,7 +87,7 @@ function showSearchView(value: boolean) {
 
 function setSearchResultData(pwdInfoList: PwdInfo[]) {
   console.log('setSearchResultData')
-  if (!pwdInfoList) {
+  if (!pwdInfoList || pwdInfoList.length === 0) {
     console.log('setSearchResultData pwdInfoList 为空')
     searchResultList.splice(0, searchResultList.length)
     Object.assign(pwdInfoDetail, {});
@@ -95,15 +96,6 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
   Object.assign(searchResultList, pwdInfoList)
   Object.assign(pwdInfoDetail, pwdInfoList[0]);
 }
-
-function searchTableClick(row: PwdInfo, column: any, event: Event) {
-  console.log('searchTableClick,row:', row)
-  if (!row) {
-    return;
-  }
-  Object.assign(pwdInfoDetail, row);
-}
-
 
 /**
  * group
@@ -259,6 +251,14 @@ const openDelPwdInfoMsgBox = () => {
 }
 
 /**
+ * searchResult
+ */
+function initPwdInfoDetail(pwdInfoDetail: PwdInfo) {
+  console.log('initPwdInfoDetail')
+  Object.assign(pwdInfoDetail, pwdInfoDetail);
+}
+
+/**
  * detail
  */
 function pwdInfoChange() {
@@ -332,7 +332,7 @@ function keydown(e: KeyboardEvent) {
 
 <template>
   <div class="outer">
-    <Header ref="headerRef"  :updateSearchViewValue="showSearchView" :updateSearchResultData="setSearchResultData"/>
+    <Header ref="headerRef" :updateSearchViewValue="showSearchView" :updateSearchResultData="setSearchResultData"/>
     <div class="content">
       <div v-if="!searchViewShowFlag" class="group">
         <div class="group-data">
@@ -410,13 +410,9 @@ function keydown(e: KeyboardEvent) {
         </div>
 
       </div>
-      <div v-if="searchViewShowFlag" class="search-result">
-        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%;height: calc(100vh - 50px)">
-          <el-table-column prop="groupTitle" label="分组" :min-width="100"/>
-          <el-table-column prop="title" label="标题" show-overflow-tooltip :min-width="100"/>
-          <el-table-column prop="username" label="用户名" show-overflow-tooltip :min-width="100"/>
-        </el-table>
-      </div>
+
+      <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList" :updatePwdInfo="initPwdInfoDetail"/>
+
       <div class="detail">
         <div class="detail-item">
           <span>标题</span>
@@ -513,12 +509,6 @@ function keydown(e: KeyboardEvent) {
   height: 100vh;
   flex: 1 1 auto;
   overflow: hidden;
-}
-
-
-.search-result {
-  width: 60%;
-  border-right: 1px #cab8b8 solid;
 }
 
 .content {

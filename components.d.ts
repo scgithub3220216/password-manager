@@ -30,6 +30,7 @@ declare module 'vue' {
     PwdInfoDetail: typeof import('./src/components/indexview/PwdInfoDetail.vue')['default']
     PwdInfoList: typeof import('./src/components/indexview/PwdInfoList.vue')['default']
     Search: typeof import('./src/components/indexview/Header.vue')['default']
+    SearchResult: typeof import('./src/components/indexview/SearchResult.vue')['default']
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
     ShortcutKeys: typeof import('./src/components/setview/ShortcutKeys.vue')['default']
     Support: typeof import('./src/components/setview/Support.vue')['default']
