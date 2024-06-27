@@ -25,8 +25,6 @@ onBeforeMount(() => {
 })
 onMounted(() => {
   console.log('app onMounted')
-
-
   const intervalId = setInterval(() => saveData(), saveTime);
   // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
   return () => clearInterval(intervalId);
@@ -59,12 +57,12 @@ window.addEventListener('hashchange', () => {
 })
 const currentView = computed(() => {
   let slice = currentPath.value.slice(1);
+  // @ts-ignore
   return routes[slice || '/'] || Login
 })
 
 // 规定时间中不操作, 默认退出 (自动回登录页面)
 let timeoutId: NodeJS.Timeout;
-
 function resetTimer() {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {
