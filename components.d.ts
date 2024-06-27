@@ -28,7 +28,6 @@ declare module 'vue' {
     InitSetPwd: typeof import('./src/components/setview/InitSetPwd.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
     PwdInfo: typeof import('./src/components/indexview/PwdInfo.vue')['default']
-    PwdInfoDetail: typeof import('./src/components/indexview/PwdInfoDetail.vue')['default']
     PwdInfoList: typeof import('./src/components/indexview/PwdInfoList.vue')['default']
     PwdInfoView: typeof import('./src/components/indexview/PwdInfoView.vue')['default']
     Right: typeof import('./src/components/indexview/Right.vue')['default']
