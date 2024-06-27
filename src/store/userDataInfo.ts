@@ -121,8 +121,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     autoLockTimeUnit: 1000
                 },
                 curLoginStatus: 0,
-                pwdInfoId: 1,
-                pwdGroupId: 1,
+                pwdInfoId: 3,
+                pwdGroupId: 3,
                 shortcutKey: {
                     openMainWindows: defaultOpenMainWinShortcutKey,
                     copyUsername: defaultCopyUsernameShortcutKey,

@@ -4,10 +4,9 @@
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
-import {Delete, Download, Edit, Plus, Search} from '@element-plus/icons-vue'
+import {Delete, Download, Edit, Plus} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
-import SettingDialog from "./SettingDialog.vue";
 import "element-plus/theme-chalk/el-loading.css";
 
 import "element-plus/theme-chalk/el-notification.css";
@@ -15,39 +14,32 @@ import "element-plus/theme-chalk/el-notification.css";
 import "element-plus/theme-chalk/el-message-box.css";
 
 import "element-plus/theme-chalk/el-drawer.css";
-import useLoginAction from "../hooks/useLoginAction.ts";
-import {toggleDark} from "../styles/dark/dark.ts";
 import useExcel from "../hooks/useExcel.ts";
+import Header from "./indexview/Header.vue";
 
-const {logout} = useLoginAction();
 const userInfoStore = useUserDataInfoStore();
-const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 let pwdGroupList = reactive<PwdGroup[]>([]);
-const search = ref('');
-const searchResultShowFlag = ref(false);
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref('');
 let curGroup = reactive<PwdGroup>({})
 let curPwdInfo = reactive<PwdInfo>({})
 const pwdInfoList = reactive<PwdInfo[]>([]);
-const searchResultList = reactive<PwdInfo[]>([]);
 const pwdInfoDetail = reactive<PwdInfo>({});
-const searchInputRef = ref(null);
 const groupInputRef = ref(null);
 const groupInput2Ref = ref(null);
 const detailInputRef = ref(null);
 const passwordVisible = ref(false);
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+const headerRef = ref(null);
 
-let settingDialog = ref();
 onMounted(() => {
-  console.log('onMounted', userInfoStore.userInfo.darkSwitch)
+  console.log('Index onMounted')
   initData();
   transferInputFocus(1);
   dynamicClickCss();
   // 启动键盘事件
   document.addEventListener('keydown', keydown);
-  console.log('挂载完毕')
+  console.log('Index 挂载完毕')
 })
 
 function initData() {
@@ -68,11 +60,15 @@ function initData() {
  * @param type 1: searchInputRef 2:groupInputRef  3: detailInputRef
  */
 function transferInputFocus(type: number) {
-  if (type === 1 && searchInputRef.value) {
-    searchInputRef.value.focus();
+// @ts-ignore
+  if (type === 1 && headerRef.value.searchInputRef) {
+// @ts-ignore
+    headerRef.value.searchInputRef.focus();
   } else if (type === 2 && groupInputRef.value) {
+// @ts-ignore
     groupInputRef.value.focus();
   } else if (type === 3 && detailInputRef.value) {
+// @ts-ignore
     detailInputRef.value.focus();
   }
 }
@@ -82,11 +78,7 @@ function transferInputFocus(type: number) {
  * search
  */
 
-function clickDarkSwitch() {
-  console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
-  userInfoStore.setDarkSwitch(themeSwitch.value);
-  toggleDark();
-}
+
 
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
@@ -94,36 +86,6 @@ function searchTableClick(row: PwdInfo, column: any, event: Event) {
     return;
   }
   Object.assign(pwdInfoDetail, row);
-}
-
-function searchAction() {
-  console.log('search')
-  // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
-  let searchValue = search.value;
-  if (!searchValue.trim()) {
-    searchResultShowFlag.value = false;
-    searchResultList.splice(0, searchResultList.length);
-    return;
-  }
-  // 如果有值
-  searchResultShowFlag.value = true;
-
-  // 将 pwdGroupList 全部转为 pwdInfoList
-  let pwdInfoListTemp = pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
-  console.log('pwdInfoListTemp', pwdInfoListTemp.length)
-  // 在 pwdInfoList 中查找
-  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  console.log('searchResultListTemp', searchResultListTemp.length)
-  if (searchResultListTemp.length === 0) {
-    return;
-  }
-  searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
-  Object.assign(pwdInfoDetail, searchResultListTemp[0]);
-}
-
-
-function clickLock() {
-  logout();
 }
 
 
@@ -234,7 +196,9 @@ function clickPwdInfo(pwdInfo: PwdInfo) {
 
 function insertPwdInfo() {
   console.log('insertPwdInfo')
+  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)1:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
   let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId, curGroup.id, curGroup.title, '', '', '', '', '');
+  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)2:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
   userInfoStore.insertPwdInfo(pwdInfo)
   console.log('新增 pinia 完成')
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
@@ -348,50 +312,22 @@ function keydown(e: KeyboardEvent) {
   }
 }
 
-function openSettingDialog() {
-  console.log('openSettingDialog')
-  settingDialog.value.openSettingDialog();
 
+function setPwdDetailBySearch(pwdInfo: PwdInfo) {
+  if (!pwdInfo) {
+    // 设置为空
+    Object.assign(pwdInfoDetail, {});
+    return;
+  }
+  Object.assign(pwdInfoDetail, pwdInfo);
 }
 </script>
 
 <template>
-  <SettingDialog ref="settingDialog"/>
   <div class="outer">
-    <div class="search">
-      <div>
-        <!--        <img src="../../public/switch.svg" alt="switch" @click="clickSwitch" class="search-image">-->
-        <el-tooltip
-            class="box-item"
-            effect="dark"
-            content="切换主题"
-            placement="right"
-        >
-          <el-switch
-              @click="clickDarkSwitch()"
-              v-model="themeSwitch"
-              class="ml-2"
-              style="--el-switch-on-color: rgba(0,0,0,0.5); --el-switch-off-color: rgba(255,255,255,0.72); margin-left: 10px"
-          />
-        </el-tooltip>
-      </div>
-      <el-input
-          ref="searchInputRef"
-          v-model="search"
-          style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
-          placeholder="标题/用户名搜索"
-          :prefix-icon="Search"
-          type="search"
-          @search="searchAction()"
-          autofocus
-      />
-      <div>
-        <img src="../../public/lock.svg" alt="switch" @click="clickLock" class="search-image">
-        <img src="../../public/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
-      </div>
-    </div>
+    <Header ref="headerRef" @updatePwdDetailBySearch="setPwdDetailBySearch"/>
     <div class="content">
-      <div v-if="!searchResultShowFlag" class="group">
+      <div v-if="!(headerRef && headerRef.searchResultShowFlag)" class="group">
         <div class="group-data">
           <ul id="group-ul">
             <li v-for="group in pwdGroupList" :key="group.id" @click="clickGroup(group)">
@@ -441,7 +377,7 @@ function openSettingDialog() {
 
         </div>
       </div>
-      <div v-if="!searchResultShowFlag" class="pwd">
+      <div v-if="!(headerRef && headerRef.searchResultShowFlag)" class="pwd">
         <div class="pwd-item">
           <ul id="pwd-ul">
             <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="clickPwdInfo(pwdInfo)">{{ pwdInfo.title }}</li>
@@ -467,8 +403,10 @@ function openSettingDialog() {
         </div>
 
       </div>
-      <div v-if="searchResultShowFlag" class="search-result">
-        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%;height: calc(100vh - 50px)">
+      <div v-if="headerRef && headerRef.searchResultShowFlag" class="search-result">
+        <el-table :data="(headerRef&&headerRef.searchResultList)?headerRef.searchResultList:[]" @row-click="searchTableClick"
+                  style="width: 100%;height: calc(100vh - 50px)">
+
           <el-table-column prop="groupTitle" label="分组" :min-width="100"/>
           <el-table-column prop="title" label="标题" show-overflow-tooltip :min-width="100"/>
           <el-table-column prop="username" label="用户名" show-overflow-tooltip :min-width="100"/>
@@ -572,31 +510,6 @@ function openSettingDialog() {
   overflow: hidden;
 }
 
-.search {
-  height: 45px;
-  width: 100vw;
-  margin-top: 5px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.search-image {
-  width: 30px;
-  border: 1px solid rgba(204, 204, 204, 0);
-  border-radius: 50%;
-  padding: 1px;
-  opacity: 0.4;
-  margin-right: 10px;
-
-}
-
-.search-image:hover {
-  opacity: 0.4;
-  background: #79797BFF;
-  box-shadow: #888888 0px 0px 5px 0px;
-  cursor: pointer;
-
-}
 
 .search-result {
   width: 60%;
