@@ -51,7 +51,7 @@ function openSettingDialog() {
   settingDialog.value.openSettingDialog();
 }
 
-let settingDialog = ref();
+let settingDialog = ref(null);
 
 
 function clickLock() {

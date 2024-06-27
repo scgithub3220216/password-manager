@@ -84,6 +84,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     })
                 }
             })
+            this.editAction()
         },
         deletePwdInfo(pwdInfoId: number) {
             this.pwdGroupList.forEach(pwdGroup => {

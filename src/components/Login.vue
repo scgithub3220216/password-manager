@@ -7,7 +7,7 @@ import useLoginView from "../hooks/useLoginView.ts";
 import {toggleDark} from "../styles/dark/dark.ts";
 import {useDark} from "@vueuse/core";
 
-const initSetPwd = ref()
+const initSetPwd = ref(null)
 const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 

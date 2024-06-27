@@ -6,9 +6,9 @@ import useUserInfo from "../../hooks/useUserInfo.ts";
 const {setLockTime} = useUserInfo()
 
 const userInfoStore = useUserDataInfoStore();
-const autoStart = ref()
-const lockTime = ref()
-const timeUnit = ref();
+const autoStart = ref(null)
+const lockTime = ref(null)
+const timeUnit = ref(null);
 
 onMounted(() => {
   console.log('BasicSet 挂载完毕')

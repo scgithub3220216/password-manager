@@ -17,6 +17,7 @@ import "element-plus/theme-chalk/el-drawer.css";
 import useExcel from "../hooks/useExcel.ts";
 import Header from "./indexview/Header.vue";
 import SearchResult from "./indexview/SearchResult.vue";
+import PwdInfoView from "./indexview/PwdInfo.vue";
 
 const userInfoStore = useUserDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
@@ -28,10 +29,8 @@ const pwdInfoList = reactive<PwdInfo[]>([]);
 const pwdInfo = reactive<PwdInfo>({});
 const groupInputRef = ref(null);
 const groupInput2Ref = ref(null);
-const pwdInfoTitleInput = ref(null);
-const passwordVisible = ref(false);
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 const headerRef = ref(null);
+const pwdInfoViewRef = ref(null);
 const searchViewShowFlag = ref(false)
 const searchResultList = reactive<PwdInfo[]>([]);
 
@@ -41,7 +40,7 @@ onMounted(() => {
   transferInputFocus(1);
   dynamicClickCss();
   // 启动键盘事件
-  document.addEventListener('keydown', keydown);
+  document.addEventListener('keydown', pwdInfoViewRef.value.keydown);
   console.log('Index 挂载完毕')
 })
 
@@ -70,9 +69,9 @@ function transferInputFocus(type: number) {
   } else if (type === 2 && groupInputRef.value) {
 // @ts-ignore
     groupInputRef.value.focus();
-  } else if (type === 3 && pwdInfoTitleInput.value) {
+  } else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput.value) {
 // @ts-ignore
-    pwdInfoTitleInput.value.focus();
+    pwdInfoViewRef.value.pwdInfoTitleInput.value.focus();
   }
 }
 
@@ -263,39 +262,10 @@ function initPwdInfo(pwdInfo: PwdInfo) {
   Object.assign(pwdInfo, pwdInfo);
 }
 
-/**
- * pwdInfo
- */
-function pwdInfoChange() {
-  console.log('pwdInfoChange')
-  userInfoStore.updatePwdInfo(pwdInfo)
-  userInfoStore.editAction()
-}
-
-function copyValue(value: string) {
-  console.log('copyValue')
-  navigator.clipboard.writeText(value).then(() => {
-    console.log('复制成功')
-  }, () => {
-    console.log('复制失败')
-  })
-}
-
-function clickPwdImg() {
-  console.log('clickPwdImg')
-  passwordVisible.value = !passwordVisible.value;
-}
 
 
-function clickRandomImg() {
-  console.log('clickRandomImg')
-  // 生成随机密码
-  let password = '';
-  for (let i = 0; i < 15; i++) {
-    password += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  pwdInfo.password = password;
-}
+
+
 
 /**
  * 动态 样式
@@ -324,14 +294,7 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
 /**
  * 快捷键 Ctrl + P 复制密码 Ctrl + U 复制用户名
  */
-function keydown(e: KeyboardEvent) {
-  // console.log('keydown', e)
-  if (e.ctrlKey && e.key === 'p') {
-    copyValue(pwdInfo.password);
-  } else if (e.ctrlKey && e.key === 'u') {
-    copyValue(pwdInfo.username);
-  }
-}
+
 
 </script>
 
@@ -418,89 +381,9 @@ function keydown(e: KeyboardEvent) {
 
       <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList" :updatePwdInfo="initPwdInfo"/>
 
-      <div class="pwdInfo">
-        <div class="pwdInfo-item">
-          <span>标题</span>
-          <el-input ref="pwdInfoTitleInput" v-model="pwdInfo.title" @change="pwdInfoChange()"/>
-        </div>
 
-        <div class="pwdInfo-item">
-          <span>用户名</span>
-          <el-input v-model="pwdInfo.username" @change="pwdInfoChange()">
-            <template #suffix>
-              <el-tooltip
-                  class="box-item"
-                  effect="dark"
-                  content="复制用户名,快捷键 Ctrl+U"
-                  placement="top"
-              >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.username)" class="copy">
-              </el-tooltip>
-            </template>
-          </el-input>
-        </div>
+      <PwdInfoView  ref="pwdInfoViewRef" :pwdInfo="pwdInfo"/>
 
-        <div class="pwdInfo-item">
-          <span>密码</span>
-          <el-input v-model="pwdInfo.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
-            <template #suffix>
-              <el-tooltip
-                  class="box-item"
-                  effect="dark"
-                  content="明文展示"
-                  placement="top"
-              >
-                <img src="../../public/ic_view.svg" alt="enter" @click="clickPwdImg" class="copy">
-              </el-tooltip>
-              <el-tooltip
-                  class="box-item"
-                  effect="dark"
-                  content="生成随机密码"
-                  placement="top"
-              >
-                <img src="../../public/random.svg" alt="enter" @click="clickRandomImg" class="copy">
-              </el-tooltip>
-              <el-tooltip
-                  class="box-item"
-                  effect="dark"
-                  content="复制密码,快捷键 Ctrl+P"
-                  placement="top"
-              >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.password)" class="copy">
-              </el-tooltip>
-            </template>
-          </el-input>
-        </div>
-
-        <div class="pwdInfo-item">
-          <span> 链接</span>
-          <el-input v-model="pwdInfo.link" @change="pwdInfoChange()">
-            <template #suffix>
-              <el-tooltip
-                  class="box-item"
-                  effect="dark"
-                  content="复制链接"
-                  placement="top"
-              >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.link)" class="copy">
-              </el-tooltip>
-            </template>
-          </el-input>
-        </div>
-
-        <div class="pwdInfo-item">
-          <span> 说明</span>
-          <div>
-            <el-input
-                class="item-textarea"
-                v-model="pwdInfo.remark"
-                @change="pwdInfoChange()"
-                :rows="5"
-                type="textarea"
-            />
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -561,9 +444,7 @@ function keydown(e: KeyboardEvent) {
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-.pwdInfo {
-  width: 40%;
-}
+
 
 ul {
   margin: 0;
@@ -602,48 +483,7 @@ li.selected {
   height: 35px;
 }
 
-.pwdInfo-item {
-  margin-top: 0px;
-  display: flex;
-  padding: 10px;
-  border-bottom: 1px solid #000000;
-  flex-direction: column;
-  align-items: start;
-}
 
-.item-input {
-  color: white;
-  font-size: 16px;
-  border: 0 none;
-  background: transparent;
-
-}
-
-.item-textarea {
-  width: 292px;
-  color: white;
-  font-size: 16px;
-  border: 0 none;
-  background: transparent;
-}
-
-.copy {
-  width: 22px;
-  height: 22px;
-  border: 1px solid rgba(204, 204, 204, 0);
-  border-radius: 50%;
-  padding: 1px;
-  opacity: 0.4;
-
-}
-
-.copy:hover {
-  opacity: 0.4;
-  background: #79797BFF;
-  box-shadow: #888888 0px 0px 5px 0px;
-  cursor: pointer;
-
-}
 
 
 </style>
