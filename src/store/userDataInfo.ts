@@ -99,6 +99,15 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.userInfo.curLoginStatus = 0;
         },
 
+        generateGroupId() {
+            this.editAction()
+            return ++this.userInfo.pwdGroupId;
+        },
+        generatePwdInfoId() {
+            this.editAction()
+            return ++this.userInfo.pwdInfoId;
+        },
+
         setUserInfo(fileDataObj: FileDataObj) {
             this.userInfo = fileDataObj.userInfo;
             this.pwdGroupList = fileDataObj.pwdGroupList;
@@ -167,10 +176,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
     },
     // 计算
     getters: {
-        getGroupId: (state) => ++state.userInfo.pwdGroupId,
-        getPwdInfoId(): number {
-            return ++this.userInfo.pwdInfoId;
-        },
         // getPwdInfoListByGroupId(groupId: number):PwdGroup[]  => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];
         getPwdInfoListByGroupId: (state) => {
             return (groupId: number) => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];

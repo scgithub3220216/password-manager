@@ -25,10 +25,10 @@ const groupInputValue = ref('');
 let curGroup = reactive<PwdGroup>({})
 let curPwdInfo = reactive<PwdInfo>({})
 const pwdInfoList = reactive<PwdInfo[]>([]);
-const pwdInfoDetail = reactive<PwdInfo>({});
+const pwdInfo = reactive<PwdInfo>({});
 const groupInputRef = ref(null);
 const groupInput2Ref = ref(null);
-const detailInputRef = ref(null);
+const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 const headerRef = ref(null);
@@ -55,12 +55,12 @@ function initData() {
   Object.assign(curGroup, pwdGroupList[0]);
   Object.assign(curPwdInfo, pwdList[0]);
   Object.assign(pwdInfoList, pwdList);
-  Object.assign(pwdInfoDetail, pwdList[0]);
+  Object.assign(pwdInfo, pwdList[0]);
 }
 
 /**
  * 切换input 的光标位置
- * @param type 1: searchInputRef 2:groupInputRef  3: detailInputRef
+ * @param type 1: searchInputRef 2:groupInputRef  3: pwdInfoTitleInput
  */
 function transferInputFocus(type: number) {
 // @ts-ignore
@@ -70,9 +70,9 @@ function transferInputFocus(type: number) {
   } else if (type === 2 && groupInputRef.value) {
 // @ts-ignore
     groupInputRef.value.focus();
-  } else if (type === 3 && detailInputRef.value) {
+  } else if (type === 3 && pwdInfoTitleInput.value) {
 // @ts-ignore
-    detailInputRef.value.focus();
+    pwdInfoTitleInput.value.focus();
   }
 }
 
@@ -90,11 +90,11 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
   if (!pwdInfoList || pwdInfoList.length === 0) {
     console.log('setSearchResultData pwdInfoList 为空')
     searchResultList.splice(0, searchResultList.length)
-    Object.assign(pwdInfoDetail, {});
+    Object.assign(pwdInfo, {});
     return;
   }
   Object.assign(searchResultList, pwdInfoList)
-  Object.assign(pwdInfoDetail, pwdInfoList[0]);
+  Object.assign(pwdInfo, pwdInfoList[0]);
 }
 
 /**
@@ -103,14 +103,14 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
 const {exportExcel} = useExcel();
 
 function clickGroup(group: PwdGroup) {
-  console.log('showPwdList')
+  console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`)
   pwdInfoList.length = 0
   Object.assign(curGroup, group);
   // curGroup = group;
   Object.assign(pwdInfoList, group.pwdList);
 
   Object.assign(curPwdInfo, group.pwdList[0]);
-  Object.assign(pwdInfoDetail, group.pwdList[0]);
+  Object.assign(pwdInfo, group.pwdList[0]);
 
   // 单击样式
   setTimeout(() => {
@@ -148,8 +148,7 @@ function groupInputChange() {
     return;
   }
   console.log('groupInputChange2')
-
-  let pwdGroup = new PwdGroup(userInfoStore.getGroupId, groupInputValue.value, []);
+  let pwdGroup = new PwdGroup(userInfoStore.generateGroupId(), groupInputValue.value, []);
   pwdGroupList.push(pwdGroup)
   userInfoStore.insertGroup(pwdGroup)
   groupInputShowFlag.value = false;
@@ -196,34 +195,40 @@ function deleteGroup() {
 /**
  * pwdInfo
  */
-function clickPwdInfo(pwdInfo: PwdInfo) {
-  console.log('showDetail')
-  Object.assign(pwdInfoDetail, pwdInfo);
-  Object.assign(curPwdInfo, pwdInfo);
+function clickPwdInfo(value: PwdInfo) {
+  console.log('clickPwdInfo')
+  Object.assign(pwdInfo, value);
+  Object.assign(curPwdInfo, value);
 }
 
 function insertPwdInfo() {
-  console.log('insertPwdInfo')
+  console.log(`insertPwdInfo curGroup.id:${curGroup.id}`)
   console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)1:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
-  let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId, curGroup.id, curGroup.title, '', '', '', '', '');
-  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)2:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
-  userInfoStore.insertPwdInfo(pwdInfo)
+  let newPwdInfo = new PwdInfo(userInfoStore.generatePwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
+  console.log('newPwdInfo:', newPwdInfo)
+
+  userInfoStore.insertPwdInfo(newPwdInfo)
   console.log('新增 pinia 完成')
+  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)2:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
+
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
   console.log('新增 pwdInfoList 完成')
+  console.log('pwdInfoList:', pwdInfoList)
+
+
+  console.log('newPwdInfo:', newPwdInfo)
+  Object.assign(pwdInfo, newPwdInfo);
+
+  console.log('赋值 pwdInfo 完成')
+  console.log('newPwdInfo:', newPwdInfo)
   console.log('pwdInfo:', pwdInfo)
-  console.log('pwdInfoDetail:', pwdInfoDetail)
-  Object.assign(pwdInfoDetail, pwdInfo);
-  console.log('赋值 pwdInfoDetail 完成')
-  console.log('pwdInfo:', pwdInfo)
-  console.log('pwdInfoDetail:', pwdInfoDetail)
 
   transferInputFocus(3);
 }
 
 function deletePwdInfo() {
   console.log('deletePwdInfo')
-  userInfoStore.deletePwdInfo(pwdInfoDetail.id);
+  userInfoStore.deletePwdInfo(pwdInfo.id);
   //  删除 pwdGroupList 中的数据
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
 
@@ -253,17 +258,17 @@ const openDelPwdInfoMsgBox = () => {
 /**
  * searchResult
  */
-function initPwdInfoDetail(pwdInfoDetail: PwdInfo) {
-  console.log('initPwdInfoDetail')
-  Object.assign(pwdInfoDetail, pwdInfoDetail);
+function initPwdInfo(pwdInfo: PwdInfo) {
+  console.log('initPwdInfo')
+  Object.assign(pwdInfo, pwdInfo);
 }
 
 /**
- * detail
+ * pwdInfo
  */
 function pwdInfoChange() {
   console.log('pwdInfoChange')
-  userInfoStore.updatePwdInfo(pwdInfoDetail)
+  userInfoStore.updatePwdInfo(pwdInfo)
   userInfoStore.editAction()
 }
 
@@ -289,7 +294,7 @@ function clickRandomImg() {
   for (let i = 0; i < 15; i++) {
     password += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  pwdInfoDetail.password = password;
+  pwdInfo.password = password;
 }
 
 /**
@@ -322,9 +327,9 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
 function keydown(e: KeyboardEvent) {
   // console.log('keydown', e)
   if (e.ctrlKey && e.key === 'p') {
-    copyValue(pwdInfoDetail.password);
+    copyValue(pwdInfo.password);
   } else if (e.ctrlKey && e.key === 'u') {
-    copyValue(pwdInfoDetail.username);
+    copyValue(pwdInfo.username);
   }
 }
 
@@ -411,17 +416,17 @@ function keydown(e: KeyboardEvent) {
 
       </div>
 
-      <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList" :updatePwdInfo="initPwdInfoDetail"/>
+      <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList" :updatePwdInfo="initPwdInfo"/>
 
-      <div class="detail">
-        <div class="detail-item">
+      <div class="pwdInfo">
+        <div class="pwdInfo-item">
           <span>标题</span>
-          <el-input ref="detailInputRef" v-model="pwdInfoDetail.title" @change="pwdInfoChange()"/>
+          <el-input ref="pwdInfoTitleInput" v-model="pwdInfo.title" @change="pwdInfoChange()"/>
         </div>
 
-        <div class="detail-item">
+        <div class="pwdInfo-item">
           <span>用户名</span>
-          <el-input v-model="pwdInfoDetail.username" @change="pwdInfoChange()">
+          <el-input v-model="pwdInfo.username" @change="pwdInfoChange()">
             <template #suffix>
               <el-tooltip
                   class="box-item"
@@ -429,15 +434,15 @@ function keydown(e: KeyboardEvent) {
                   content="复制用户名,快捷键 Ctrl+U"
                   placement="top"
               >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.username)" class="copy">
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.username)" class="copy">
               </el-tooltip>
             </template>
           </el-input>
         </div>
 
-        <div class="detail-item">
+        <div class="pwdInfo-item">
           <span>密码</span>
-          <el-input v-model="pwdInfoDetail.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
+          <el-input v-model="pwdInfo.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
             <template #suffix>
               <el-tooltip
                   class="box-item"
@@ -461,15 +466,15 @@ function keydown(e: KeyboardEvent) {
                   content="复制密码,快捷键 Ctrl+P"
                   placement="top"
               >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.password)" class="copy">
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.password)" class="copy">
               </el-tooltip>
             </template>
           </el-input>
         </div>
 
-        <div class="detail-item">
+        <div class="pwdInfo-item">
           <span> 链接</span>
-          <el-input v-model="pwdInfoDetail.link" @change="pwdInfoChange()">
+          <el-input v-model="pwdInfo.link" @change="pwdInfoChange()">
             <template #suffix>
               <el-tooltip
                   class="box-item"
@@ -477,18 +482,18 @@ function keydown(e: KeyboardEvent) {
                   content="复制链接"
                   placement="top"
               >
-                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfoDetail.link)" class="copy">
+                <img src="../../public/copy.svg" alt="enter" @click="copyValue(pwdInfo.link)" class="copy">
               </el-tooltip>
             </template>
           </el-input>
         </div>
 
-        <div class="detail-item">
+        <div class="pwdInfo-item">
           <span> 说明</span>
           <div>
             <el-input
                 class="item-textarea"
-                v-model="pwdInfoDetail.remark"
+                v-model="pwdInfo.remark"
                 @change="pwdInfoChange()"
                 :rows="5"
                 type="textarea"
@@ -556,7 +561,7 @@ function keydown(e: KeyboardEvent) {
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-.detail {
+.pwdInfo {
   width: 40%;
 }
 
@@ -597,12 +602,7 @@ li.selected {
   height: 35px;
 }
 
-.detail {
-
-
-}
-
-.detail-item {
+.pwdInfo-item {
   margin-top: 0px;
   display: flex;
   padding: 10px;
