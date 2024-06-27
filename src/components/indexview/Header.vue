@@ -13,10 +13,9 @@ const userInfoStore = useUserDataInfoStore();
 const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 const {logout} = useLoginAction();
 const search = ref('');
-const searchResultShowFlag = ref(false);
 const searchResultList = reactive<PwdInfo[]>([]);
 const searchInputRef = ref(null);
-let props = defineProps(['updatePwdDetailBySearch'])
+let props = defineProps(['updateSearchViewValue', 'updateSearchResultData'])
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
@@ -25,33 +24,25 @@ function clickDarkSwitch() {
 }
 
 function searchAction() {
-  console.log('search')
+  console.log('searchAction')
   // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
   let searchValue = search.value;
   if (!searchValue.trim()) {
-    searchResultShowFlag.value = false;
+    props.updateSearchViewValue(false)
     searchResultList.splice(0, searchResultList.length);
     return;
   }
+
   // 如果有值
-  searchResultShowFlag.value = true;
+  props.updateSearchViewValue(true)
 
   // 将 pwdGroupList 全部转为 pwdInfoList
   let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
   console.log('pwdInfoListTemp', pwdInfoListTemp.length)
   // 在 pwdInfoList 中查找
   let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  console.log('searchResultListTemp', searchResultListTemp.length)
-  if (searchResultListTemp.length === 0) {
-    searchResultList.splice(0, searchResultList.length)
-    props.updatePwdDetailBySearch(null)
-    // setPwdDetailBySearch(null)
-    return;
-  }
-  searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
-  // setPwdDetailBySearch(searchResultListTemp[0])
-  props.updatePwdDetailBySearch( searchResultListTemp[0]);
-
+  // console.log('searchResultListTemp', searchResultListTemp.length)
+  props.updateSearchResultData(searchResultListTemp);
 }
 
 
@@ -69,7 +60,7 @@ function clickLock() {
 
 // 暴露方法给父组件
 defineExpose({
-  searchResultShowFlag, searchResultList, searchInputRef
+  searchResultList, searchInputRef
 });
 </script>
 
@@ -77,7 +68,6 @@ defineExpose({
 
   <div class="search">
     <div>
-      <!--        <img src="/switch.svg" alt="switch" @click="clickSwitch" class="search-image">-->
       <el-tooltip
           class="box-item"
           effect="dark"

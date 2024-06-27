@@ -31,6 +31,8 @@ const detailInputRef = ref(null);
 const passwordVisible = ref(false);
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 const headerRef = ref(null);
+const searchViewShowFlag = ref(false)
+const searchResultList = reactive<PwdInfo[]>([]);
 
 onMounted(() => {
   console.log('Index onMounted')
@@ -78,7 +80,21 @@ function transferInputFocus(type: number) {
  * search
  */
 
+function showSearchView(value: boolean) {
+  searchViewShowFlag.value = value;
+}
 
+function setSearchResultData(pwdInfoList: PwdInfo[]) {
+  console.log('setSearchResultData')
+  if (!pwdInfoList) {
+    console.log('setSearchResultData pwdInfoList 为空')
+    searchResultList.splice(0, searchResultList.length)
+    Object.assign(pwdInfoDetail, {});
+    return;
+  }
+  Object.assign(searchResultList, pwdInfoList)
+  Object.assign(pwdInfoDetail, pwdInfoList[0]);
+}
 
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
@@ -312,22 +328,13 @@ function keydown(e: KeyboardEvent) {
   }
 }
 
-
-function setPwdDetailBySearch(pwdInfo: PwdInfo) {
-  if (!pwdInfo) {
-    // 设置为空
-    Object.assign(pwdInfoDetail, {});
-    return;
-  }
-  Object.assign(pwdInfoDetail, pwdInfo);
-}
 </script>
 
 <template>
   <div class="outer">
-    <Header ref="headerRef" :updatePwdDetailBySearch="setPwdDetailBySearch"/>
+    <Header ref="headerRef"  :updateSearchViewValue="showSearchView" :updateSearchResultData="setSearchResultData"/>
     <div class="content">
-      <div v-if="!(headerRef && headerRef.searchResultShowFlag)" class="group">
+      <div v-if="!searchViewShowFlag" class="group">
         <div class="group-data">
           <ul id="group-ul">
             <li v-for="group in pwdGroupList" :key="group.id" @click="clickGroup(group)">
@@ -377,7 +384,7 @@ function setPwdDetailBySearch(pwdInfo: PwdInfo) {
 
         </div>
       </div>
-      <div v-if="!(headerRef && headerRef.searchResultShowFlag)" class="pwd">
+      <div v-if="!searchViewShowFlag" class="pwd">
         <div class="pwd-item">
           <ul id="pwd-ul">
             <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="clickPwdInfo(pwdInfo)">{{ pwdInfo.title }}</li>
@@ -403,10 +410,8 @@ function setPwdDetailBySearch(pwdInfo: PwdInfo) {
         </div>
 
       </div>
-      <div v-if="headerRef && headerRef.searchResultShowFlag" class="search-result">
-        <el-table :data="(headerRef&&headerRef.searchResultList)?headerRef.searchResultList:[]" @row-click="searchTableClick"
-                  style="width: 100%;height: calc(100vh - 50px)">
-
+      <div v-if="searchViewShowFlag" class="search-result">
+        <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%;height: calc(100vh - 50px)">
           <el-table-column prop="groupTitle" label="分组" :min-width="100"/>
           <el-table-column prop="title" label="标题" show-overflow-tooltip :min-width="100"/>
           <el-table-column prop="username" label="用户名" show-overflow-tooltip :min-width="100"/>
