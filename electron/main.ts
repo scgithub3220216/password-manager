@@ -3,7 +3,7 @@ import {exec} from 'child_process'
 // import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import {readFile, writeFile} from "../src/utils/fileUtils.ts";
+import {readFile, writeFile} from "./utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
 import {defaultOpenMainWinShortcutKey, helpLink, supportLink} from "../src/config/config.ts";
 /* 引入storeToRefs */

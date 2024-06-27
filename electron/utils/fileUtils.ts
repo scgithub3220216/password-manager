@@ -6,11 +6,11 @@ const readFileAsync = util.promisify(fs.readFile);
 
 async function readFile(filePath: string): Promise<string> {
     try {
-        const data = await readFileAsync(filePath, 'utf-8');
-        return data;
+        return await readFileAsync(filePath, 'utf-8');
     } catch (err) {
         console.error(err);
         // throw err; // 重新抛出错误或自定义处理
+        return ''
     }
 }
 
