@@ -96,7 +96,7 @@ function clickGroup(group: PwdGroup) {
   console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`)
   userDataInfoStore.setCurGroup(group)
   userDataInfoStore.setCurPwdInfo(group.pwdList[0])
-
+  Object.assign(curGroup, group);
   // 单击样式
   setTimeout(() => {
     clickGroupCss();
@@ -171,9 +171,7 @@ function deleteGroup() {
   userDataInfoStore.deleteGroup(curGroup.id);
   //  删除 pwdGroupList 中的数据
   pwdGroupList.splice(0, pwdGroupList.length, ...userDataInfoStore.pwdGroupList);
-  // ElMessage.success('删除成功')
-  userDataInfoStore.editAction()
-
+  ElMessage.success('删除成功')
 }
 
 /**

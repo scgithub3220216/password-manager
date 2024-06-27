@@ -49,6 +49,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         },
         deleteGroup(groupId: number) {
             this.pwdGroupList = this.pwdGroupList.filter(pwdGroup => pwdGroup.id !== groupId);
+            this.editAction();
         },
         editGroupFlag(groupId: number, flag: boolean) {
             if (!groupId) {
@@ -59,6 +60,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     pwdGroup.editFlag = flag;
                 }
             })
+            this.editAction();
         },
 
         insertPwdInfo(pwdInfo: PwdInfo) {
