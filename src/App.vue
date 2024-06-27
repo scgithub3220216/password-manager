@@ -42,11 +42,11 @@ function saveData() {
     return;
   }
   console.log('saveData 改动')
-
+  console.log('userInfoStore.userInfo.pwd:', userInfoStore.userInfo.pwd)
   let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
   // save-data
   const fileDataObjJson = JSON.stringify(fileDataObj);
-
+  // console.log('fileDataObjJson:', fileDataObjJson)
   let encryptData1 = encryptData(fileDataObjJson);
   // console.log('encryptData1:', encryptData1)
   window.ipcRenderer.invoke('save-data', encryptData1);

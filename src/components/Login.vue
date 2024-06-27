@@ -28,13 +28,12 @@ onMounted(() => {
         }
       })
       .then(() => {
-        console.log('userInfoStore.userInfo.firstLoginFlag:', userInfoStore.userInfo.firstLoginFlag)
+        // console.log('userInfoStore.userInfo.pwd:', userInfoStore.userInfo.pwd)
         // 判断用户是否第一次登录 , 如果是 设置登录密码
         if (userInfoStore.userInfo.firstLoginFlag != 0) {
           console.log('设置登录密码')
           initSetPwd.value.pwdDialogVisible = true
           setPwdMsgTips();
-
         }
       })
 })
