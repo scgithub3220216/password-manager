@@ -16,6 +16,7 @@ const search = ref('');
 const searchResultList = reactive<PwdInfo[]>([]);
 const searchInputRef = ref(null);
 let props = defineProps(['updateSearchViewValue', 'updateSearchResultData'])
+let settingDialog = ref(null);
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
@@ -38,10 +39,8 @@ function searchAction() {
 
   // 将 pwdGroupList 全部转为 pwdInfoList
   let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
-  // console.log('pwdInfoListTemp', pwdInfoListTemp.length)
   // 在 pwdInfoList 中查找
   let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  // console.log('searchResultListTemp', searchResultListTemp.length)
   props.updateSearchResultData(searchResultListTemp);
 }
 
@@ -50,8 +49,6 @@ function openSettingDialog() {
   console.log('openSettingDialog')
   settingDialog.value.openSettingDialog();
 }
-
-let settingDialog = ref(null);
 
 
 function clickLock() {

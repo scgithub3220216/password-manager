@@ -43,6 +43,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
 
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
+            this.setCurGroup(pwdGroup);
+            this.setCurPwdInfo(null);
+            this.editAction();
         },
         deleteGroup(groupId: number) {
             this.pwdGroupList = this.pwdGroupList.filter(pwdGroup => pwdGroup.id !== groupId);
@@ -64,6 +67,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     pwdGroup.pwdList.push(pwdInfo);
                 }
             })
+            this.setCurPwdInfo(pwdInfo)
             this.editAction()
         },
         updatePwdInfo(pwdInfo: PwdInfo) {
@@ -93,13 +97,32 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.editAction()
         },
 
+
         login() {
             this.userInfo.curLoginStatus = 1;
         },
         logout() {
             this.userInfo.curLoginStatus = 0;
         },
+        setCurGroup(group: PwdGroup) {
+            console.log('setCurGroup:', group)
+            if (!group) {
+                // this.curGroup  设置为空,
+                this.curGroup.id = -1;
+                return;
+            }
+            this.curGroup.id = group.id;
+            this.curGroup.title = group.title;
+        },
 
+        setCurPwdInfo(pwdInfo: PwdInfo) {
+            console.log('setCurPwdInfo:', pwdInfo)
+            if (!pwdInfo) {
+                this.curPwdInfo.id = -1;
+                return;
+            }
+            Object.assign(this.curPwdInfo, pwdInfo)
+        },
         generateGroupId() {
             this.editAction()
             return ++this.userInfo.pwdGroupId;
@@ -119,7 +142,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         },
     },
     // 状态
-    state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[] } {
+    state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[], curGroup: PwdGroup, curPwdInfo: PwdInfo } {
         return {
             userInfo: {
                 darkSwitch: true,
@@ -172,7 +195,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     ]
                 }
 
-            ]
+            ],
+            curGroup: {},
+            curPwdInfo: {}
         }
     },
     // 计算

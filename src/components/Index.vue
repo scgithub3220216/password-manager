@@ -5,28 +5,25 @@ import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {PwdGroup, PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
 import {Delete, Download, Edit, Plus} from '@element-plus/icons-vue'
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import "element-plus/theme-chalk/el-message.css";
 import "element-plus/theme-chalk/el-loading.css";
-
 import "element-plus/theme-chalk/el-notification.css";
-
 import "element-plus/theme-chalk/el-message-box.css";
-
 import "element-plus/theme-chalk/el-drawer.css";
+
 import useExcel from "../hooks/useExcel.ts";
 import Header from "./indexview/Header.vue";
 import SearchResult from "./indexview/SearchResult.vue";
 import PwdInfoView from "./indexview/PwdInfo.vue";
+import PwdInfoListView from "./indexview/PwdInfoList.vue";
 
-const userInfoStore = useUserDataInfoStore();
+const {exportExcel} = useExcel();
+const userDataInfoStore = useUserDataInfoStore();
 let pwdGroupList = reactive<PwdGroup[]>([]);
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref('');
 let curGroup = reactive<PwdGroup>({})
-let curPwdInfo = reactive<PwdInfo>({})
-const pwdInfoList = reactive<PwdInfo[]>([]);
-const pwdInfo = reactive<PwdInfo>({});
 const groupInputRef = ref(null);
 const groupInput2Ref = ref(null);
 const headerRef = ref(null);
@@ -45,20 +42,18 @@ onMounted(() => {
 })
 
 function initData() {
-  Object.assign(pwdGroupList, userInfoStore.pwdGroupList);
+  Object.assign(pwdGroupList, userDataInfoStore.pwdGroupList);
   if (!(pwdGroupList && pwdGroupList.length > 0)) {
     console.log('pwdGroupList 为空')
     return;
   }
   let pwdList = pwdGroupList[0].pwdList;
-  Object.assign(curGroup, pwdGroupList[0]);
-  Object.assign(curPwdInfo, pwdList[0]);
-  Object.assign(pwdInfoList, pwdList);
-  Object.assign(pwdInfo, pwdList[0]);
+  userDataInfoStore.setCurGroup(pwdGroupList[0])
+  userDataInfoStore.setCurPwdInfo(pwdList[0])
 }
 
 /**
- * 切换input 的光标位置
+ * 切换 input 的光标位置
  * @param type 1: searchInputRef 2:groupInputRef  3: pwdInfoTitleInput
  */
 function transferInputFocus(type: number) {
@@ -89,27 +84,18 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
   if (!pwdInfoList || pwdInfoList.length === 0) {
     console.log('setSearchResultData pwdInfoList 为空')
     searchResultList.splice(0, searchResultList.length)
-    Object.assign(pwdInfo, {});
+    userDataInfoStore.setCurPwdInfo(null)
     return;
   }
   Object.assign(searchResultList, pwdInfoList)
-  Object.assign(pwdInfo, pwdInfoList[0]);
+  userDataInfoStore.setCurPwdInfo(pwdInfoList[0])
 }
 
-/**
- * group
- */
-const {exportExcel} = useExcel();
 
 function clickGroup(group: PwdGroup) {
   console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`)
-  pwdInfoList.length = 0
-  Object.assign(curGroup, group);
-  // curGroup = group;
-  Object.assign(pwdInfoList, group.pwdList);
-
-  Object.assign(curPwdInfo, group.pwdList[0]);
-  Object.assign(pwdInfo, group.pwdList[0]);
+  userDataInfoStore.setCurGroup(group)
+  userDataInfoStore.setCurPwdInfo(group.pwdList[0])
 
   // 单击样式
   setTimeout(() => {
@@ -147,23 +133,22 @@ function groupInputChange() {
     return;
   }
   console.log('groupInputChange2')
-  let pwdGroup = new PwdGroup(userInfoStore.generateGroupId(), groupInputValue.value, []);
+  let pwdGroup = new PwdGroup(userDataInfoStore.generateGroupId(), groupInputValue.value, []);
   pwdGroupList.push(pwdGroup)
-  userInfoStore.insertGroup(pwdGroup)
+  userDataInfoStore.insertGroup(pwdGroup)
   groupInputShowFlag.value = false;
   groupInputValue.value = '';
-  userInfoStore.editAction()
 }
 
 async function triggerGroupEdit() {
   console.log('triggerGroupEdit1')
-  userInfoStore.editGroupFlag(curGroup.id, true);
+  userDataInfoStore.editGroupFlag(curGroup.id, true);
 }
 
 function editGroups() {
   console.log('editGroups')
-  userInfoStore.editGroupFlag(curGroup.id, false);
-  userInfoStore.editAction()
+  userDataInfoStore.editGroupFlag(curGroup.id, false);
+  userDataInfoStore.editAction()
 }
 
 function deleteGroup() {
@@ -183,89 +168,13 @@ function deleteGroup() {
     ElMessage.error('删除失败, 该分组下还有数据')
     return false;
   }
-  userInfoStore.deleteGroup(curGroup.id);
+  userDataInfoStore.deleteGroup(curGroup.id);
   //  删除 pwdGroupList 中的数据
-  pwdGroupList.splice(0, pwdGroupList.length, ...userInfoStore.pwdGroupList);
+  pwdGroupList.splice(0, pwdGroupList.length, ...userDataInfoStore.pwdGroupList);
   // ElMessage.success('删除成功')
-  userInfoStore.editAction()
+  userDataInfoStore.editAction()
 
 }
-
-/**
- * pwdInfo
- */
-function clickPwdInfo(value: PwdInfo) {
-  console.log('clickPwdInfo')
-  Object.assign(pwdInfo, value);
-  Object.assign(curPwdInfo, value);
-}
-
-function insertPwdInfo() {
-  console.log(`insertPwdInfo curGroup.id:${curGroup.id}`)
-  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)1:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
-  let newPwdInfo = new PwdInfo(userInfoStore.generatePwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
-  console.log('newPwdInfo:', newPwdInfo)
-
-  userInfoStore.insertPwdInfo(newPwdInfo)
-  console.log('新增 pinia 完成')
-  console.log('userInfoStore.getPwdInfoListByGroupId(curGroup.id)2:', userInfoStore.getPwdInfoListByGroupId(curGroup.id))
-
-  pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
-  console.log('新增 pwdInfoList 完成')
-  console.log('pwdInfoList:', pwdInfoList)
-
-
-  console.log('newPwdInfo:', newPwdInfo)
-  Object.assign(pwdInfo, newPwdInfo);
-
-  console.log('赋值 pwdInfo 完成')
-  console.log('newPwdInfo:', newPwdInfo)
-  console.log('pwdInfo:', pwdInfo)
-
-  transferInputFocus(3);
-}
-
-function deletePwdInfo() {
-  console.log('deletePwdInfo')
-  userInfoStore.deletePwdInfo(pwdInfo.id);
-  //  删除 pwdGroupList 中的数据
-  pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
-
-}
-
-const openDelPwdInfoMsgBox = () => {
-  ElMessageBox.confirm(
-      '确认删除此帐号?',
-
-      {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning',
-        draggable: true,
-        customStyle: {
-          width: '250px'
-        }
-      }
-  )
-      .then(() => {
-        deletePwdInfo()
-      })
-      .catch(() => {
-      })
-}
-
-/**
- * searchResult
- */
-function initPwdInfo(pwdInfo: PwdInfo) {
-  console.log('initPwdInfo')
-  Object.assign(pwdInfo, pwdInfo);
-}
-
-
-
-
-
 
 /**
  * 动态 样式
@@ -290,10 +199,6 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
   // 给当前点击的li添加高亮
   e.target?.classList.add('selected');
 }
-
-/**
- * 快捷键 Ctrl + P 复制密码 Ctrl + U 复制用户名
- */
 
 
 </script>
@@ -352,37 +257,11 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
 
         </div>
       </div>
-      <div v-if="!searchViewShowFlag" class="pwd">
-        <div class="pwd-item">
-          <ul id="pwd-ul">
-            <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="clickPwdInfo(pwdInfo)">{{ pwdInfo.title }}</li>
-          </ul>
-        </div>
-        <div class="pwd-tools">
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="新增"
-              placement="top"
-          >
-            <span @click="insertPwdInfo()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
-          </el-tooltip>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="删除"
-              placement="top"
-          >
-            <span @click="openDelPwdInfoMsgBox()"> <Delete style="width: 20px; height: 20px;"/></span>
-          </el-tooltip>
-        </div>
+      <PwdInfoListView v-if="!searchViewShowFlag" :curGroup="curGroup"/>
 
-      </div>
+      <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList"/>
 
-      <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList" :updatePwdInfo="initPwdInfo"/>
-
-
-      <PwdInfoView  ref="pwdInfoViewRef" :pwdInfo="pwdInfo"/>
+      <PwdInfoView ref="pwdInfoViewRef"/>
 
     </div>
   </div>
@@ -423,27 +302,12 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
   box-shadow: #213547;
 }
 
-.pwd {
-  width: 35%;
-  border-left: 1px #cab8b8 solid;
-  border-right: 1px #cab8b8 solid;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.pwd-item {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
 
 .pwd-tools span {
   padding: 8px 8px 0 8px;
   margin-left: 10px;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
-
 
 
 ul {
@@ -478,12 +342,6 @@ li:hover {
 li.selected {
   background: rgba(255, 255, 255, 0.08);
 }
-
-#pwd-ul li {
-  height: 35px;
-}
-
-
 
 
 </style>

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import {PwdInfo} from "../../store/type.ts";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 
-let props = defineProps(['searchResultList','updatePwdInfo'])
+defineProps(['searchResultList'])
+const userDataInfoStore = useUserDataInfoStore();
+
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
   if (!row) {
     return;
   }
-  props.updatePwdInfo(row);
+  userDataInfoStore.setCurPwdInfo(row)
 }
 
 </script>

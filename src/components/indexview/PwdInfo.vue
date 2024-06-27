@@ -1,22 +1,26 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
-const userInfoStore = useUserDataInfoStore();
+const userDataInfoStore = useUserDataInfoStore();
 
-let props = defineProps(['pwdInfo'])
+// let props = defineProps(['pwdInfo'])
 
 defineExpose({keydown, pwdInfoTitleInput})
+const curPwdInfo = reactive(userDataInfoStore.curPwdInfo)
+watch(curPwdInfo,(newVal)=>{
+  console.log('watch curPwdInfo:',newVal)
 
+})
 /**
  * pwdInfo
  */
 function pwdInfoChange() {
   console.log('pwdInfoChange')
-  userInfoStore.updatePwdInfo(props.pwdInfo)
+  userDataInfoStore.updatePwdInfo(curPwdInfo)
 }
 
 function copyValue(value: string) {
@@ -31,9 +35,9 @@ function copyValue(value: string) {
 function keydown(e: KeyboardEvent) {
   // console.log('keydown', e)
   if (e.ctrlKey && e.key === 'p') {
-    copyValue(props.pwdInfo.password);
+    copyValue(curPwdInfo.password);
   } else if (e.ctrlKey && e.key === 'u') {
-    copyValue(props.pwdInfo.username);
+    copyValue(curPwdInfo.username);
   }
 }
 
@@ -44,7 +48,8 @@ function clickRandomImg() {
   for (let i = 0; i < 15; i++) {
     password += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  props.pwdInfo.password = password;
+  curPwdInfo.password = password;
+  pwdInfoChange();
 }
 
 function clickPwdImg() {
@@ -57,12 +62,12 @@ function clickPwdImg() {
   <div class="pwdInfo">
     <div class="pwdInfo-item">
       <span>标题</span>
-      <el-input ref="pwdInfoTitleInput" v-model="pwdInfo.title" @change="pwdInfoChange()"/>
+      <el-input ref="pwdInfoTitleInput" v-model="curPwdInfo.title" @change="pwdInfoChange()"/>
     </div>
 
     <div class="pwdInfo-item">
       <span>用户名</span>
-      <el-input v-model="pwdInfo.username" @change="pwdInfoChange()">
+      <el-input v-model="curPwdInfo.username" @change="pwdInfoChange()">
         <template #suffix>
           <el-tooltip
               class="box-item"
@@ -70,7 +75,7 @@ function clickPwdImg() {
               content="复制用户名,快捷键 Ctrl+U"
               placement="top"
           >
-            <img src="/copy.svg" alt="enter" @click="copyValue(pwdInfo.username)" class="copy">
+            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.username)" class="copy">
           </el-tooltip>
         </template>
       </el-input>
@@ -78,7 +83,7 @@ function clickPwdImg() {
 
     <div class="pwdInfo-item">
       <span>密码</span>
-      <el-input v-model="pwdInfo.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
+      <el-input v-model="curPwdInfo.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
         <template #suffix>
           <el-tooltip
               class="box-item"
@@ -102,7 +107,7 @@ function clickPwdImg() {
               content="复制密码,快捷键 Ctrl+P"
               placement="top"
           >
-            <img src="/copy.svg" alt="enter" @click="copyValue(pwdInfo.password)" class="copy">
+            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.password)" class="copy">
           </el-tooltip>
         </template>
       </el-input>
@@ -110,7 +115,7 @@ function clickPwdImg() {
 
     <div class="pwdInfo-item">
       <span> 链接</span>
-      <el-input v-model="pwdInfo.link" @change="pwdInfoChange()">
+      <el-input v-model="curPwdInfo.link" @change="pwdInfoChange()">
         <template #suffix>
           <el-tooltip
               class="box-item"
@@ -118,7 +123,7 @@ function clickPwdImg() {
               content="复制链接"
               placement="top"
           >
-            <img src="/copy.svg" alt="enter" @click="copyValue(pwdInfo.link)" class="copy">
+            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.link)" class="copy">
           </el-tooltip>
         </template>
       </el-input>
@@ -129,7 +134,7 @@ function clickPwdImg() {
       <div>
         <el-input
             class="item-textarea"
-            v-model="pwdInfo.remark"
+            v-model="curPwdInfo.remark"
             @change="pwdInfoChange()"
             :rows="5"
             type="textarea"
