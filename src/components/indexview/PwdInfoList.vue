@@ -52,7 +52,7 @@ function insertPwdInfo() {
 
 function deletePwdInfo() {
   console.log('deletePwdInfo')
-  userDataInfoStore.deletePwdInfo(pwdInfo.id);
+  userDataInfoStore.deletePwdInfo(userDataInfoStore.curPwdInfo.id);
   //  删除 pwdGroupList 中的数据
   pwdInfoList.splice(0, pwdInfoList.length, ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id));
 

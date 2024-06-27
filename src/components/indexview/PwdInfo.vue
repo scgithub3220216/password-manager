@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive, ref, watch} from "vue";
+import {reactive, ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
@@ -7,14 +7,11 @@ const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
 
-// let props = defineProps(['pwdInfo'])
-
 defineExpose({keydown, pwdInfoTitleInput})
 const curPwdInfo = reactive(userDataInfoStore.curPwdInfo)
-watch(curPwdInfo,(newVal)=>{
-  console.log('watch curPwdInfo:',newVal)
-
-})
+// watch(curPwdInfo,(newVal)=>{
+//   console.log('watch curPwdInfo:',newVal)
+// })
 /**
  * pwdInfo
  */
