@@ -22,9 +22,6 @@ onMounted(() => {
         // darkFlag 当前值  : false 白色  ; true 黑色
         let darkFlag = useDark();
         console.log('darkFlag:', darkFlag.value)
-        // useToggle(false)
-        //  darkFlag = useDark();
-        // console.log('darkFlag:', darkFlag.value)
         if (userInfoStore.userInfo.darkSwitch && !darkFlag.value) {
           console.log('darkSwitch')
           toggleDark();
@@ -37,10 +34,7 @@ onMounted(() => {
           console.log('设置登录密码')
           initSetPwd.value.pwdDialogVisible = true
           setPwdMsgTips();
-          /*      setTimeout(() => {
-                  toggleDark();
 
-                }, 2000)*/
         }
       })
 })
