@@ -41,7 +41,7 @@ const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567
 
 let settingDialog = ref();
 onMounted(() => {
-  console.log('onMounted',userInfoStore.userInfo.darkSwitch)
+  console.log('onMounted', userInfoStore.userInfo.darkSwitch)
   initData();
   transferInputFocus(1);
   dynamicClickCss();
@@ -83,7 +83,7 @@ function transferInputFocus(type: number) {
  */
 
 function clickDarkSwitch() {
-  console.log('clickDarkSwitch themeSwitch.value:',themeSwitch.value)
+  console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
   userInfoStore.setDarkSwitch(themeSwitch.value);
   toggleDark();
 }
@@ -179,7 +179,7 @@ function groupInputChange() {
   }
   console.log('groupInputChange2')
 
-  let pwdGroup = new PwdGroup(userInfoStore.getGroupId(), groupInputValue.value, []);
+  let pwdGroup = new PwdGroup(userInfoStore.getGroupId, groupInputValue.value, []);
   pwdGroupList.push(pwdGroup)
   userInfoStore.insertGroup(pwdGroup)
   groupInputShowFlag.value = false;
@@ -234,7 +234,7 @@ function clickPwdInfo(pwdInfo: PwdInfo) {
 
 function insertPwdInfo() {
   console.log('insertPwdInfo')
-  let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
+  let pwdInfo = new PwdInfo(userInfoStore.getPwdInfoId, curGroup.id, curGroup.title, '', '', '', '', '');
   userInfoStore.insertPwdInfo(pwdInfo)
   console.log('新增 pinia 完成')
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
@@ -255,7 +255,6 @@ function deletePwdInfo() {
   //  删除 pwdGroupList 中的数据
   pwdInfoList.splice(0, pwdInfoList.length, ...userInfoStore.getPwdInfoListByGroupId(curGroup.id));
 
-  userInfoStore.editAction()
 }
 
 const openDelPwdInfoMsgBox = () => {

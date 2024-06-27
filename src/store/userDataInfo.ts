@@ -7,6 +7,7 @@ import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMa
 export const useUserDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+
         setDarkSwitch(darkSwitch: boolean) {
             this.userInfo.darkSwitch = darkSwitch;
             this.editAction()
@@ -22,9 +23,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             console.log('userDataInfoStore setLockTime:', this.userInfo.autoLock.autoLockTime, '----', this.userInfo.autoLock.autoLockTimeUnit)
             this.editAction()
         },
-        editAction() {
-            this.userInfo.saveFlag = true;
-        },
+
         setInitPwd(pass: string) {
             this.userInfo.pwd = pass
             this.userInfo.firstLoginFlag = 0
@@ -41,10 +40,10 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 return false;
             }
         },
+
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
         },
-
         deleteGroup(groupId: number) {
             this.pwdGroupList = this.pwdGroupList.filter(pwdGroup => pwdGroup.id !== groupId);
         },
@@ -58,26 +57,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 }
             })
         },
-        getGroupId() {
-            return ++this.userInfo.pwdGroupId;
-        },
-        getPwdInfoId() {
-            return ++this.userInfo.pwdInfoId;
-        },
-        setUserInfo(fileDataObj: FileDataObj) {
-            this.userInfo = fileDataObj.userInfo;
-            this.pwdGroupList = fileDataObj.pwdGroupList;
-        },
-        getPwdInfoListByGroupId(groupId: number) {
-            let pwdList: PwdInfo[] = [];
-            this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === groupId) {
-                    pwdList = pwdGroup.pwdList;
-                }
-            })
-            return pwdList;
 
-        },
         insertPwdInfo(pwdInfo: PwdInfo) {
             this.pwdGroupList.forEach(pwdGroup => {
                 if (pwdGroup.id === pwdInfo.groupId) {
@@ -109,14 +89,24 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.pwdGroupList.forEach(pwdGroup => {
                 pwdGroup.pwdList = pwdGroup.pwdList.filter(pwd => pwd.id !== pwdInfoId);
             })
+            this.editAction()
         },
+
         login() {
             this.userInfo.curLoginStatus = 1;
         },
         logout() {
             this.userInfo.curLoginStatus = 0;
-        }
+        },
 
+        setUserInfo(fileDataObj: FileDataObj) {
+            this.userInfo = fileDataObj.userInfo;
+            this.pwdGroupList = fileDataObj.pwdGroupList;
+        },
+
+        editAction() {
+            this.userInfo.saveFlag = true;
+        },
     },
     // 状态
     state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[] } {
@@ -176,5 +166,15 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         }
     },
     // 计算
-    getters: {}
+    getters: {
+        getGroupId: (state) => ++state.userInfo.pwdGroupId,
+        getPwdInfoId(): number {
+            return ++this.userInfo.pwdInfoId;
+        },
+        // getPwdInfoListByGroupId(groupId: number):PwdGroup[]  => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];
+        getPwdInfoListByGroupId: (state) => {
+            return (groupId: number) => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];
+        }
+
+    }
 })
