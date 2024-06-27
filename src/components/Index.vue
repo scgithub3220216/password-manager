@@ -325,7 +325,7 @@ function setPwdDetailBySearch(pwdInfo: PwdInfo) {
 
 <template>
   <div class="outer">
-    <Header ref="headerRef" @updatePwdDetailBySearch="setPwdDetailBySearch"/>
+    <Header ref="headerRef" :updatePwdDetailBySearch="setPwdDetailBySearch"/>
     <div class="content">
       <div v-if="!(headerRef && headerRef.searchResultShowFlag)" class="group">
         <div class="group-data">

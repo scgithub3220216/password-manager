@@ -16,13 +16,7 @@ const search = ref('');
 const searchResultShowFlag = ref(false);
 const searchResultList = reactive<PwdInfo[]>([]);
 const searchInputRef = ref(null);
-
-// defineProps(['setPwdDetailBySearch'])
-
-// const props = defineProps({setPwdDetailBySearch: Function})
-const emit = defineEmits<{
-  (event: 'updatePwdDetailBySearch'): void
-}>()
+let props = defineProps(['updatePwdDetailBySearch'])
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
@@ -50,13 +44,13 @@ function searchAction() {
   console.log('searchResultListTemp', searchResultListTemp.length)
   if (searchResultListTemp.length === 0) {
     searchResultList.splice(0, searchResultList.length)
-    emit('updatePwdDetailBySearch', null);
+    props.updatePwdDetailBySearch(null)
     // setPwdDetailBySearch(null)
     return;
   }
   searchResultList.splice(0, searchResultList.length, ...searchResultListTemp);
   // setPwdDetailBySearch(searchResultListTemp[0])
-  emit('updatePwdDetailBySearch', searchResultListTemp[0]);
+  props.updatePwdDetailBySearch( searchResultListTemp[0]);
 
 }
 
