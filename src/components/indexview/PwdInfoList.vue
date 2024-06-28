@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { Delete, Plus } from "@element-plus/icons-vue";
-import { ElMessageBox } from "element-plus";
-import { PwdInfo } from "../../store/type.ts";
-import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
-import { reactive, watch } from "vue";
+import {Delete, Plus} from "@element-plus/icons-vue";
+import {ElMessageBox} from "element-plus";
+import {PwdInfo} from "../../store/type.ts";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {reactive, watch} from "vue";
 
 const userDataInfoStore = useUserDataInfoStore();
+
+let props = defineProps(['transferInputFocus'])
 
 const openDelPwdInfoMsgBox = () => {
   ElMessageBox.confirm("确认删除此帐号?", {
@@ -17,19 +19,20 @@ const openDelPwdInfoMsgBox = () => {
       width: "250px",
     },
   })
-    .then(() => {
-      deletePwdInfo();
-    })
-    .catch(() => {});
+      .then(() => {
+        deletePwdInfo();
+      })
+      .catch(() => {
+      });
 };
 const pwdInfoList = reactive<PwdInfo[]>([]);
 const curGroup = reactive(userDataInfoStore.curGroup);
 watch(curGroup, (newVal) => {
   console.log("watch curGroup newVal:", newVal);
   pwdInfoList.splice(
-    0,
-    pwdInfoList.length,
-    ...userDataInfoStore.getPwdInfoListByGroupId(newVal.id)
+      0,
+      pwdInfoList.length,
+      ...userDataInfoStore.getPwdInfoListByGroupId(newVal.id)
   );
 });
 
@@ -41,27 +44,27 @@ function clickPwdInfo(value: PwdInfo) {
 function insertPwdInfo() {
   // drawer.value = true;
   console.log(`insertPwdInfo curGroup.id:${curGroup.id}`);
+  // PwdInfo input 输入框的光标
+  props.transferInputFocus(3);
+
   let newPwdInfo = new PwdInfo(
-    userDataInfoStore.generatePwdInfoId(),
-    curGroup.id,
-    curGroup.title,
-    "",
-    "",
-    "",
-    "",
-    ""
+      userDataInfoStore.generatePwdInfoId(),
+      curGroup.id,
+      curGroup.title,
+      "",
+      "",
+      "",
+      "",
+      ""
   );
 
   userDataInfoStore.insertPwdInfo(newPwdInfo);
 
   pwdInfoList.splice(
-    0,
-    pwdInfoList.length,
-    ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+      0,
+      pwdInfoList.length,
+      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
   );
-
-  // todo
-  // transferInputFocus(3);
 }
 
 function deletePwdInfo() {
@@ -69,9 +72,9 @@ function deletePwdInfo() {
   userDataInfoStore.deletePwdInfo(userDataInfoStore.curPwdInfo.id);
   //  删除 pwdGroupList 中的数据
   pwdInfoList.splice(
-    0,
-    pwdInfoList.length,
-    ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+      0,
+      pwdInfoList.length,
+      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
   );
 }
 </script>
@@ -81,9 +84,9 @@ function deletePwdInfo() {
     <div class="pwd-item">
       <ul id="pwd-ul">
         <li
-          v-for="pwdInfo in pwdInfoList"
-          :key="pwdInfo.id"
-          @click="clickPwdInfo(pwdInfo)"
+            v-for="pwdInfo in pwdInfoList"
+            :key="pwdInfo.id"
+            @click="clickPwdInfo(pwdInfo)"
         >
           {{ pwdInfo.title }}
         </li>
@@ -93,12 +96,12 @@ function deletePwdInfo() {
       <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
         <span @click="insertPwdInfo()">
           <Plus style="width: 20px; height: 20px; margin-right: 8px"
-        /></span>
+          /></span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
         <span @click="openDelPwdInfoMsgBox()">
           <Delete style="width: 20px; height: 20px"
-        /></span>
+          /></span>
       </el-tooltip>
     </div>
     <!-- <el-drawer v-model="drawer" title="I am the title" :with-header="false">
@@ -127,6 +130,7 @@ function deletePwdInfo() {
   overflow-x: hidden;
   margin-top: 32px;
 }
+
 .pwd-tools span {
   padding: 8px 8px 0 8px;
   margin-left: 10px;

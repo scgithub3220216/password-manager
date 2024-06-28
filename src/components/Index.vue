@@ -44,10 +44,7 @@ function transferInputFocus(type: number) {
   if (type === 1 && headerRef.value.searchInputRef) {
 // @ts-ignore
     headerRef.value.searchInputRef.focus();
-  } else if (type === 2 && groupRef.value.groupInputRef) {
-// @ts-ignore
-    groupRef.value.groupInputRef.focus();
-  } else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput) {
+  }  else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput) {
 // @ts-ignore
     pwdInfoViewRef.value.pwdInfoTitleInput.focus();
   }
@@ -107,7 +104,8 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
     <Header ref="headerRef" :updateSearchViewValue="showSearchView" :updateSearchResultData="setSearchResultData"/>
     <div class="content">
       <GroupView v-if="!searchViewShowFlag" ref="groupRef"/>
-      <PwdInfoListView v-if="!searchViewShowFlag"/>
+
+      <PwdInfoListView v-if="!searchViewShowFlag" :transferInputFocus="transferInputFocus"/>
 
       <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList"/>
 
