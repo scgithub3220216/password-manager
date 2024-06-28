@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "./utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
-import {defaultOpenMainWinShortcutKey, helpLink, supportLink} from "../src/config/config.ts";
+import {defaultOpenMainWinShortcutKey, helpLink} from "../src/config/config.ts";
 /* 引入storeToRefs */
 
 // const require = createRequire(import.meta.url)
@@ -243,9 +243,9 @@ ipcMain.handle('auto-start', (event, arg) => {
     setAutoStart(arg);
 });
 
-ipcMain.handle('Jump-support-doc', () => {
-    console.log(`Jump-support-doc: `);
-    shell.openExternal(supportLink);
+ipcMain.handle('open-browser', (event, arg) => {
+    console.log(`open-browser:${arg} `);
+    shell.openExternal(arg);
 });
 
 

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import useBrowser from "../../hooks/useBrowser.ts";
 
 const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
+const {openBrowser} = useBrowser();
+
 
 defineExpose({keydown, pwdInfoTitleInput});
 const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
@@ -150,6 +153,19 @@ function clickPwdImg() {
         class="input-pwd"
     >
       <template #suffix>
+        <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="在浏览器中打开"
+            placement="top"
+        >
+          <img
+              src="/browser.svg"
+              alt="enter"
+              @click="openBrowser(curPwdInfo.link)"
+              class="copy"
+          />
+        </el-tooltip>
         <el-tooltip
             class="box-item"
             effect="dark"
