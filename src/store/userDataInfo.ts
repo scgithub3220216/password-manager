@@ -116,7 +116,13 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.curGroup.id = group.id;
             this.curGroup.title = group.title;
         },
-
+        setCurPwdInfoPwd(pwd: string) {
+            if (!pwd) {
+                return;
+            }
+            this.curPwdInfo.password = pwd;
+            this.editAction()
+        },
         setCurPwdInfo(pwdInfo: PwdInfo) {
             console.log('setCurPwdInfo:', pwdInfo)
             if (!pwdInfo) {

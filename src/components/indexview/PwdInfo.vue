@@ -2,12 +2,13 @@
 import {reactive, ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
+import RandomPwdGenerate from "./RandomPwdGenerate.vue";
 
-const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
 const {openBrowser} = useBrowser();
+
 
 
 defineExpose({keydown, pwdInfoTitleInput});
@@ -44,17 +45,13 @@ function keydown(e: KeyboardEvent) {
   }
 }
 
+const randomPwdGenerateRef = ref()
+
 function clickRandomImg() {
   console.log("clickRandomImg");
-  // 生成随机密码
-  let password = "";
-  for (let i = 0; i < 15; i++) {
-    password += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-    );
-  }
-  curPwdInfo.password = password;
-  pwdInfoChange();
+  randomPwdGenerateRef.value.dialogVisible = true
+  // curPwdInfo.password = password;
+  // pwdInfoChange();
 }
 
 function clickPwdImg() {
@@ -126,7 +123,7 @@ function clickPwdImg() {
           <img
               src="/random.svg"
               alt="enter"
-              @click="clickRandomImg"
+              @click="randomPwdGenerateRef.dialogVisible = true"
               class="copy"
           />
         </el-tooltip>
@@ -193,6 +190,8 @@ function clickPwdImg() {
       />
     </div>
   </div>
+
+  <RandomPwdGenerate ref="randomPwdGenerateRef" :updatePwdInfo="pwdInfoChange"/>
 </template>
 
 <style scoped>
