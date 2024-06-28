@@ -39,6 +39,7 @@ onMounted(() => {
  * @param type 1: searchInputRef 2:groupInputRef  3: pwdInfoTitleInput
  */
 function transferInputFocus(type: number) {
+  console.log('transferInputFocus')
 // @ts-ignore
   if (type === 1 && headerRef.value.searchInputRef) {
 // @ts-ignore
@@ -105,7 +106,7 @@ function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: Mou
   <div class="outer">
     <Header ref="headerRef" :updateSearchViewValue="showSearchView" :updateSearchResultData="setSearchResultData"/>
     <div class="content">
-      <GroupView v-if="!searchViewShowFlag" ref="groupRef" :transferInputFocus="transferInputFocus"/>
+      <GroupView v-if="!searchViewShowFlag" ref="groupRef"/>
       <PwdInfoListView v-if="!searchViewShowFlag"/>
 
       <SearchResult v-if="searchViewShowFlag" :searchResultList="searchResultList"/>

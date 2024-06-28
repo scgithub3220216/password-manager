@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { Delete, Download, Edit, Plus } from "@element-plus/icons-vue";
-import { PwdGroup } from "../../store/type.ts";
-import { ElMessage } from "element-plus";
-import { onMounted, reactive, ref } from "vue";
+import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
+import {PwdGroup} from "../../store/type.ts";
+import {ElMessage} from "element-plus";
+import {onMounted, reactive, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
-import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const groupInputRef = ref(null);
+const groupInputRef = ref();
 
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
-const { exportExcel } = useExcel();
+const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 let curGroup = reactive<PwdGroup>({});
 let pwdGroupList = reactive<PwdGroup[]>([]);
 
-let props = defineProps(["transferInputFocus"]);
 
 onMounted(() => {
   console.log("Index onMounted");
   initData();
 });
+
 function initData() {
   Object.assign(pwdGroupList, userDataInfoStore.pwdGroupList);
   if (!(pwdGroupList && pwdGroupList.length > 0)) {
@@ -63,7 +63,7 @@ function clickGroupCss() {
 function triggerGroupsInsert() {
   console.log("triggerGroupsInsert");
   groupInputShowFlag.value = true;
-  props.transferInputFocus(2);
+  groupInputRef.value.focus();
 }
 
 function groupInputChange() {
@@ -74,9 +74,9 @@ function groupInputChange() {
   }
   console.log("groupInputChange2");
   let pwdGroup = new PwdGroup(
-    userDataInfoStore.generateGroupId(),
-    groupInputValue.value,
-    []
+      userDataInfoStore.generateGroupId(),
+      groupInputValue.value,
+      []
   );
   pwdGroupList.push(pwdGroup);
   userDataInfoStore.insertGroup(pwdGroup);
@@ -115,9 +115,9 @@ function deleteGroup() {
   userDataInfoStore.deleteGroup(curGroup.id);
   //  删除 pwdGroupList 中的数据
   pwdGroupList.splice(
-    0,
-    pwdGroupList.length,
-    ...userDataInfoStore.pwdGroupList
+      0,
+      pwdGroupList.length,
+      ...userDataInfoStore.pwdGroupList
   );
   ElMessage.success("删除成功");
 }
@@ -128,26 +128,26 @@ function deleteGroup() {
     <div class="group-data">
       <ul id="group-ul">
         <li
-          v-for="group in pwdGroupList"
-          :key="group.id"
-          @click="clickGroup(group)"
+            v-for="group in pwdGroupList"
+            :key="group.id"
+            @click="clickGroup(group)"
         >
           <span v-show="!group.editFlag"> {{ group.title }}</span>
           <el-input
-            v-show="group.editFlag"
-            ref="groupInput2Ref"
-            v-model="group.title"
-            @change="editGroups()"
-            @blur="editGroups()"
+              v-show="group.editFlag"
+              ref="groupInput2Ref"
+              v-model="group.title"
+              @change="editGroups()"
+              @blur="editGroups()"
           ></el-input>
         </li>
       </ul>
       <el-input
-        ref="groupInputRef"
-        v-model="groupInputValue"
-        v-show="groupInputShowFlag"
-        @change="groupInputChange()"
-        @blur="groupInputChange()"
+          ref="groupInputRef"
+          v-model="groupInputValue"
+          v-show="groupInputShowFlag"
+          @change="groupInputChange()"
+          @blur="groupInputChange()"
       />
     </div>
 
@@ -155,24 +155,24 @@ function deleteGroup() {
       <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
         <span @blur="triggerGroupsInsert" @click="triggerGroupsInsert()">
           <Plus style="width: 20px; height: 20px; margin-right: 8px"
-        /></span>
+          /></span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="修改" placement="top">
         <span @blur="triggerGroupEdit" @click="triggerGroupEdit()">
           <Edit style="width: 20px; height: 20px; margin-right: 8px"
-        /></span>
+          /></span>
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="导出" placement="top">
         <span @click="exportExcel">
           <Download style="width: 20px; height: 20px"
-        /></span>
+          /></span>
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
         <span @click="deleteGroup()">
           <Delete style="width: 20px; height: 20px"
-        /></span>
+          /></span>
       </el-tooltip>
     </div>
   </div>
