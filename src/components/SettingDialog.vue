@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue";
 import Support from "./setview/Support.vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
@@ -13,25 +13,30 @@ function openSettingDialog() {
 
 // 暴露方法给父组件
 defineExpose({
-  openSettingDialog
-})
-
+  openSettingDialog,
+});
 </script>
 
 <template>
-  <el-dialog v-model="settingDialogVisible" title="" width="500" style="height: 400px">
-    <el-tabs tab-position="left" style="height: 100%" class="demo-tabs">
-      <el-tab-pane label="通用">
-        <BasicSet/>
-      </el-tab-pane>
-      <el-tab-pane label="快捷键">
-        <ShortcutKeys/>
-      </el-tab-pane>
+  <el-dialog
+    v-model="settingDialogVisible"
+    title=""
+    width="500"
+    style="height: 400px"
+  >
+    <el-tabs type="card" class="demo-tabs">
       <el-tab-pane label="修改密码">
-        <UpdatePwd/>
+        <UpdatePwd />
+      </el-tab-pane>
+
+      <el-tab-pane label="快捷键">
+        <ShortcutKeys />
+      </el-tab-pane>
+      <el-tab-pane label="通用">
+        <BasicSet />
       </el-tab-pane>
       <el-tab-pane label="支持/捐赠">
-        <Support/>
+        <Support />
       </el-tab-pane>
     </el-tabs>
   </el-dialog>

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
-import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import { reactive, ref } from "vue";
+import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
 
-const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+const characters =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
 
-defineExpose({keydown, pwdInfoTitleInput})
-const curPwdInfo = reactive(userDataInfoStore.curPwdInfo)
+defineExpose({ keydown, pwdInfoTitleInput });
+const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
 // watch(curPwdInfo,(newVal)=>{
 //   console.log('watch curPwdInfo:',newVal)
 // })
@@ -16,130 +17,167 @@ const curPwdInfo = reactive(userDataInfoStore.curPwdInfo)
  * pwdInfo
  */
 function pwdInfoChange() {
-  console.log('pwdInfoChange')
-  userDataInfoStore.updatePwdInfo(curPwdInfo)
+  console.log("pwdInfoChange");
+  userDataInfoStore.updatePwdInfo(curPwdInfo);
 }
 
 function copyValue(value: string) {
-  console.log('copyValue')
-  navigator.clipboard.writeText(value).then(() => {
-    console.log('复制成功')
-  }, () => {
-    console.log('复制失败')
-  })
+  console.log("copyValue");
+  navigator.clipboard.writeText(value).then(
+    () => {
+      console.log("复制成功");
+    },
+    () => {
+      console.log("复制失败");
+    }
+  );
 }
 
 function keydown(e: KeyboardEvent) {
   // console.log('keydown', e)
-  if (e.ctrlKey && e.key === 'p') {
+  if (e.ctrlKey && e.key === "p") {
     copyValue(curPwdInfo.password);
-  } else if (e.ctrlKey && e.key === 'u') {
+  } else if (e.ctrlKey && e.key === "u") {
     copyValue(curPwdInfo.username);
   }
 }
 
 function clickRandomImg() {
-  console.log('clickRandomImg')
+  console.log("clickRandomImg");
   // 生成随机密码
-  let password = '';
+  let password = "";
   for (let i = 0; i < 15; i++) {
-    password += characters.charAt(Math.floor(Math.random() * characters.length));
+    password += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
   curPwdInfo.password = password;
   pwdInfoChange();
 }
 
 function clickPwdImg() {
-  console.log('clickPwdImg')
+  console.log("clickPwdImg");
   passwordVisible.value = !passwordVisible.value;
 }
 </script>
 
 <template>
   <div class="pwdInfo">
-    <div class="pwdInfo-item">
-      <span>标题</span>
-      <el-input ref="pwdInfoTitleInput" v-model="curPwdInfo.title" @change="pwdInfoChange()"/>
-    </div>
+    <span class="pwdInfo-item">标题</span>
+    <el-input
+      ref="pwdInfoTitleInput"
+      v-model="curPwdInfo.title"
+      @change="pwdInfoChange()"
+      class="input-pwd"
+    />
 
-    <div class="pwdInfo-item">
-      <span>用户名</span>
-      <el-input v-model="curPwdInfo.username" @change="pwdInfoChange()">
-        <template #suffix>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="复制用户名,快捷键 Ctrl+U"
-              placement="top"
-          >
-            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.username)" class="copy">
-          </el-tooltip>
-        </template>
-      </el-input>
-    </div>
+    <span class="pwdInfo-item">用户名</span>
+    <el-input
+      v-model="curPwdInfo.username"
+      @change="pwdInfoChange()"
+      class="input-pwd"
+    >
+      <template #suffix>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="复制用户名,快捷键 Ctrl+U"
+          placement="top"
+        >
+          <img
+            src="/copy.svg"
+            alt="enter"
+            @click="copyValue(curPwdInfo.username)"
+            class="copy"
+          />
+        </el-tooltip>
+      </template>
+    </el-input>
 
-    <div class="pwdInfo-item">
-      <span>密码</span>
-      <el-input v-model="curPwdInfo.password" @change="pwdInfoChange()" :type="passwordVisible ? 'text' : 'password'" class="input-pwd">
-        <template #suffix>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="明文展示"
-              placement="top"
-          >
-            <img src="/ic_view.svg" alt="enter" @click="clickPwdImg" class="copy">
-          </el-tooltip>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="生成随机密码"
-              placement="top"
-          >
-            <img src="/random.svg" alt="enter" @click="clickRandomImg" class="copy">
-          </el-tooltip>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="复制密码,快捷键 Ctrl+P"
-              placement="top"
-          >
-            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.password)" class="copy">
-          </el-tooltip>
-        </template>
-      </el-input>
-    </div>
+    <span class="pwdInfo-item">密码</span>
+    <el-input
+      v-model="curPwdInfo.password"
+      @change="pwdInfoChange()"
+      :type="passwordVisible ? 'text' : 'password'"
+      class="input-pwd"
+    >
+      <template #suffix>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="明文展示"
+          placement="top"
+        >
+          <img
+            src="/ic_view.svg"
+            alt="enter"
+            @click="clickPwdImg"
+            class="copy"
+          />
+        </el-tooltip>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="生成随机密码"
+          placement="top"
+        >
+          <img
+            src="/random.svg"
+            alt="enter"
+            @click="clickRandomImg"
+            class="copy"
+          />
+        </el-tooltip>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="复制密码,快捷键 Ctrl+P"
+          placement="top"
+        >
+          <img
+            src="/copy.svg"
+            alt="enter"
+            @click="copyValue(curPwdInfo.password)"
+            class="copy"
+          />
+        </el-tooltip>
+      </template>
+    </el-input>
 
-    <div class="pwdInfo-item">
-      <span> 链接</span>
-      <el-input v-model="curPwdInfo.link" @change="pwdInfoChange()">
-        <template #suffix>
-          <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="复制链接"
-              placement="top"
-          >
-            <img src="/copy.svg" alt="enter" @click="copyValue(curPwdInfo.link)" class="copy">
-          </el-tooltip>
-        </template>
-      </el-input>
-    </div>
+    <span class="pwdInfo-item"> 链接</span>
+    <el-input
+      v-model="curPwdInfo.link"
+      @change="pwdInfoChange()"
+      class="input-pwd"
+    >
+      <template #suffix>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="复制链接"
+          placement="top"
+        >
+          <img
+            src="/copy.svg"
+            alt="enter"
+            @click="copyValue(curPwdInfo.link)"
+            class="copy"
+          />
+        </el-tooltip>
+      </template>
+    </el-input>
 
-    <div class="pwdInfo-item">
-      <span> 说明</span>
-      <div>
-        <el-input
-            class="item-textarea"
-            v-model="curPwdInfo.remark"
-            @change="pwdInfoChange()"
-            :rows="5"
-            type="textarea"
-        />
-      </div>
+    <span class="pwdInfo-item"> 说明</span>
+    <div>
+      <el-input
+        class="item-textarea"
+        v-model="curPwdInfo.remark"
+        @change="pwdInfoChange()"
+        :rows="5"
+        type="textarea"
+      />
     </div>
   </div>
-
 </template>
 
 <style scoped>
@@ -151,9 +189,12 @@ function clickPwdImg() {
   margin-top: 0px;
   display: flex;
   padding: 10px;
-  border-bottom: 1px solid #000000;
+  /* border-bottom: 1px solid #000000; */
   flex-direction: column;
   align-items: start;
+}
+.input-pwd {
+  width: 300px;
 }
 
 .item-input {
@@ -161,11 +202,10 @@ function clickPwdImg() {
   font-size: 16px;
   border: 0 none;
   background: transparent;
-
 }
 
 .item-textarea {
-  width: 292px;
+  width: 300px;
   color: white;
   font-size: 16px;
   border: 0 none;
@@ -179,14 +219,12 @@ function clickPwdImg() {
   border-radius: 50%;
   padding: 1px;
   opacity: 0.4;
-
 }
 
 .copy:hover {
   opacity: 0.4;
-  background: #79797BFF;
+  background: #79797bff;
   box-shadow: #888888 0px 0px 5px 0px;
   cursor: pointer;
-
 }
 </style>

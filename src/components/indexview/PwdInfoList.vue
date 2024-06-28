@@ -1,92 +1,109 @@
 <script setup lang="ts">
-
-import {Delete, Plus} from "@element-plus/icons-vue";
-import {ElMessageBox} from "element-plus";
-import {PwdInfo} from "../../store/type.ts";
-import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {reactive, watch} from "vue";
+import { Delete, Plus } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
+import { PwdInfo } from "../../store/type.ts";
+import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
+import { reactive, watch } from "vue";
 
 const userDataInfoStore = useUserDataInfoStore();
+
 const openDelPwdInfoMsgBox = () => {
-  ElMessageBox.confirm(
-      '确认删除此帐号?',
-      {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning',
-        draggable: true,
-        customStyle: {
-          width: '250px'
-        }
-      }
-  )
-      .then(() => {
-        deletePwdInfo()
-      })
-      .catch(() => {
-      })
-}
+  ElMessageBox.confirm("确认删除此帐号?", {
+    confirmButtonText: "确认",
+    cancelButtonText: "取消",
+    type: "warning",
+    draggable: true,
+    customStyle: {
+      width: "250px",
+    },
+  })
+    .then(() => {
+      deletePwdInfo();
+    })
+    .catch(() => {});
+};
 const pwdInfoList = reactive<PwdInfo[]>([]);
 const curGroup = reactive(userDataInfoStore.curGroup);
 watch(curGroup, (newVal) => {
-  console.log('watch curGroup newVal:', newVal)
-  pwdInfoList.splice(0, pwdInfoList.length, ...userDataInfoStore.getPwdInfoListByGroupId(newVal.id));
-})
+  console.log("watch curGroup newVal:", newVal);
+  pwdInfoList.splice(
+    0,
+    pwdInfoList.length,
+    ...userDataInfoStore.getPwdInfoListByGroupId(newVal.id)
+  );
+});
 
 function clickPwdInfo(value: PwdInfo) {
-  console.log('clickPwdInfo')
-  userDataInfoStore.setCurPwdInfo(value)
+  console.log("clickPwdInfo");
+  userDataInfoStore.setCurPwdInfo(value);
 }
 
 function insertPwdInfo() {
-  console.log(`insertPwdInfo curGroup.id:${curGroup.id}`)
-  let newPwdInfo = new PwdInfo(userDataInfoStore.generatePwdInfoId(), curGroup.id, curGroup.title, '', '', '', '', '');
+  // drawer.value = true;
+  console.log(`insertPwdInfo curGroup.id:${curGroup.id}`);
+  let newPwdInfo = new PwdInfo(
+    userDataInfoStore.generatePwdInfoId(),
+    curGroup.id,
+    curGroup.title,
+    "",
+    "",
+    "",
+    "",
+    ""
+  );
 
-  userDataInfoStore.insertPwdInfo(newPwdInfo)
+  userDataInfoStore.insertPwdInfo(newPwdInfo);
 
-  pwdInfoList.splice(0, pwdInfoList.length, ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id));
+  pwdInfoList.splice(
+    0,
+    pwdInfoList.length,
+    ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+  );
 
   // todo
   // transferInputFocus(3);
 }
 
 function deletePwdInfo() {
-  console.log('deletePwdInfo')
+  console.log("deletePwdInfo");
   userDataInfoStore.deletePwdInfo(userDataInfoStore.curPwdInfo.id);
   //  删除 pwdGroupList 中的数据
-  pwdInfoList.splice(0, pwdInfoList.length, ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id));
-
+  pwdInfoList.splice(
+    0,
+    pwdInfoList.length,
+    ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+  );
 }
-
-
 </script>
 
 <template>
   <div class="pwdInfo-list">
     <div class="pwd-item">
       <ul id="pwd-ul">
-        <li v-for="pwdInfo in pwdInfoList" :key="pwdInfo.id" @click="clickPwdInfo(pwdInfo)">{{ pwdInfo.title }}</li>
+        <li
+          v-for="pwdInfo in pwdInfoList"
+          :key="pwdInfo.id"
+          @click="clickPwdInfo(pwdInfo)"
+        >
+          {{ pwdInfo.title }}
+        </li>
       </ul>
     </div>
     <div class="pwd-tools">
-      <el-tooltip
-          class="box-item"
-          effect="dark"
-          content="新增"
-          placement="top"
-      >
-        <span @click="insertPwdInfo()"> <Plus style="width: 20px; height: 20px; margin-right: 8px"/></span>
+      <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
+        <span @click="insertPwdInfo()">
+          <Plus style="width: 20px; height: 20px; margin-right: 8px"
+        /></span>
       </el-tooltip>
-      <el-tooltip
-          class="box-item"
-          effect="dark"
-          content="删除"
-          placement="top"
-      >
-        <span @click="openDelPwdInfoMsgBox()"> <Delete style="width: 20px; height: 20px;"/></span>
+      <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
+        <span @click="openDelPwdInfoMsgBox()">
+          <Delete style="width: 20px; height: 20px"
+        /></span>
       </el-tooltip>
     </div>
-
+    <!-- <el-drawer v-model="drawer" title="I am the title" :with-header="false">
+      <span>Hi there!</span>
+    </el-drawer> -->
   </div>
 </template>
 
@@ -102,17 +119,17 @@ function deletePwdInfo() {
 }
 
 #pwd-ul li {
-  height: 35px;
+  height: 27px;
 }
 
 .pwd-item {
   overflow-y: auto;
   overflow-x: hidden;
+  margin-top: 32px;
 }
 .pwd-tools span {
   padding: 8px 8px 0 8px;
   margin-left: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 ul {
@@ -135,9 +152,7 @@ li:first-child {
 
 li:last-child {
   border-bottom: 0 #cab8b8 solid;
-
 }
-
 
 li:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -147,5 +162,4 @@ li:hover {
 li.selected {
   background: rgba(255, 255, 255, 0.08);
 }
-
 </style>
