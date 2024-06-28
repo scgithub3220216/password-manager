@@ -7,7 +7,7 @@ import useLoginView from "../hooks/useLoginView.ts";
 import {toggleDark} from "../styles/dark/dark.ts";
 import {useDark} from "@vueuse/core";
 
-const initSetPwd = ref(null)
+const initSetPwdRef = ref()
 const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 
@@ -32,7 +32,7 @@ onMounted(() => {
         // 判断用户是否第一次登录 , 如果是 设置登录密码
         if (userInfoStore.userInfo.firstLoginFlag != 0) {
           console.log('设置登录密码')
-          initSetPwd.value.pwdDialogVisible = true
+          initSetPwdRef.value.pwdDialogVisible = true
           setPwdMsgTips();
         }
       })
@@ -44,7 +44,7 @@ onMounted(() => {
 <template>
   <div id="myElement" class="pwd-outer">
 
-    <InitSetPwd ref="initSetPwd"/>
+    <InitSetPwd ref="initSetPwdRef"/>
 
     <el-input
         class="input-pwd"
