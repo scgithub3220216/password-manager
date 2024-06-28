@@ -2,7 +2,7 @@
 import Index from './components/Index.vue'
 import {useUserDataInfoStore} from "./store/userDataInfo.ts";
 import {FileDataObj} from "./store/type";
-import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
@@ -20,18 +20,15 @@ const routes = {
   '/index': Index,
 }
 
-onBeforeMount(() => {
-  console.log('onBeforeMount')
-})
 onMounted(() => {
-  console.log('app onMounted')
+  console.log(`App onMounted `)
   const intervalId = setInterval(() => saveData(), saveTime);
   // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
   return () => clearInterval(intervalId);
 });
 
 onBeforeUnmount(() => {
-  console.log('卸载之前')
+  console.log(`App onBeforeUnmount`)
   saveData()
 })
 
@@ -39,15 +36,22 @@ function saveData() {
   if (!userInfoStore.userInfo.saveFlag) {
     return;
   }
-  console.log('saveData 改动')
-  let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
-  // save-data
-  const fileDataObjJson = JSON.stringify(fileDataObj);
-  // console.log('fileDataObjJson:', fileDataObjJson)
-  let encryptData1 = encryptData(fileDataObjJson);
-  // console.log('encryptData1:', encryptData1)
-  window.ipcRenderer.invoke('save-data', encryptData1);
-  userInfoStore.userInfo.saveFlag = false;
+  userInfoStore.saveOver();
+  console.log('saveData 改动 userInfoStore.userInfo.saveFlag')
+  try {
+
+    let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
+    // save-data
+    const fileDataObjJson = JSON.stringify(fileDataObj);
+    console.log('fileDataObjJson:', fileDataObjJson)
+    let encryptData1 = encryptData(fileDataObjJson);
+    // console.log('encryptData1:', encryptData1)
+    window.ipcRenderer.invoke('save-data', encryptData1);
+  } catch (e) {
+    console.error('saveData error:', e)
+    userInfoStore.editAction();
+  }
+
 }
 
 // 监听路由哈希
@@ -63,6 +67,7 @@ const currentView = computed(() => {
 
 // 规定时间中不操作, 默认退出 (自动回登录页面)
 let timeoutId: NodeJS.Timeout;
+
 function resetTimer() {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => {

@@ -33,7 +33,7 @@ export default function () {
         const fileDataObj: FileDataObj = JSON.parse(decryptData1);
         // 把数据放到 pinia 中
         userInfoStore.setUserInfo(fileDataObj);
-        console.log('文件数据读取完成')
+        console.log('文件数据读取完成 userInfoStore.userInfo.saveFlag:',userInfoStore.userInfo.saveFlag)
     }
 
 

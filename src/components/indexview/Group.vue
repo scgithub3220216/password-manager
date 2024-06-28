@@ -13,8 +13,8 @@ const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
-let curGroup = reactive<PwdGroup>({});
-let pwdGroupList = reactive<PwdGroup[]>([]);
+const curGroup = reactive<PwdGroup>({});
+const pwdGroupList = reactive<PwdGroup[]>([]);
 
 
 onMounted(() => {

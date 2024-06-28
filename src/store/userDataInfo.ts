@@ -142,6 +142,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         editAction() {
             this.userInfo.saveFlag = true;
         },
+        saveOver() {
+            this.userInfo.saveFlag = false;
+        },
     },
     // 状态
     state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[], curGroup: PwdGroup, curPwdInfo: PwdInfo } {
