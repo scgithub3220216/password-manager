@@ -25,6 +25,7 @@ npm run build
 ## 随机密码
 随机密码 样式 优化
 selectedTypes 至少选择一个 
+- 
 
 ## 设置
 - 设置 
