@@ -26,6 +26,7 @@ npm run build
 随机密码 样式 优化
 selectedTypes 至少选择一个 
 - 
+## 滚动条采用 Scrollbar 滚动条
 
 ## 设置
 - 设置 

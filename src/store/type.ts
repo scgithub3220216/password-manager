@@ -1,3 +1,5 @@
+import {ShortCutKeyComb} from "../eneity/ShortCutKeyComb.ts";
+
 export class FileDataObj {
     userInfo: UserInfo;
     pwdGroupList: PwdGroup[];
@@ -10,7 +12,7 @@ export class FileDataObj {
 }
 
 // 存放用户的一些设置数据
-export class UserInfo {
+export interface UserInfo {
 
     // true 启动 ; false 不启动
     autoStart: boolean;
@@ -34,19 +36,9 @@ export class UserInfo {
 
     shortcutKey: ShortcutKey;
 
+    shortCutKeyCombs: ShortCutKeyComb[];
 
-    constructor(autoStart: boolean, pwd: string, firstLoginFlag: number, curLoginStatus: number, saveFlag: boolean, pwdInfoId: number, pwdGroupId: number, darkSwitch: boolean, autoLock: AutoLock, shortcutKey: ShortcutKey) {
-        this.autoStart = autoStart;
-        this.pwd = pwd;
-        this.firstLoginFlag = firstLoginFlag;
-        this.curLoginStatus = curLoginStatus;
-        this.saveFlag = saveFlag;
-        this.pwdInfoId = pwdInfoId;
-        this.pwdGroupId = pwdGroupId;
-        this.darkSwitch = darkSwitch;
-        this.autoLock = autoLock;
-        this.shortcutKey = shortcutKey;
-    }
+
 }
 
 export class AutoLock {

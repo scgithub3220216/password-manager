@@ -36,8 +36,6 @@ declare module 'vue' {
     PwdInfo: typeof import('./src/components/indexview/PwdInfo.vue')['default']
     PwdInfoList: typeof import('./src/components/indexview/PwdInfoList.vue')['default']
     RandomPwdGenerate: typeof import('./src/components/indexview/RandomPwdGenerate.vue')['default']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
     SearchResult: typeof import('./src/components/indexview/SearchResult.vue')['default']
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
     ShortcutKeys: typeof import('./src/components/setview/ShortcutKeys.vue')['default']
