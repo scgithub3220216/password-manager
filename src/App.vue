@@ -37,13 +37,14 @@ function saveData() {
     return;
   }
   userInfoStore.saveOver();
-  console.log('saveData 改动 userInfoStore.userInfo.saveFlag')
+  console.log('saveData 改动')
   try {
 
     let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList, userInfoStore.shortCutKeyCombs);
+    console.log('shortCutKeyCombs:', userInfoStore.shortCutKeyCombs)
     // save-data
     const fileDataObjJson = JSON.stringify(fileDataObj);
-    // console.log('fileDataObjJson:', fileDataObjJson)
+    console.log("fileDataObjJson:",fileDataObjJson)
     let encryptData1 = encryptData(fileDataObjJson);
     // console.log('encryptData1:', encryptData1)
     window.ipcRenderer.invoke('save-data', encryptData1);

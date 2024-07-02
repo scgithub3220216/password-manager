@@ -1,102 +1,165 @@
 <script setup lang="ts">
-import {onMounted, ref, watch} from "vue";
-import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {defaultOpenMainWinShortcutKey} from "../../config/config.ts";
+import useSetShortcutKey from "../../hooks/useSetShortcutKey.ts";
 
-const saveButtonDisabled = ref(true);
-const resetDisabled = ref(false);
-const currentOpenMainKeys = ref<string[]>([]);
-const mainShortcuts = ref("");
-const userInfoStore = useUserDataInfoStore();
+const {
+  mainShortcuts,
+  handleOpenMainKeydown,
+  handleOpenMainKeyup,
+  clearOpenMainKeys,
 
-onMounted(() => {
-  console.log("shorCutKeys onMounted");
-  currentOpenMainKeys.value =
-    userInfoStore.userInfo.shortcutKey?.openMainWindows?.split("+");
-  mainShortcuts.value = userInfoStore.userInfo.shortcutKey.openMainWindows;
-});
+  lockShortcuts,
+  handleLockKeydown,
+  handleLockKeyup,
+  clearLockKeys,
 
-watch(mainShortcuts, (newValue, oldValue) => {
-  console.log("mainShortcuts newValue: ", newValue, ", oldValue:", oldValue);
-  saveButtonDisabled.value = false;
-  if (!newValue) {
-    mainShortcuts.value = "无";
-  }
-});
+  cpUsernames,
+  handleCpUNameKeydown,
+  handleCpUNameKeyup,
+  clearCpUNameKeys,
 
-function handleOpenMainKeydown(event: any) {
-  event.preventDefault();
+  cpPwds,
+  handleCpPwdsKeydown,
+  handleCpPwdsKeyup,
+  clearCpPwdsKeys,
 
-  let key = event.key;
-  console.log("event", key);
-  if (key === "Control") {
-    key = "Ctrl";
-  }
-  if (currentOpenMainKeys.value.includes(key)) {
-    return;
-  }
-  currentOpenMainKeys.value.push(key);
-  mainShortcuts.value = currentOpenMainKeys.value.join(" + ");
-}
+  cpLinks,
+  handleCpLinksKeydown,
+  handleCpLinksKeyup,
+  clearCpLinksKeys,
 
-function handleOpenMainKeyup() {
-  // 在键盘抬起时清空 currentKeys 数组
-  currentOpenMainKeys.value = [];
-}
+  insertGroups,
+  handleInsertGroupsKeydown,
+  handleInsertGroupsKeyup,
+  clearInsertGroupsKeys,
 
-function saveShortcuts() {
-  console.log("保存快捷键", mainShortcuts.value);
+  insertPwdInfos,
+  handleInsertPwdInfosKeydown,
+  handleInsertPwdInfosKeyup,
+  clearInsertPwdInfosKeys,
 
-  // 发送事件给主进程
-  window.ipcRenderer.invoke("save-shortcuts", mainShortcuts.value);
-  userInfoStore.userInfo.shortcutKey.openMainWindows = mainShortcuts.value;
-  saveButtonDisabled.value = true;
-}
-
-function reset() {
-  console.log("reset");
-  mainShortcuts.value = defaultOpenMainWinShortcutKey;
-  currentOpenMainKeys.value = defaultOpenMainWinShortcutKey.split("+");
-}
+  saveAll,
+  reset
+} = useSetShortcutKey()
 </script>
 
 <template>
   <div>
-    <!-- <h2 class="setting-h2title">快捷键</h2> -->
+    <el-scrollbar height="250px">
+      <div class="setting-item">
+        <span style="display: block">打开主面板:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="mainShortcuts"
+            @keydown="handleOpenMainKeydown"
+            @keyup="handleOpenMainKeyup"
+            @keydown.delete="clearOpenMainKeys"
+        />
+      </div>
 
-    <div class="setting-item">
-      <span style="display: block">打开主面板:</span>
-      <el-input
-        type="text"
-        id="shortcuts"
-        class="ipt"
-        clearable
-        v-model="mainShortcuts"
-        @keydown="handleOpenMainKeydown"
-        @keyup="handleOpenMainKeyup"
-      />
-      <!--      <p>当前快捷键: {{ mainShortcuts }}</p>-->
-    </div>
+      <div class="setting-item">
+        <span style="display: block">锁定屏幕:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="lockShortcuts"
+            @keydown="handleLockKeydown"
+            @keyup="handleLockKeyup"
+            @keydown.delete="clearLockKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block">复制账号:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="cpUsernames"
+            @keydown="handleCpUNameKeydown"
+            @keyup="handleCpUNameKeyup"
+            @keydown.delete="clearCpUNameKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block">复制密码:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="cpPwds"
+            @keydown="handleCpPwdsKeydown"
+            @keyup="handleCpPwdsKeyup"
+            @keydown.delete="clearCpPwdsKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block">复制链接:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="cpLinks"
+            @keydown="handleCpLinksKeydown"
+            @keyup="handleCpLinksKeyup"
+            @keydown.delete="clearCpLinksKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block">新增分组:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="insertGroups"
+            @keydown="handleInsertGroupsKeydown"
+            @keyup="handleInsertGroupsKeyup"
+            @keydown.delete="clearInsertGroupsKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block">新增密码:</span>
+        <el-input
+            type="text"
+            id="shortcuts"
+            class="ipt"
+            clearable
+            placeholder="无"
+            v-model="insertPwdInfos"
+            @keydown="handleInsertPwdInfosKeydown"
+            @keyup="handleInsertPwdInfosKeyup"
+            @keydown.delete="clearInsertPwdInfosKeys"
+        />
+      </div>
 
 
-
-
-    <div class="bttn">
-      <el-button
-        class="btn"
-        type="primary"
-        :disabled="resetDisabled"
-        @click="reset"
-        >重置</el-button
-      >
-      <el-button
-        type="primary"
-        :disabled="saveButtonDisabled"
-        @click="saveShortcuts"
-        >保存</el-button
-      >
-    </div>
-    <!--    <el-button type="primary" @click="saveShortcuts" style="position: relative;left: 100px;top: 20px;">保存</el-button>-->
+      <div class="bttn">
+        <el-button class="btn" type="primary" @click="reset">
+          重置
+        </el-button>
+        <el-button type="primary" @click="saveAll">
+          保存
+        </el-button>
+      </div>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -106,9 +169,11 @@ function reset() {
   display: flex;
   justify-content: flex-end;
 }
+
 .btn {
   margin-left: auto;
 }
+
 .ipt {
   width: 400px;
   margin-top: 15px;

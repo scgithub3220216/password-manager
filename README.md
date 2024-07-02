@@ -28,6 +28,9 @@ selectedTypes 至少选择一个
 - 
 ## 滚动条采用 Scrollbar 滚动条
 
+## app 加载时 就读取数据
+然后把对应的数据通过 emitter 发送到 login中
+
 ## 设置
 - 设置 
   - 快捷键

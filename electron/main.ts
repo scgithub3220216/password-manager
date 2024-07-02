@@ -36,8 +36,8 @@ let clickExitTime = 0;
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 700,
         // 菜单是否隐藏 按住 Alt 还会展示
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'assets/icon.png'),
@@ -167,7 +167,7 @@ app.whenReady()
         }
 
         // 设置快捷键
-        registerGlobalShortcut(userInfo.shortcutKey?.openMainWindows);
+        registerGlobalShortcut(fileDataObj.shortCutKeyCombs[0].desc);
 
     })
     .then(() => {
@@ -177,13 +177,22 @@ app.whenReady()
 
 function registerGlobalShortcut(openMainWindows: string) {
     console.log('openMainWindows:', openMainWindows)
+    let replaceValue = 'CommandOrControl';
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
     let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
-    let openMainWindows2 = openMainWindows1.replace('Ctrl', 'CommandOrControl')
-
-    globalShortcut.register(openMainWindows2, () => {
-        showWindows()
-    })
+    let openMainWindows2 = openMainWindows1.replace('Ctrl', replaceValue)
+        // .replace('Control', replaceValue)
+    console.log('openMainWindows2:', openMainWindows2)
+    // 清除快捷键
+    globalShortcut.unregisterAll()
+    try {
+        globalShortcut.register(openMainWindows2, () => {
+            showWindows()
+        })
+    } catch (e) {
+        console.log('注册快捷键失败:', e)
+        globalShortcut.unregisterAll()
+    }
 }
 
 function getFilePath() {

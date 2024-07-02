@@ -14,15 +14,15 @@ export const saveTime = 1000;
 
 export const defaultPwd = '123456';
 
-export const defaultOpenMainWinShortcutKey = 'Control+Alt+E';
-export const defaultLockWinShortcutKey = 'Alt+G';
+export const defaultOpenMainWinShortcutKey = 'Ctrl + Alt + E';
+export const defaultLockWinShortcutKey = 'Alt + G';
 
-export const defaultCopyUsernameShortcutKey = 'Control+U';
+export const defaultCopyUsernameShortcutKey = 'Ctrl + U';
 
-export const defaultCopyPwdShortcutKey = 'Control+P';
-export const defaultCopyLinkShortcutKey = 'Control+L';
-export const defaultInsertGroupShortcutKey = 'Control+G';
-export const defaultInsertPwdInfoShortcutKey = 'Control+B';
+export const defaultCopyPwdShortcutKey = 'Ctrl + P';
+export const defaultCopyLinkShortcutKey = 'Ctrl + L';
+export const defaultInsertGroupShortcutKey = 'Ctrl + G';
+export const defaultInsertPwdInfoShortcutKey = 'Ctrl + B';
 
 export const supportLink = 'https://blog.csdn.net/OnMyWaySc/article/details/139989454?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22139989454%22%2C%22source%22%3A%22OnMyWaySc%22%7D';
 

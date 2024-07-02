@@ -196,7 +196,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             },
             shortCutKeyCombs: [
                 {
-                    keys: ['Control', 'Alt', "E"],
+                    keys: ['Ctrl', 'Alt', "E"],
                     actionName: 'openMainWindows',
                     desc: defaultOpenMainWinShortcutKey
                 },
@@ -205,32 +205,33 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     actionName: 'lockWin',
                     desc: defaultLockWinShortcutKey
                 },
+                // 2
                 {
-                    keys: ['Control', 'U'],
+                    keys: ['Ctrl', 'U'],
                     actionName: 'copyUsername',
                     desc: defaultCopyUsernameShortcutKey
                 },
                 // 3
                 {
-                    keys: ['Control', 'P'],
+                    keys: ['Ctrl', 'P'],
                     actionName: 'copyPwd',
                     desc: defaultCopyPwdShortcutKey
                 },
                 // 4
                 {
-                    keys: ['Control', 'L'],
+                    keys: ['Ctrl', 'L'],
                     actionName: 'copyLink',
                     desc: defaultCopyLinkShortcutKey
                 },
                 // 5
                 {
-                    keys: ['Control', 'G'],
+                    keys: ['Ctrl', 'G'],
                     actionName: 'insertGroup',
                     desc: defaultInsertGroupShortcutKey
                 },
                 // 6
                 {
-                    keys: ['Control', 'B'],
+                    keys: ['Ctrl', 'B'],
                     actionName: 'insertPwdInfo',
                     desc: defaultInsertPwdInfoShortcutKey
                 },
