@@ -40,7 +40,7 @@ function createWindow() {
         height: 600,
         // 菜单是否隐藏 按住 Alt 还会展示
         autoHideMenuBar: true,
-        icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
+        icon: path.join(process.env.VITE_PUBLIC, 'assets/icon.png'),
 
         // skipTaskbar: true, // this will hide the window from the taskbar
         webPreferences: {
@@ -87,7 +87,7 @@ function createWindow() {
 }
 
 function createTrayMenu() {
-    let trayIcon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'icon.png'))
+    let trayIcon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'assets/icon.png'))
     trayIcon = trayIcon.resize({width: 22, height: 22})
 
     tray = new Tray(trayIcon)

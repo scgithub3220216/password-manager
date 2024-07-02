@@ -111,7 +111,7 @@ defineExpose({
           :content="'锁定,快捷键'+shortCutKeyCombs[1].desc"
           placement="top"
       >
-        <img src="/lock.svg" alt="switch" @click="clickLock" class="search-image">
+        <img src="/assets/lock.svg" alt="switch" @click="clickLock" class="search-image">
       </el-tooltip>
       <el-tooltip
           class="box-item"
@@ -119,7 +119,7 @@ defineExpose({
           content="设置"
           placement="top"
       >
-        <img src="/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
+        <img src="/assets/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
       </el-tooltip>
     </div>
   </div>

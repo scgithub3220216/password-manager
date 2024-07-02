@@ -11,7 +11,7 @@ const {openBrowser} = useBrowser();
   <p>详细收支清单:
     <span @click="openBrowser(supportLink)">网页链接</span>
   </p>
-  <img src="/money.png" alt="" style="height: 200px">
+  <img src="/assets/money.png" alt="" style="height: 200px">
 </template>
 
 <style scoped>

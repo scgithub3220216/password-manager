@@ -56,7 +56,7 @@ onMounted(() => {
         autofocus
     >
       <template #suffix>
-        <img src="/enter.png" alt="enter" @click="handleEnter" class="enter">
+        <img src="/assets/enter.png" alt="enter" @click="handleEnter" class="enter">
       </template>
     </el-input>
     <div :style="{ visibility: capsLockFlag ? 'visible' : 'hidden'}" style="font-size: 14px">
