@@ -2,7 +2,6 @@
 
 // 把数据放到 pinia 中
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
-import {PwdInfo} from "../store/type.ts";
 import {onMounted, reactive, ref} from "vue";
 import "element-plus/theme-chalk/el-message.css";
 import "element-plus/theme-chalk/el-loading.css";
@@ -15,8 +14,11 @@ import SearchResult from "./indexview/SearchResult.vue";
 import PwdInfoView from "./indexview/PwdInfo.vue";
 import PwdInfoListView from "./indexview/PwdInfoList.vue";
 import GroupView from "./indexview/Group.vue";
+import useShortcutKey from "../hooks/useShortcutKey.ts";
+import {PwdInfo} from "./type.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
+useShortcutKey()
 
 const headerRef = ref(null);
 const pwdInfoViewRef = ref(null);
@@ -29,7 +31,7 @@ onMounted(() => {
   transferInputFocus(1);
   dynamicClickCss();
   // 启动键盘事件
-  document.addEventListener('keydown', pwdInfoViewRef.value.keydown);
+  // document.addEventListener('keydown', pwdInfoViewRef.value.keydown);
   console.log('Index 挂载完毕')
 })
 
@@ -44,7 +46,7 @@ function transferInputFocus(type: number) {
   if (type === 1 && headerRef.value.searchInputRef) {
 // @ts-ignore
     headerRef.value.searchInputRef.focus();
-  }  else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput) {
+  } else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput) {
 // @ts-ignore
     pwdInfoViewRef.value.pwdInfoTitleInput.focus();
   }

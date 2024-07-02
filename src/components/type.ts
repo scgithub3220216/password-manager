@@ -1,15 +1,27 @@
-import {ShortCutKeyComb} from "../eneity/ShortCutKeyComb.ts";
-
 export class FileDataObj {
     userInfo: UserInfo;
     pwdGroupList: PwdGroup[];
+    shortCutKeyCombs: ShortCutKeyComb[];
 
-
-    constructor(userInfo: UserInfo, pwdGroupList: PwdGroup[]) {
+    constructor(userInfo: UserInfo, pwdGroupList: PwdGroup[], shortCutKeyCombs: ShortCutKeyComb[]) {
         this.userInfo = userInfo;
         this.pwdGroupList = pwdGroupList;
+        this.shortCutKeyCombs = shortCutKeyCombs;
     }
 }
+
+export interface ShortCutKeyComb {
+
+    keys: string[];
+
+    action?: () => void;
+
+    actionName: string;
+
+    desc: string;
+
+}
+
 
 // 存放用户的一些设置数据
 export interface UserInfo {
@@ -35,8 +47,6 @@ export interface UserInfo {
     autoLock: AutoLock;
 
     shortcutKey: ShortcutKey;
-
-    shortCutKeyCombs: ShortCutKeyComb[];
 
 
 }

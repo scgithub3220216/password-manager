@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
-import {PwdGroup} from "../../store/type.ts";
 import {ElMessage} from "element-plus";
 import {onMounted, reactive, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {PwdGroup} from "../type.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();

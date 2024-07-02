@@ -5,8 +5,8 @@ import {toggleDark} from "../../styles/dark/dark.ts";
 import {reactive, ref} from "vue";
 import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {PwdInfo} from "../../store/type.ts";
 import SettingDialog from "../SettingDialog.vue";
+import {PwdInfo} from "../type.ts";
 
 const userInfoStore = useUserDataInfoStore();
 

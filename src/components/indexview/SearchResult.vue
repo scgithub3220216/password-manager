@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {PwdInfo} from "../../store/type.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {PwdInfo} from "../type.ts";
 
 defineProps(['searchResultList'])
 const userDataInfoStore = useUserDataInfoStore();

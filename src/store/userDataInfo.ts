@@ -1,8 +1,7 @@
 // 引入defineStore用于创建store
 import {defineStore} from 'pinia'
-import {FileDataObj, PwdGroup, PwdInfo, UserInfo} from "./type.ts";
 import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMainWinShortcutKey, defaultPwd} from "../config/config.ts";
-import {ShortCutKeyComb} from "../eneity/ShortCutKeyComb.ts";
+import {FileDataObj, PwdGroup, PwdInfo, ShortCutKeyComb, UserInfo} from "../components/type.ts";
 
 // 存放用户的一些设置数据
 export const useUserDataInfoStore = defineStore('userDataInfo', {
@@ -144,9 +143,10 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         setUserInfo(fileDataObj: FileDataObj) {
             this.userInfo = fileDataObj.userInfo;
             this.pwdGroupList = fileDataObj.pwdGroupList;
+            this.shortCutKeyCombs = fileDataObj.shortCutKeyCombs;
         },
         setShortCutKeyCombs(shortCutKeyCombs: ShortCutKeyComb[]) {
-            this.userInfo.shortCutKeyCombs = shortCutKeyCombs;
+            this.shortCutKeyCombs = shortCutKeyCombs;
             this.editAction()
         },
 
@@ -158,7 +158,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         },
     },
     // 状态
-    state(): { userInfo: UserInfo, pwdGroupList: PwdGroup[], curGroup: PwdGroup, curPwdInfo: PwdInfo } {
+    state(): { userInfo: UserInfo, shortCutKeyCombs: ShortCutKeyComb[], pwdGroupList: PwdGroup[], curGroup: PwdGroup, curPwdInfo: PwdInfo } {
         return {
             userInfo: {
                 darkSwitch: true,
@@ -177,42 +177,48 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     copyUsername: defaultCopyUsernameShortcutKey,
                     copyPwd: defaultCopyPwdShortcutKey,
                 },
-                shortCutKeyCombs: [
-                    {
-                        keys: ['Control', 'Alt', "E"],
-                        actionName: 'openMainWindows',
-                        desc: 'Control + Alt + E'
-                    },
-                    {
-                        keys: ['Control', 'P'],
-                        actionName: 'copyPwd',
-                        desc: 'Control + P'
-                    },
-                    {
-                        keys: ['Control', 'U'],
-                        actionName: 'copyUsername',
-                        desc: 'Control + U'
-                    },
-                    {
-                        keys: ['Control', 'L'],
-                        actionName: 'copyLink',
-                        desc: 'Control + L'
-                    },
-                    {
-                        keys: ['Control', 'G'],
-                        actionName: 'insertGroup',
-                        desc: 'Control + G'
-                    },
-                    {
-                        keys: ['Control', 'B'],
-                        actionName: 'insertPwdInfo',
-                        desc: 'Control + B'
-                    },
-
-                ],
                 saveFlag: false
 
             },
+            shortCutKeyCombs: [
+                {
+                    keys: ['Control', 'Alt', "E"],
+                    actionName: 'openMainWindows',
+                    desc: 'Control + Alt + E'
+                },
+                {
+                    keys: ['Alt', "G"],
+                    actionName: 'lockWin',
+                    desc: 'Alt + G'
+                },
+                {
+                    keys: ['Control', 'P'],
+                    actionName: 'copyPwd',
+                    desc: 'Control + P'
+                },
+                {
+                    keys: ['Control', 'U'],
+                    actionName: 'copyUsername',
+                    desc: 'Control + U'
+                },
+                {
+                    keys: ['Control', 'L'],
+                    actionName: 'copyLink',
+                    desc: 'Control + L'
+                },
+                {
+                    keys: ['Control', 'G'],
+                    actionName: 'insertGroup',
+                    desc: 'Control + G'
+                },
+                {
+                    keys: ['Control', 'B'],
+                    actionName: 'insertPwdInfo',
+                    desc: 'Control + B'
+                },
+
+            ],
+
             pwdGroupList: [
                 {
                     id: 1,

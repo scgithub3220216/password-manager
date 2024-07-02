@@ -1,16 +1,17 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import {FileDataObj} from "../store/type.ts";
 import useCrypto from "./useCrypto.ts";
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
+import useShortcutFuntion from "./useShortcutFuntion.ts";
+import {FileDataObj} from "../components/type.ts";
 
 export default function () {
 
     const capsLockFlag = ref(false)
     const {decryptData} = useCrypto();
     const userInfoStore = useUserDataInfoStore();
-
+    const {getShortCuts} = useShortcutFuntion();
     onMounted(() => {
         console.log('useCapsLock onMounted')
         window.addEventListener('keydown', handleCapsKeydown);
@@ -25,6 +26,7 @@ export default function () {
         console.log('sendMessageToMain')
         const userDataJson = await window.ipcRenderer.invoke('init-data');
         if (!userDataJson) {
+            userInfoStore.setShortCutKeyCombs(getShortCuts(userInfoStore.shortCutKeyCombs))
             return;
         }
         // 解密
@@ -33,6 +35,8 @@ export default function () {
         const fileDataObj: FileDataObj = JSON.parse(decryptData1);
         // 把数据放到 pinia 中
         userInfoStore.setUserInfo(fileDataObj);
+        // 设置快捷键
+        userInfoStore.setShortCutKeyCombs(getShortCuts(userInfoStore.shortCutKeyCombs))
         console.log('文件数据读取完成')
     }
 
@@ -43,10 +47,12 @@ export default function () {
         }
         capsLockFlag.value = !!event.getModifierState('CapsLock');
     }
+
     const pwd = ref('')
 
     const {pwdError} = usePwd()
     const {login} = useLoginAction()
+
     function loginSuccess() {
         console.log('login success')
         login();
@@ -56,5 +62,5 @@ export default function () {
         userInfoStore.userInfo.pwd == pwd.value ? loginSuccess() : pwdError()
     }
 
-    return {handleEnter,sendMessageToMain, pwd,capsLockFlag};
+    return {handleEnter, sendMessageToMain, pwd, capsLockFlag};
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
-import {PwdInfo} from "../../store/type.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {reactive, watch} from "vue";
+import {PwdInfo} from "../type.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 

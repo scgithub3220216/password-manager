@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Index from './components/Index.vue'
 import {useUserDataInfoStore} from "./store/userDataInfo.ts";
-import {FileDataObj} from "./store/type";
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import Login from './components/Login.vue'
 import {saveTime} from "./config/config.ts";
 import useCrypto from "./hooks/useCrypto.ts";
 import useLoginAction from "./hooks/useLoginAction.ts";
 import useUserInfo from "./hooks/useUserInfo.ts";
+import {FileDataObj} from "./components/type.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const {encryptData} = useCrypto();
@@ -40,7 +40,7 @@ function saveData() {
   console.log('saveData 改动 userInfoStore.userInfo.saveFlag')
   try {
 
-    let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList);
+    let fileDataObj = new FileDataObj(userInfoStore.userInfo, userInfoStore.pwdGroupList, userInfoStore.shortCutKeyCombs);
     // save-data
     const fileDataObjJson = JSON.stringify(fileDataObj);
     // console.log('fileDataObjJson:', fileDataObjJson)

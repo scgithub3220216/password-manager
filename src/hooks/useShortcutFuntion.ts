@@ -1,6 +1,7 @@
 // @ts-ignore
 
-import {ShortCutKeyComb} from "../eneity/ShortCutKeyComb.ts";
+
+import {ShortCutKeyComb} from "../store/type.ts";
 
 export default function () {
 
@@ -10,12 +11,13 @@ export default function () {
         'lockWin': lockWin,
         'copyUsername': copyUsername,
         'copyPwd': copyPwd,
+        'copyLink': copyLink,
         'insertGroup': insertGroup,
         'insertPwdInfo': insertPwdInfo,
         // 其他函数...
     };
 
-    function rehydrateActions(shortCutKeyCombs: ShortCutKeyComb[]):ShortCutKeyComb[] {
+    function getShortCuts(shortCutKeyCombs: ShortCutKeyComb[]): ShortCutKeyComb[] {
         if (!shortCutKeyCombs) {
             return [];
         }
@@ -29,28 +31,37 @@ export default function () {
 
 
     function openMainWin() {
-
+        console.log('openMainWin')
     }
 
     function lockWin() {
+        console.log('lockWin')
 
     }
 
     function copyUsername() {
+        console.log('copyUsername')
 
     }
 
     function copyPwd() {
+        console.log('copyPwd')
 
     }
 
+    function copyLink() {
+        console.log('copyLink')
+    }
+
     function insertGroup() {
+        console.log('insertGroup')
 
     }
 
     function insertPwdInfo() {
+        console.log('insertPwdInfo')
 
     }
 
-    return {functionMap};
+    return {getShortCuts};
 }
