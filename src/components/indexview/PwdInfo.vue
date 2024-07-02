@@ -15,12 +15,7 @@ const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
 
 defineExpose({keydown, pwdInfoTitleInput});
 const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
-// watch(curPwdInfo,(newVal)=>{
-//   console.log('watch curPwdInfo:',newVal)
-// })
-/**
- * pwdInfo
- */
+
 function pwdInfoChange() {
   console.log("pwdInfoChange");
   userDataInfoStore.updatePwdInfo(curPwdInfo);
@@ -86,12 +81,6 @@ function clickPwdImg() {
           >
             <CopyDocument/>
           </el-icon>
-          <!--          <img
-                        src="/copy.svg"
-                        alt="enter"
-                        @click="copyValue(curPwdInfo.username)"
-                        class="copy"
-                    />-->
         </el-tooltip>
       </template>
     </el-input>
@@ -114,13 +103,6 @@ function clickPwdImg() {
           <el-icon @click="clickPwdImg" class="copy">
             <View/>
           </el-icon>
-
-          <!--          <img-->
-          <!--              src="/ic_view.svg"-->
-          <!--              alt="enter"-->
-          <!--              @click="clickPwdImg"-->
-          <!--              class="copy"-->
-          <!--          />-->
         </el-tooltip>
         <el-tooltip
             class="box-item"
@@ -141,12 +123,7 @@ function clickPwdImg() {
           <el-icon @click="copyValue(curPwdInfo.password)" class="copy">
             <CopyDocument/>
           </el-icon>
-          <!--          <img-->
-          <!--              src="/copy.svg"-->
-          <!--              alt="enter"-->
-          <!--              @click="copyValue(curPwdInfo.password)"-->
-          <!--              class="copy"-->
-          <!--          />-->
+
         </el-tooltip>
       </template>
     </el-input>
@@ -168,12 +145,7 @@ function clickPwdImg() {
           <el-icon @click="openBrowser(curPwdInfo.link)" class="copy">
             <ChromeFilled/>
           </el-icon>
-          <!--          <img
-                        src="/browser.svg"
-                        alt="enter"
-                        @click="openBrowser(curPwdInfo.link)"
-                        class="copy"
-                    />-->
+
         </el-tooltip>
         <el-tooltip
             class="box-item"
@@ -184,12 +156,7 @@ function clickPwdImg() {
           <el-icon @click="copyValue(curPwdInfo.link)" class="copy">
             <CopyDocument/>
           </el-icon>
-          <!--          <img-->
-          <!--              src="/copy.svg"-->
-          <!--              alt="enter"-->
-          <!--              @click="copyValue(curPwdInfo.link)"-->
-          <!--              class="copy"-->
-          <!--          />-->
+
         </el-tooltip>
       </template>
     </el-input>
