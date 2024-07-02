@@ -1,6 +1,7 @@
 // emitter topic
 
 export const emitterInsertGroupTopic = 'insertGroupTopic';
+export const emitterLockTopic = 'lockTopic';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
 
 

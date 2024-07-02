@@ -5,14 +5,14 @@ import {ShortCutKeyComb} from "../store/type.ts";
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
 import emitter from "../utils/emitter.ts";
-import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic} from "../config/config.ts";
+import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic, emitterLockTopic} from "../config/config.ts";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
     const {curPwdInfo} = storeToRefs(userDataInfoStore);
     //设置秘钥和秘钥偏移量
     const functionMap: { [key: string]: () => void } = {
-        'openMainWin': openMainWin,
+        // 'openMainWin': openMainWin,
         'lockWin': lockWin,
         'copyUsername': copyUsername,
         'copyPwd': copyPwd,
@@ -46,13 +46,14 @@ export default function () {
         );
     }
 
+    // @ts-ignore
     function openMainWin() {
         console.log('openMainWin')
     }
 
     function lockWin() {
         console.log('lockWin')
-
+        emitter.emit(emitterLockTopic, '')
     }
 
     function copyUsername() {

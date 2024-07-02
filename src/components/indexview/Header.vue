@@ -2,11 +2,13 @@
 
 import {Search} from "@element-plus/icons-vue";
 import {toggleDark} from "../../styles/dark/dark.ts";
-import {reactive, ref} from "vue";
+import {onUnmounted, reactive, ref} from "vue";
 import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import SettingDialog from "../SettingDialog.vue";
 import {PwdInfo} from "../type.ts";
+import emitter from "../../utils/emitter.ts";
+import {emitterLockTopic} from "../../config/config.ts";
 
 const userInfoStore = useUserDataInfoStore();
 
@@ -16,7 +18,7 @@ const search = ref('');
 const searchResultList = reactive<PwdInfo[]>([]);
 const searchInputRef = ref(null);
 let props = defineProps(['updateSearchViewValue', 'updateSearchResultData'])
-let settingDialog = ref(null);
+let settingDialogRef = ref();
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
@@ -47,9 +49,20 @@ function searchAction() {
 
 function openSettingDialog() {
   console.log('openSettingDialog')
-  settingDialog.value.openSettingDialog();
+  settingDialogRef.value.openSettingDialog();
 }
 
+
+// 绑定事件
+emitter.on(emitterLockTopic, (value) => {
+  console.log(emitterLockTopic, ' 事件被触发 value:', value)
+  clickLock()
+})
+
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off(emitterLockTopic)
+})
 
 function clickLock() {
   logout();
@@ -95,7 +108,7 @@ defineExpose({
     </div>
   </div>
 
-  <SettingDialog ref="settingDialog"/>
+  <SettingDialog ref="settingDialogRef"/>
 
 </template>
 
