@@ -1,6 +1,15 @@
 // 引入defineStore用于创建store
 import {defineStore} from 'pinia'
-import {defaultCopyPwdShortcutKey, defaultCopyUsernameShortcutKey, defaultOpenMainWinShortcutKey, defaultPwd} from "../config/config.ts";
+import {
+    defaultCopyLinkShortcutKey,
+    defaultCopyPwdShortcutKey,
+    defaultCopyUsernameShortcutKey,
+    defaultInsertGroupShortcutKey,
+    defaultInsertPwdInfoShortcutKey,
+    defaultLockWinShortcutKey,
+    defaultOpenMainWinShortcutKey,
+    defaultPwd
+} from "../config/config.ts";
 import {FileDataObj, PwdGroup, PwdInfo, ShortCutKeyComb, UserInfo} from "../components/type.ts";
 
 // 存放用户的一些设置数据
@@ -150,6 +159,10 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.shortCutKeyCombs = shortCutKeyCombs;
             this.editAction()
         },
+        setShortCutKeyComb(index: number, desc: string) {
+            this.shortCutKeyCombs[index].desc = desc;
+            this.shortCutKeyCombs[index].keys = desc.split("+");
+        },
 
         editAction() {
             this.userInfo.saveFlag = true;
@@ -185,37 +198,41 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 {
                     keys: ['Control', 'Alt', "E"],
                     actionName: 'openMainWindows',
-                    desc: 'Control + Alt + E'
+                    desc: defaultOpenMainWinShortcutKey
                 },
                 {
                     keys: ['Alt', "G"],
                     actionName: 'lockWin',
-                    desc: 'Alt + G'
-                },
-                {
-                    keys: ['Control', 'P'],
-                    actionName: 'copyPwd',
-                    desc: 'Control + P'
+                    desc: defaultLockWinShortcutKey
                 },
                 {
                     keys: ['Control', 'U'],
                     actionName: 'copyUsername',
-                    desc: 'Control + U'
+                    desc: defaultCopyUsernameShortcutKey
                 },
+                // 3
+                {
+                    keys: ['Control', 'P'],
+                    actionName: 'copyPwd',
+                    desc: defaultCopyPwdShortcutKey
+                },
+                // 4
                 {
                     keys: ['Control', 'L'],
                     actionName: 'copyLink',
-                    desc: 'Control + L'
+                    desc: defaultCopyLinkShortcutKey
                 },
+                // 5
                 {
                     keys: ['Control', 'G'],
                     actionName: 'insertGroup',
-                    desc: 'Control + G'
+                    desc: defaultInsertGroupShortcutKey
                 },
+                // 6
                 {
                     keys: ['Control', 'B'],
                     actionName: 'insertPwdInfo',
-                    desc: 'Control + B'
+                    desc: defaultInsertPwdInfoShortcutKey
                 },
 
             ],

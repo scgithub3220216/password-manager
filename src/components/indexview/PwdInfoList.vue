@@ -6,8 +6,10 @@ import {onUnmounted, reactive, watch} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
+import {storeToRefs} from "pinia";
 
 const userDataInfoStore = useUserDataInfoStore();
+const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
 
 let props = defineProps(['transferInputFocus'])
 // 绑定事件
@@ -105,7 +107,7 @@ function deletePwdInfo() {
       </ul>
     </div>
     <div class="pwd-tools">
-      <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
+      <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
         <span @click="insertPwdInfo()">
           <Plus style="width: 20px; height: 20px; margin-right: 8px"
           /></span>

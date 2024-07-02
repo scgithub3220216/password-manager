@@ -9,8 +9,10 @@ import SettingDialog from "../SettingDialog.vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterLockTopic} from "../../config/config.ts";
+import {storeToRefs} from "pinia";
 
 const userInfoStore = useUserDataInfoStore();
+const {shortCutKeyCombs} = storeToRefs(userInfoStore)
 
 const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 const {logout} = useLoginAction();
@@ -103,8 +105,22 @@ defineExpose({
         autofocus
     />
     <div>
-      <img src="/lock.svg" alt="switch" @click="clickLock" class="search-image">
-      <img src="/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
+      <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="'锁定,快捷键'+shortCutKeyCombs[1].desc"
+          placement="top"
+      >
+        <img src="/lock.svg" alt="switch" @click="clickLock" class="search-image">
+      </el-tooltip>
+      <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="设置"
+          placement="top"
+      >
+        <img src="/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
+      </el-tooltip>
     </div>
   </div>
 

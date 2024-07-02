@@ -32,6 +32,7 @@ onMounted(() => {
   dynamicClickCss();
   // 启动键盘事件
   // document.addEventListener('keydown', pwdInfoViewRef.value.keydown);
+  console.log(userDataInfoStore.shortCutKeyCombs)
   console.log('Index 挂载完毕')
 })
 

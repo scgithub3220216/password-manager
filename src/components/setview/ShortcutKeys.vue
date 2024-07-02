@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
-import { defaultOpenMainWinShortcutKey } from "../../config/config.ts";
+import {onMounted, ref, watch} from "vue";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {defaultOpenMainWinShortcutKey} from "../../config/config.ts";
 
 const saveButtonDisabled = ref(true);
 const resetDisabled = ref(false);
@@ -12,7 +12,7 @@ const userInfoStore = useUserDataInfoStore();
 onMounted(() => {
   console.log("shorCutKeys onMounted");
   currentOpenMainKeys.value =
-    userInfoStore.userInfo.shortcutKey?.openMainWindows?.split(" + ");
+    userInfoStore.userInfo.shortcutKey?.openMainWindows?.split("+");
   mainShortcuts.value = userInfoStore.userInfo.shortcutKey.openMainWindows;
 });
 
@@ -25,6 +25,8 @@ watch(mainShortcuts, (newValue, oldValue) => {
 });
 
 function handleOpenMainKeydown(event: any) {
+  event.preventDefault();
+
   let key = event.key;
   console.log("event", key);
   if (key === "Control") {
@@ -75,6 +77,10 @@ function reset() {
       />
       <!--      <p>当前快捷键: {{ mainShortcuts }}</p>-->
     </div>
+
+
+
+
     <div class="bttn">
       <el-button
         class="btn"

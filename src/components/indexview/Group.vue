@@ -7,9 +7,11 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertGroupTopic} from "../../config/config.ts";
+import {storeToRefs} from "pinia";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
+const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
 
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
@@ -165,7 +167,7 @@ function deleteGroup() {
     </div>
 
     <div class="group-tools">
-      <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
+      <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[5].desc" placement="top">
         <span @click="triggerGroupsInsert()">
           <Plus style="width: 20px; height: 20px; margin-right: 8px"
           /></span>
