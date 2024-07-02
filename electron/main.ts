@@ -121,10 +121,6 @@ function createTrayMenu() {
     });
 }
 
-// function toSettingView() {
-//     win?.webContents.send('to-setting-view')
-// }
-
 
 //  打开窗口 ,如果已经打开了, 则缩小
 function showWindows() {
