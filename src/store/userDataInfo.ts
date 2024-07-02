@@ -44,6 +44,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
             this.setCurGroup(pwdGroup);
+            // @ts-ignore
             this.setCurPwdInfo(null);
             this.editAction();
         },
@@ -251,7 +252,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 }
 
             ],
+            // @ts-ignore
             curGroup: {},
+            // @ts-ignore
             curPwdInfo: {}
         }
     },

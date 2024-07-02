@@ -242,7 +242,7 @@ ipcMain.handle('auto-start', (event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
 });
-
+// @ts-ignore
 ipcMain.handle('open-browser', (event, arg) => {
     console.log(`open-browser:${arg} `);
     shell.openExternal(arg);
