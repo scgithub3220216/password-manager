@@ -136,7 +136,7 @@ const {
       </div>
 
       <div class="setting-item">
-        <span style="display: block">新增密码:</span>
+        <span style="display: block;">新增密码:</span>
         <el-input
             type="text"
             id="shortcuts"
@@ -164,8 +164,11 @@ const {
 </template>
 
 <style scoped>
+.setting-item{
+ margin-top: 10px;
+}
 .bttn {
-  margin-top: 50px;
+  margin: 20px 20px 20px 0 ;
   display: flex;
   justify-content: flex-end;
 }
@@ -176,6 +179,6 @@ const {
 
 .ipt {
   width: 400px;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {ref} from "vue";
 import Support from "./setview/Support.vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
@@ -25,16 +25,18 @@ defineExpose({
     style="height: 400px"
   >
     <el-tabs type="card" class="demo-tabs">
-      <el-tab-pane label="修改密码">
-        <UpdatePwd />
+      <el-tab-pane label="通用">
+        <BasicSet />
       </el-tab-pane>
 
       <el-tab-pane label="快捷键">
         <ShortcutKeys />
       </el-tab-pane>
-      <el-tab-pane label="通用">
-        <BasicSet />
+
+      <el-tab-pane label="修改密码">
+        <UpdatePwd />
       </el-tab-pane>
+
       <el-tab-pane label="支持/捐赠">
         <Support />
       </el-tab-pane>
