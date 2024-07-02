@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
-import { RefreshLeft } from "@element-plus/icons-vue";
+import {onMounted, ref} from "vue";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {Promotion, RefreshLeft} from "@element-plus/icons-vue";
+
 const form = ref({});
 const selectedTypes = ref(["uppercase", "lowercase", "numbers", "special"]);
 const length = ref(8);
@@ -14,7 +15,7 @@ const specialChars = ref("!@#$%^&*()_+,.<>|[]{}:;~\"'");
 const userDataInfoStore = useUserDataInfoStore();
 
 const dialogVisible = ref(false);
-defineExpose({ dialogVisible });
+defineExpose({dialogVisible});
 let props = defineProps(["updatePwdInfo"]);
 
 onMounted(() => {
@@ -46,7 +47,9 @@ function updatePwd() {
 }
 
 //刷新密码事件
-function refreshPsd() {}
+function refreshPsd() {
+  generatePassword();
+}
 </script>
 
 <template>
@@ -57,58 +60,73 @@ function refreshPsd() {}
           <el-row :gutter="20">
             <el-col :span="4">
               <el-checkbox label="uppercase" @change="generatePassword"
-                >A-Z</el-checkbox
-              ></el-col
+              >A-Z
+              </el-checkbox
+              >
+            </el-col
             >
             <el-col :span="4"
-              ><el-checkbox label="lowercase" @change="generatePassword"
-                >a-z</el-checkbox
-              ></el-col
+            >
+              <el-checkbox label="lowercase" @change="generatePassword"
+              >a-z
+              </el-checkbox
+              >
+            </el-col
             >
             <el-col :span="4">
               <el-checkbox label="numbers" @change="generatePassword"
-                >0-9</el-checkbox
-              ></el-col
+              >0-9
+              </el-checkbox
+              >
+            </el-col
             >
             <el-col :span="8"
-              ><el-checkbox label="special" @change="generatePassword">
+            >
+              <el-checkbox label="special" @change="generatePassword">
                 <el-input
-                  v-model="specialChars"
-                  :disabled="!selectedTypes.includes('special')"
-                  style="width: 240px"
-                /> </el-checkbox
-            ></el-col>
+                    v-model="specialChars"
+                    :disabled="!selectedTypes.includes('special')"
+                    style="width: 240px"
+                />
+              </el-checkbox
+              >
+            </el-col>
           </el-row>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="密码长度">
         <el-slider
-          @change="generatePassword"
-          v-model="length"
-          :min="4"
-          :max="32"
-          show-input
+            @change="generatePassword"
+            v-model="length"
+            :min="4"
+            :max="32"
+            show-input
         ></el-slider>
       </el-form-item>
       <el-form-item label="生成的随机密码">
         <el-input v-model="password">
           <template v-slot:append>
             <el-tooltip
-              class="box-item"
-              effect="dark"
-              content="刷新密码"
-              placement="top"
+                class="box-item"
+                effect="dark"
+                content="刷新密码"
+                placement="top"
             >
-              <el-icon @click="refreshPsd"><RefreshLeft /></el-icon>
+              <el-icon @click="refreshPsd">
+                <RefreshLeft/>
+              </el-icon>
             </el-tooltip>
           </template>
         </el-input>
       </el-form-item>
     </el-form>
     <div class="bttn">
-      <el-button type="primary" @click="updatePwd" class="btn"
-        >使用该密码</el-button
-      >
+      <el-button type="primary" @click="updatePwd" class="btn">
+        <span class="spa" style=""> 使用该密码 </span>
+        <el-icon style="vertical-align: middle">
+          <Promotion/>
+        </el-icon>
+      </el-button>
     </div>
   </el-dialog>
 </template>
@@ -119,11 +137,18 @@ function refreshPsd() {}
   display: flex;
   justify-content: flex-end;
 }
+
 .btn {
   margin-left: auto;
 }
+
 .result {
   margin-top: 20px;
   text-align: center;
+}
+
+.spa {
+  vertical-align: middle;
+  margin-right: 4px;
 }
 </style>

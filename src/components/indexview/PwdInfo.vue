@@ -4,7 +4,7 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
 import RandomPwdGenerate from "./RandomPwdGenerate.vue";
 
-import {Compass, EditPen, Hide, UserFilled} from "@element-plus/icons-vue";
+import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Switch, UserFilled, View,} from "@element-plus/icons-vue";
 import {storeToRefs} from "pinia";
 
 const pwdInfoTitleInput = ref(null);
@@ -82,12 +82,16 @@ function clickPwdImg() {
             :content="'复制用户名,快捷键'+shortCutKeyCombs[2].desc"
             placement="top"
         >
-          <img
-              src="/copy.svg"
-              alt="enter"
-              @click="copyValue(curPwdInfo.username)"
-              class="copy"
-          />
+          <el-icon @click="copyValue(curPwdInfo.username)" class="copy"
+          >
+            <CopyDocument/>
+          </el-icon>
+          <!--          <img
+                        src="/copy.svg"
+                        alt="enter"
+                        @click="copyValue(curPwdInfo.username)"
+                        class="copy"
+                    />-->
         </el-tooltip>
       </template>
     </el-input>
@@ -107,12 +111,16 @@ function clickPwdImg() {
             content="明文展示"
             placement="top"
         >
-          <img
-              src="/ic_view.svg"
-              alt="enter"
-              @click="clickPwdImg"
-              class="copy"
-          />
+          <el-icon @click="clickPwdImg" class="copy">
+            <View/>
+          </el-icon>
+
+          <!--          <img-->
+          <!--              src="/ic_view.svg"-->
+          <!--              alt="enter"-->
+          <!--              @click="clickPwdImg"-->
+          <!--              class="copy"-->
+          <!--          />-->
         </el-tooltip>
         <el-tooltip
             class="box-item"
@@ -120,12 +128,9 @@ function clickPwdImg() {
             content="生成随机密码"
             placement="top"
         >
-          <img
-              src="/random.svg"
-              alt="enter"
-              @click="randomPwdGenerateRef.dialogVisible = true"
-              class="copy"
-          />
+          <el-icon @click="randomPwdGenerateRef.dialogVisible = true" class="copy">
+            <Switch/>
+          </el-icon>
         </el-tooltip>
         <el-tooltip
             class="box-item"
@@ -133,12 +138,15 @@ function clickPwdImg() {
             :content="'复制密码,快捷键'+shortCutKeyCombs[3].desc"
             placement="top"
         >
-          <img
-              src="/copy.svg"
-              alt="enter"
-              @click="copyValue(curPwdInfo.password)"
-              class="copy"
-          />
+          <el-icon @click="copyValue(curPwdInfo.password)" class="copy">
+            <CopyDocument/>
+          </el-icon>
+          <!--          <img-->
+          <!--              src="/copy.svg"-->
+          <!--              alt="enter"-->
+          <!--              @click="copyValue(curPwdInfo.password)"-->
+          <!--              class="copy"-->
+          <!--          />-->
         </el-tooltip>
       </template>
     </el-input>
@@ -157,12 +165,15 @@ function clickPwdImg() {
             content="在浏览器中打开"
             placement="top"
         >
-          <img
-              src="/browser.svg"
-              alt="enter"
-              @click="openBrowser(curPwdInfo.link)"
-              class="copy"
-          />
+          <el-icon @click="openBrowser(curPwdInfo.link)" class="copy">
+            <ChromeFilled/>
+          </el-icon>
+          <!--          <img
+                        src="/browser.svg"
+                        alt="enter"
+                        @click="openBrowser(curPwdInfo.link)"
+                        class="copy"
+                    />-->
         </el-tooltip>
         <el-tooltip
             class="box-item"
@@ -170,12 +181,15 @@ function clickPwdImg() {
             :content="'复制链接,快捷键'+shortCutKeyCombs[3].desc"
             placement="top"
         >
-          <img
-              src="/copy.svg"
-              alt="enter"
-              @click="copyValue(curPwdInfo.link)"
-              class="copy"
-          />
+          <el-icon @click="copyValue(curPwdInfo.link)" class="copy">
+            <CopyDocument/>
+          </el-icon>
+          <!--          <img-->
+          <!--              src="/copy.svg"-->
+          <!--              alt="enter"-->
+          <!--              @click="copyValue(curPwdInfo.link)"-->
+          <!--              class="copy"-->
+          <!--          />-->
         </el-tooltip>
       </template>
     </el-input>
@@ -225,7 +239,7 @@ function clickPwdImg() {
 }
 
 .item-textarea {
-  width: 300px;
+  width: 95%;
   color: white;
   font-size: 16px;
   border: 0 none;
