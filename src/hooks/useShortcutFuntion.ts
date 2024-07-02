@@ -4,6 +4,8 @@
 import {ShortCutKeyComb} from "../store/type.ts";
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
+import emitter from "../utils/emitter.ts";
+import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic} from "../config/config.ts";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
@@ -70,10 +72,12 @@ export default function () {
 
     function insertGroup() {
         console.log('insertGroup')
+        emitter.emit(emitterInsertGroupTopic, '')
     }
 
     function insertPwdInfo() {
         console.log('insertPwdInfo')
+        emitter.emit(emitterInsertPwdInfoTopic, '')
 
     }
 

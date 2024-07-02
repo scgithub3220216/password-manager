@@ -2,13 +2,24 @@
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {reactive, watch} from "vue";
+import {onUnmounted, reactive, watch} from "vue";
 import {PwdInfo} from "../type.ts";
+import emitter from "../../utils/emitter.ts";
+import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 
 let props = defineProps(['transferInputFocus'])
+// 绑定事件
+emitter.on(emitterInsertPwdInfoTopic, (value) => {
+  console.log(emitterInsertPwdInfoTopic, ' 事件被触发 value:', value)
+  insertPwdInfo()
+})
 
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off(emitterInsertPwdInfoTopic)
+})
 const openDelPwdInfoMsgBox = () => {
   ElMessageBox.confirm("确认删除此帐号?", {
     confirmButtonText: "确认",
@@ -40,6 +51,7 @@ function clickPwdInfo(value: PwdInfo) {
   console.log("clickPwdInfo");
   userDataInfoStore.setCurPwdInfo(value);
 }
+
 
 function insertPwdInfo() {
   // drawer.value = true;

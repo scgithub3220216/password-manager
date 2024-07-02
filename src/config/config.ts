@@ -1,3 +1,9 @@
+// emitter topic
+
+export const emitterInsertGroupTopic = 'insertGroupTopic';
+export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
+
+
 // Aes 加密 Key
 export const aesKey = '0iq5<`fn"iaj4nD>';
 

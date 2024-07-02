@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
+import emitter from "../../utils/emitter.ts";
+import {emitterInsertGroupTopic} from "../../config/config.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
@@ -21,6 +23,17 @@ onMounted(() => {
   console.log("Index onMounted");
   initData();
 });
+
+// 绑定事件
+emitter.on(emitterInsertGroupTopic, (value) => {
+  console.log(emitterInsertGroupTopic, ' 事件被触发 value:', value)
+  triggerGroupsInsert()
+})
+
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off(emitterInsertGroupTopic)
+})
 
 function initData() {
   Object.assign(pwdGroupList, userDataInfoStore.pwdGroupList);
@@ -153,7 +166,7 @@ function deleteGroup() {
 
     <div class="group-tools">
       <el-tooltip class="box-item" effect="dark" content="新增" placement="top">
-        <span @blur="triggerGroupsInsert" @click="triggerGroupsInsert()">
+        <span @click="triggerGroupsInsert()">
           <Plus style="width: 20px; height: 20px; margin-right: 8px"
           /></span>
       </el-tooltip>
