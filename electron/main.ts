@@ -35,6 +35,8 @@ let tray
 let clickExitTime = 0;
 
 function createWindow() {
+    // 在创建浏览器窗口之前设置AppUserModelId
+    app.setAppUserModelId('passwordManager')
     win = new BrowserWindow({
         width: 1000,
         height: 700,
