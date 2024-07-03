@@ -22,6 +22,4 @@ npm run build
 
 ## 集成sqlite 存放数据
 
-## bug
-- 自动启动
 

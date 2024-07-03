@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useUserDataInfoStore } from "../../store/userDataInfo.ts";
+import {onMounted, ref} from "vue";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useUserInfo from "../../hooks/useUserInfo.ts";
 
 const { setLockTime } = useUserInfo();
 
 const userInfoStore = useUserDataInfoStore();
-const autoStart = ref(null);
-const lockTime = ref(null);
-const timeUnit = ref(null);
+const autoStart = ref(false);
+const lockTime = ref();
+const timeUnit = ref();
 
 onMounted(() => {
   console.log("BasicSet 挂载完毕");

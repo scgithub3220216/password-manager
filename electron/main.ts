@@ -1,5 +1,4 @@
 import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, shell, Tray} from 'electron'
-import {exec} from 'child_process'
 // import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
@@ -55,7 +54,7 @@ function createWindow() {
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
     // 调试窗口
-    // win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
 
     // Test active push message to Renderer-process.
@@ -145,6 +144,8 @@ const {decryptData} = useCrypto();
 app.whenReady()
     // 读取 文件内容, 然后根据一些设置进行一些操作
     .then(async () => {
+        setAutoStart(true)
+
         console.log('准备读取数据')
         initDataStr = await readFile(getFilePath());
         console.log('数据读取成功')
@@ -258,21 +259,12 @@ ipcMain.handle('open-browser', (event, arg) => {
 
 // todo 有问题
 function setAutoStart(autoStart: boolean) {
-    const appName = app.getName();
-    const key = `HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run`;
-    const value = `"${app.getPath('exe')} --hidden"`; // `--hidden` 可选，使应用后台启动
-
-    const command = autoStart
-        ? `reg add "${key}" /v "${appName}" /t REG_SZ /d "${value}"`
-        : `reg delete "${key}" /v "${appName}" /f`;
-
-    // @ts-ignore
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Failed to set auto start: ${error}`);
-        } else {
-            console.log(`Auto start set successfully.`);
-        }
+    console.log('设置开机启动')
+    // 设置开机启动
+    app.setLoginItemSettings({
+        openAtLogin: autoStart, // 设置为true以启用开机启动
+        path: process.execPath, // 可选，应用的启动路径
+        args: [], // 可选，启动时传递给应用的命令行参数
     });
 }
 
