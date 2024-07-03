@@ -97,7 +97,34 @@ function groupInputChange() {
   userDataInfoStore.insertGroup(pwdGroup);
   groupInputShowFlag.value = false;
   groupInputValue.value = "";
+
+
+  setTimeout(() => {
+    addGroupHighlight()
+  }, 100);
 }
+
+
+function addGroupHighlight() {
+  // 添加高亮
+  let element = document.getElementById('group-ul');
+  console.log('element:', element)
+  let items = element?.getElementsByTagName('li');
+  if (!items) {
+    console.log('items 为空')
+    return;
+  }
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('selected');
+  }
+  let item = items[items.length - 1];
+  if (!item) {
+    console.log('item 为空')
+    return;
+  }
+  item.classList.add('selected')
+}
+
 
 async function triggerGroupEdit() {
   console.log("triggerGroupEdit1");

@@ -20,8 +20,8 @@ import {PwdInfo} from "./type.ts";
 const userDataInfoStore = useUserDataInfoStore();
 useShortcutKey()
 
-const headerRef = ref(null);
-const pwdInfoViewRef = ref(null);
+const headerRef = ref();
+const pwdInfoViewRef = ref();
 const searchViewShowFlag = ref(false)
 const searchResultList = reactive<PwdInfo[]>([]);
 const groupRef = ref(null)
@@ -43,12 +43,9 @@ onMounted(() => {
  */
 function transferInputFocus(type: number) {
   console.log('transferInputFocus')
-// @ts-ignore
   if (type === 1 && headerRef.value.searchInputRef) {
-// @ts-ignore
     headerRef.value.searchInputRef.focus();
   } else if (type === 3 && pwdInfoViewRef.value.pwdInfoTitleInput) {
-// @ts-ignore
     pwdInfoViewRef.value.pwdInfoTitleInput.focus();
   }
 }

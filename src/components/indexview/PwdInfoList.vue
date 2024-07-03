@@ -80,6 +80,30 @@ function insertPwdInfo() {
       pwdInfoList.length,
       ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
   );
+
+  setTimeout(() => {
+    addPwdInfoHighlight()
+  }, 100);
+}
+
+function addPwdInfoHighlight() {
+  // 添加高亮
+  let element = document.getElementById('pwd-ul');
+  console.log('element:', element)
+  let items = element?.getElementsByTagName('li');
+  if (!items) {
+    console.log('items 为空')
+    return;
+  }
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('selected');
+  }
+  let item = items[items.length - 1];
+  if (!item) {
+    console.log('item 为空')
+    return;
+  }
+  item.classList.add('selected')
 }
 
 function deletePwdInfo() {
