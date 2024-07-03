@@ -111,7 +111,6 @@ function deletePwdInfo() {
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
               :class="{ selected: curPwdListIndex === index }"
-
           >
             {{ pwdInfo.title }}
           </li>
