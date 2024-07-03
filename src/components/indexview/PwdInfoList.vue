@@ -97,15 +97,17 @@ function deletePwdInfo() {
 <template>
   <div class="pwdInfo-list">
     <div class="pwd-item">
-      <ul id="pwd-ul">
-        <li
-            v-for="pwdInfo in pwdInfoList"
-            :key="pwdInfo.id"
-            @click="clickPwdInfo(pwdInfo)"
-        >
-          {{ pwdInfo.title }}
-        </li>
-      </ul>
+      <el-scrollbar>
+        <ul id="pwd-ul">
+          <li
+              v-for="pwdInfo in pwdInfoList"
+              :key="pwdInfo.id"
+              @click="clickPwdInfo(pwdInfo)"
+          >
+            {{ pwdInfo.title }}
+          </li>
+        </ul>
+      </el-scrollbar>
     </div>
     <div class="pwd-tools">
       <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
@@ -119,9 +121,6 @@ function deletePwdInfo() {
           /></span>
       </el-tooltip>
     </div>
-    <!-- <el-drawer v-model="drawer" title="I am the title" :with-header="false">
-      <span>Hi there!</span>
-    </el-drawer> -->
   </div>
 </template>
 
