@@ -16,9 +16,11 @@ import PwdInfoListView from "./indexview/PwdInfoList.vue";
 import GroupView from "./indexview/Group.vue";
 import useShortcutKey from "../hooks/useShortcutKey.ts";
 import {PwdInfo} from "./type.ts";
+import useCssSwitch from "../hooks/useCssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 useShortcutKey()
+const {dynamicClickCss} = useCssSwitch()
 
 const headerRef = ref();
 const pwdInfoViewRef = ref();
@@ -64,6 +66,7 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
   if (!pwdInfoList || pwdInfoList.length === 0) {
     console.log('setSearchResultData pwdInfoList 为空')
     searchResultList.splice(0, searchResultList.length)
+    // @ts-ignore
     userDataInfoStore.setCurPwdInfo(null)
     return;
   }
@@ -72,29 +75,7 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
 }
 
 
-/**
- * 动态 样式
- */
-function dynamicClickCss() {
-  document.getElementById('group-ul')?.addEventListener('click', function (e) {
-    // 移除之前所有li的高亮
-    var items = this.getElementsByTagName('li');
-    addLiCss(items, e);
-  });
-  document.getElementById('pwd-ul')?.addEventListener('click', function (e) {
-    // 移除之前所有li的高亮
-    var items = this.getElementsByTagName('li');
-    addLiCss(items, e);
-  });
-}
 
-function addLiCss(items: HTMLCollectionOf<HTMLElementTagNameMap[string]>, e: MouseEvent) {
-  for (var i = 0; i < items.length; i++) {
-    items[i].classList.remove('selected');
-  }
-  // 给当前点击的li添加高亮
-  e.target?.classList.add('selected');
-}
 
 
 </script>
