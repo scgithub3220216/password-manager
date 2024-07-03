@@ -1,43 +1,33 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {onUnmounted, ref} from 'vue'
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
-import {toggleDark} from "../styles/dark/dark.ts";
-import {useDark} from "@vueuse/core";
+import emitter from "../utils/emitter.ts";
 
 const initSetPwdRef = ref()
 const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 
+const {handleEnter, capsLockFlag, pwd} = useLoginView()
 
-const {handleEnter, sendMessageToMain, capsLockFlag, pwd} = useLoginView()
 
-onMounted(() => {
-  sendMessageToMain()
-      .then(() => {
-        // 设置主题
-        console.log('darkSwitch:', userInfoStore.userInfo.darkSwitch)
-        // darkFlag 当前值  : false 白色  ; true 黑色
-        let darkFlag = useDark();
-        console.log('darkFlag:', darkFlag.value)
-        if (userInfoStore.userInfo.darkSwitch && !darkFlag.value) {
-          console.log('darkSwitch')
-          toggleDark();
-        }
-      })
-      .then(() => {
-        // console.log('userInfoStore.userInfo.pwd:', userInfoStore.userInfo.pwd)
-        // 判断用户是否第一次登录 , 如果是 设置登录密码
-        if (userInfoStore.userInfo.firstLoginFlag != 0) {
-          console.log('设置登录密码')
-          initSetPwdRef.value.pwdDialogVisible = true
-          setPwdMsgTips();
-        }
-      })
+// 绑定事件
+emitter.on('initSuccess', () => {
+  console.log('initSuccess 事件被触发')
+  // 判断用户是否第一次登录 , 如果是 设置登录密码
+  if (userInfoStore.userInfo.firstLoginFlag != 0) {
+    console.log('设置登录密码')
+    initSetPwdRef.value.pwdDialogVisible = true
+    setPwdMsgTips();
+  }
 })
 
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off('initSuccess')
+})
 
 </script>
 

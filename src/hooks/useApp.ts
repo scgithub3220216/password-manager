@@ -8,6 +8,10 @@ import {FileDataObj} from "../components/type.ts";
 import {saveTime} from "../config/config.ts";
 import Login from "../components/Login.vue";
 import Index from "../components/Index.vue";
+import {useDark} from "@vueuse/core";
+import {toggleDark} from "../styles/dark/dark.ts";
+import useShortcutFuntion from "./useShortcutFuntion.ts";
+import emitter from "../utils/emitter.ts";
 
 export default function () {
 
@@ -16,10 +20,21 @@ export default function () {
     const {encryptData} = useCrypto();
     const {logout} = useLoginAction();
     const {getLockTime} = useUserInfo()
-
+    const {decryptData} = useCrypto();
+    const {getShortCuts} = useShortcutFuntion();
 
     onMounted(() => {
         console.log(`App onMounted `)
+        initDataToMain()
+            .then(() => {
+                setDarkTheme()
+            })
+            .then(()=>{
+                // 发送 初始化完成 事件
+                emitter.emit('initSuccess')
+            })
+
+
         const intervalId = setInterval(() => saveData(), saveTime);
         // 可以考虑将 intervalId 返回以便在 onUnmounted 中清除定时器
         return () => clearInterval(intervalId);
@@ -30,7 +45,35 @@ export default function () {
         saveData()
     })
 
+    function setDarkTheme() {
+        // 设置主题
+        console.log('darkSwitch:', userInfoStore.userInfo.darkSwitch)
+        // darkFlag 当前值  : false 白色  ; true 黑色
+        let darkFlag = useDark();
+        console.log('darkFlag:', darkFlag.value)
+        if (userInfoStore.userInfo.darkSwitch && !darkFlag.value) {
+            console.log('darkSwitch')
+            toggleDark();
+        }
+    }
 
+    async function initDataToMain() {
+        console.log('initDataToMain')
+        const userDataJson = await window.ipcRenderer.invoke('init-data');
+        if (!userDataJson) {
+            userInfoStore.setShortCutKeyCombs(getShortCuts(userInfoStore.shortCutKeyCombs))
+            return;
+        }
+        // 解密
+        let decryptData1 = decryptData(userDataJson);
+        // console.log('decryptData1:', decryptData1)
+        const fileDataObj: FileDataObj = JSON.parse(decryptData1);
+        // 把数据放到 pinia 中
+        userInfoStore.setUserInfo(fileDataObj);
+        // 设置快捷键
+        userInfoStore.setShortCutKeyCombs(getShortCuts(userInfoStore.shortCutKeyCombs))
+        console.log('文件数据读取完成')
+    }
 
 
     function saveData() {
@@ -66,7 +109,6 @@ export default function () {
     document.addEventListener('mousemove', resetTimer);
     document.addEventListener('keydown', resetTimer);
     document.addEventListener('scroll', resetTimer);
-
 
 
     // 监听路由哈希

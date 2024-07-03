@@ -4,8 +4,6 @@ import useApp from "./hooks/useApp.ts";
 const {currentView} = useApp();
 
 
-
-
 </script>
 
 <template>
@@ -13,6 +11,4 @@ const {currentView} = useApp();
 </template>
 
 <style scoped>
-
-
 </style>
