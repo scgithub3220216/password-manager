@@ -8,6 +8,7 @@ import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertGroupTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
+import useCssSwitch from "../../hooks/useCssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
@@ -19,6 +20,7 @@ const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const curGroup = reactive<PwdGroup>({});
 const pwdGroupList = reactive<PwdGroup[]>([]);
+const {addGroupHighlight} = useCssSwitch()
 
 
 onMounted(() => {
@@ -98,31 +100,7 @@ function groupInputChange() {
   groupInputShowFlag.value = false;
   groupInputValue.value = "";
 
-
-  setTimeout(() => {
-    addGroupHighlight()
-  }, 100);
-}
-
-
-function addGroupHighlight() {
-  // 添加高亮
-  let element = document.getElementById('group-ul');
-  console.log('element:', element)
-  let items = element?.getElementsByTagName('li');
-  if (!items) {
-    console.log('items 为空')
-    return;
-  }
-  for (var i = 0; i < items.length; i++) {
-    items[i].classList.remove('selected');
-  }
-  let item = items[items.length - 1];
-  if (!item) {
-    console.log('item 为空')
-    return;
-  }
-  item.classList.add('selected')
+  addGroupHighlight("group-ul")
 }
 
 
@@ -231,12 +209,13 @@ function deleteGroup() {
   justify-content: space-between;
 }
 
-.group-data{
+.group-data {
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 32px;
 
 }
+
 .group-tools span {
   padding: 4px 4px 0 4px;
   margin-left: 5px;

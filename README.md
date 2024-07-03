@@ -14,13 +14,11 @@ npm run build
 
 # 待做事项
 
-## 集成sqlite 存放数据
+## 优化代码
 
 ## 完善在线的帮助文档
 
-## 随机密码
-selectedTypes 至少选择一个
-
+## 集成sqlite 存放数据
 
 ## bug
 - 自动启动

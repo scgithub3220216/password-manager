@@ -7,9 +7,11 @@ import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
+import useCssSwitch from "../../hooks/useCssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
+const {addPwdInfoHighlight} = useCssSwitch()
 
 let props = defineProps(['transferInputFocus'])
 // 绑定事件
@@ -81,30 +83,9 @@ function insertPwdInfo() {
       ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
   );
 
-  setTimeout(() => {
-    addPwdInfoHighlight()
-  }, 100);
+  addPwdInfoHighlight("pwd-ul")
 }
 
-function addPwdInfoHighlight() {
-  // 添加高亮
-  let element = document.getElementById('pwd-ul');
-  console.log('element:', element)
-  let items = element?.getElementsByTagName('li');
-  if (!items) {
-    console.log('items 为空')
-    return;
-  }
-  for (var i = 0; i < items.length; i++) {
-    items[i].classList.remove('selected');
-  }
-  let item = items[items.length - 1];
-  if (!item) {
-    console.log('item 为空')
-    return;
-  }
-  item.classList.add('selected')
-}
 
 function deletePwdInfo() {
   console.log("deletePwdInfo");
