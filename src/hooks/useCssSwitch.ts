@@ -34,5 +34,29 @@ export default function () {
     }
 
 
-    return {addGroupHighlight, addPwdInfoHighlight};
+    function clickGroupCss(idName: string) {
+        setTimeout(() => {
+            let items = document.getElementById(idName)?.getElementsByTagName("li");
+            if (!items) {
+                return;
+            }
+            console.log("items:", items.length);
+            for (var i = 0; i < items.length; i++) {
+                if (i === 0) {
+                    console.log("selected");
+                    items[i].classList.add("selected");
+                    continue;
+                }
+                items[i].classList.remove("selected");
+            }
+        }, 100);
+
+    }
+
+    function clickCss(idName: string) {
+        clickGroupCss(idName)
+    }
+
+
+    return {addGroupHighlight, addPwdInfoHighlight, clickCss,clickGroupCss};
 }

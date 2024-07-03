@@ -20,7 +20,7 @@ const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const curGroup = reactive<PwdGroup>({});
 const pwdGroupList = reactive<PwdGroup[]>([]);
-const {addGroupHighlight} = useCssSwitch()
+const {addGroupHighlight, clickGroupCss} = useCssSwitch()
 
 
 onMounted(() => {
@@ -56,26 +56,9 @@ function clickGroup(group: PwdGroup) {
   userDataInfoStore.setCurPwdInfo(group.pwdList[0]);
   Object.assign(curGroup, group);
   // 单击样式
-  setTimeout(() => {
-    clickGroupCss();
-  }, 100);
+  clickGroupCss("pwd-ul");
 }
 
-function clickGroupCss() {
-  let items = document.getElementById("pwd-ul")?.getElementsByTagName("li");
-  if (!items) {
-    return;
-  }
-  console.log("items:", items.length);
-  for (var i = 0; i < items.length; i++) {
-    if (i === 0) {
-      console.log("selected");
-      items[i].classList.add("selected");
-      continue;
-    }
-    items[i].classList.remove("selected");
-  }
-}
 
 function triggerGroupsInsert() {
   console.log("triggerGroupsInsert");
