@@ -54,6 +54,7 @@ function clickPwdImg() {
 <template>
   <div class="pwdInfo">
     <span class="pwdInfo-item">标题</span>
+    <!--    <el-text class="mx-1" style="text-align: left">标题</el-text>-->
     <el-input
         ref="pwdInfoTitleInput"
         v-model="curPwdInfo.title"
@@ -164,7 +165,7 @@ function clickPwdImg() {
     <span class="pwdInfo-item"> 说明</span>
     <div>
       <el-input
-          class="item-textarea"
+          class="item-textarea input-pwd"
           v-model="curPwdInfo.remark"
           @change="pwdInfoChange()"
           :rows="5"
@@ -191,11 +192,11 @@ function clickPwdImg() {
   /* border-bottom: 1px solid #000000; */
   flex-direction: column;
   align-items: start;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .input-pwd {
-  width: 95%;
+  width: 98%;
 }
 
 .item-input {
@@ -206,7 +207,6 @@ function clickPwdImg() {
 }
 
 .item-textarea {
-  width: 95%;
   color: white;
   font-size: 16px;
   border: 0 none;
