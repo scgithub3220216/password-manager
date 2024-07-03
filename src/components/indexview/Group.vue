@@ -168,29 +168,32 @@ function deleteGroup() {
 <template>
   <div class="group">
     <div class="group-data">
-      <ul id="group-ul">
-        <li
-            v-for="group in pwdGroupList"
-            :key="group.id"
-            @click="clickGroup(group)"
-        >
-          <span v-show="!group.editFlag"> {{ group.title }}</span>
-          <el-input
-              v-show="group.editFlag"
-              ref="groupInput2Ref"
-              v-model="group.title"
-              @change="editGroups()"
-              @blur="editGroups()"
-          ></el-input>
-        </li>
-      </ul>
-      <el-input
-          ref="groupInputRef"
-          v-model="groupInputValue"
-          v-show="groupInputShowFlag"
-          @change="groupInputChange()"
-          @blur="groupInputChange()"
-      />
+      <el-scrollbar>
+
+        <ul id="group-ul">
+          <li
+              v-for="group in pwdGroupList"
+              :key="group.id"
+              @click="clickGroup(group)"
+          >
+            <span v-show="!group.editFlag"> {{ group.title }}</span>
+            <el-input
+                v-show="group.editFlag"
+                ref="groupInput2Ref"
+                v-model="group.title"
+                @change="editGroups()"
+                @blur="editGroups()"
+            ></el-input>
+          </li>
+        </ul>
+        <el-input
+            ref="groupInputRef"
+            v-model="groupInputValue"
+            v-show="groupInputShowFlag"
+            @change="groupInputChange()"
+            @blur="groupInputChange()"
+        />
+      </el-scrollbar>
     </div>
 
     <div class="group-tools">
@@ -228,6 +231,12 @@ function deleteGroup() {
   justify-content: space-between;
 }
 
+.group-data{
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 32px;
+
+}
 .group-tools span {
   padding: 4px 4px 0 4px;
   margin-left: 5px;

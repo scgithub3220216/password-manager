@@ -19,9 +19,7 @@ npm run build
 ## 完善在线的帮助文档
 
 ## 随机密码
-selectedTypes 至少选择一个 
-
-## 分组添加 滚动条
+selectedTypes 至少选择一个
 
 
 ## bug
