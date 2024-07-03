@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
 import RandomPwdGenerate from "./RandomPwdGenerate.vue";
@@ -14,11 +14,12 @@ const {openBrowser} = useBrowser();
 const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
 
 defineExpose({keydown, pwdInfoTitleInput});
-const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
+// const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
+const {curPwdInfo} = storeToRefs(userDataInfoStore)
 
 function pwdInfoChange() {
   console.log("pwdInfoChange");
-  userDataInfoStore.updatePwdInfo(curPwdInfo);
+  userDataInfoStore.updatePwdInfo(curPwdInfo.value);
 }
 
 function copyValue(value: string) {
@@ -36,9 +37,9 @@ function copyValue(value: string) {
 function keydown(e: KeyboardEvent) {
   // console.log('keydown', e)
   if (e.ctrlKey && e.key === "p") {
-    copyValue(curPwdInfo.password);
+    copyValue(curPwdInfo.value.password);
   } else if (e.ctrlKey && e.key === "u") {
-    copyValue(curPwdInfo.username);
+    copyValue(curPwdInfo.value.username);
   }
 }
 

@@ -39,9 +39,10 @@ const openDelPwdInfoMsgBox = () => {
       });
 };
 const pwdInfoList = reactive<PwdInfo[]>([]);
-const curGroup = reactive(userDataInfoStore.curGroup);
-watch(curGroup, (newVal) => {
-  console.log("watch curGroup newVal:", newVal);
+// const curGroup = reactive(userDataInfoStore.curGroup);
+const {curGroup} = storeToRefs(userDataInfoStore)
+watch(curGroup.value, (newVal) => {
+  console.log("watch curGroup newVal:", newVal.id);
   pwdInfoList.splice(
       0,
       pwdInfoList.length,
@@ -57,14 +58,14 @@ function clickPwdInfo(value: PwdInfo) {
 
 function insertPwdInfo() {
   // drawer.value = true;
-  console.log(`insertPwdInfo curGroup.id:${curGroup.id}`);
+  console.log(`insertPwdInfo curGroup.id:${curGroup.value.id}`);
   // PwdInfo input 输入框的光标
   props.transferInputFocus(3);
 
   let newPwdInfo = new PwdInfo(
       userDataInfoStore.generatePwdInfoId(),
-      curGroup.id,
-      curGroup.title,
+      curGroup.value.id,
+      curGroup.value.title,
       "",
       "",
       "",
@@ -77,7 +78,7 @@ function insertPwdInfo() {
   pwdInfoList.splice(
       0,
       pwdInfoList.length,
-      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
   );
 }
 
@@ -88,7 +89,7 @@ function deletePwdInfo() {
   pwdInfoList.splice(
       0,
       pwdInfoList.length,
-      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.id)
+      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
   );
 }
 </script>
