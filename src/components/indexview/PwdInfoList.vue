@@ -7,12 +7,13 @@ import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
-import useCssSwitch from "../../hooks/useCssSwitch.ts";
+import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
-const {addPwdInfoHighlight} = useCssSwitch()
+const cssSwitchStore = useCssSwitchStore();
 
+const {curPwdListIndex} = storeToRefs(cssSwitchStore)
 let props = defineProps(['transferInputFocus'])
 // 绑定事件
 emitter.on(emitterInsertPwdInfoTopic, (value) => {
@@ -52,9 +53,10 @@ watch(curGroup.value, (newVal) => {
   );
 });
 
-function clickPwdInfo(value: PwdInfo) {
+function clickPwdInfo(value: PwdInfo, index: number) {
   console.log("clickPwdInfo");
   userDataInfoStore.setCurPwdInfo(value);
+  cssSwitchStore.setPwdListIndex(index)
 }
 
 
@@ -83,7 +85,7 @@ function insertPwdInfo() {
       ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
   );
 
-  addPwdInfoHighlight("pwd-ul")
+  cssSwitchStore.addPwdListSwitch()
 }
 
 
@@ -105,9 +107,11 @@ function deletePwdInfo() {
       <el-scrollbar>
         <ul id="pwd-ul">
           <li
-              v-for="pwdInfo in pwdInfoList"
-              :key="pwdInfo.id"
-              @click="clickPwdInfo(pwdInfo)"
+              v-for="(pwdInfo,index) in pwdInfoList"
+              :key="index"
+              @click="clickPwdInfo(pwdInfo,index)"
+              :class="{ selected: curPwdListIndex === index }"
+
           >
             {{ pwdInfo.title }}
           </li>

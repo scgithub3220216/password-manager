@@ -164,6 +164,14 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.shortCutKeyCombs[index].keys = desc.split("+");
         },
 
+        getGroupLength() {
+            return this.pwdGroupList.length;
+        },
+
+        getPwdListLength() {
+            return this.pwdGroupList.find(pwdGroup => pwdGroup.id === this.curGroup.id)?.pwdList.length || 0;
+        },
+
         editAction() {
             this.userInfo.saveFlag = true;
         },

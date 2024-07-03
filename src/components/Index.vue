@@ -16,11 +16,9 @@ import PwdInfoListView from "./indexview/PwdInfoList.vue";
 import GroupView from "./indexview/Group.vue";
 import useShortcutKey from "../hooks/useShortcutKey.ts";
 import {PwdInfo} from "./type.ts";
-import useCssSwitch from "../hooks/useCssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 useShortcutKey()
-const {dynamicClickCss} = useCssSwitch()
 
 const headerRef = ref();
 const pwdInfoViewRef = ref();
@@ -31,10 +29,6 @@ const groupRef = ref(null)
 onMounted(() => {
   console.log('Index onMounted')
   transferInputFocus(1);
-  dynamicClickCss();
-  // 启动键盘事件
-  // document.addEventListener('keydown', pwdInfoViewRef.value.keydown);
-  console.log(userDataInfoStore.shortCutKeyCombs)
   console.log('Index 挂载完毕')
 })
 
@@ -73,9 +67,6 @@ function setSearchResultData(pwdInfoList: PwdInfo[]) {
   Object.assign(searchResultList, pwdInfoList)
   userDataInfoStore.setCurPwdInfo(pwdInfoList[0])
 }
-
-
-
 
 
 </script>

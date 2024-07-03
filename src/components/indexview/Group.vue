@@ -8,7 +8,7 @@ import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertGroupTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
-import useCssSwitch from "../../hooks/useCssSwitch.ts";
+import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
@@ -20,9 +20,9 @@ const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const curGroup = reactive<PwdGroup>({});
 const pwdGroupList = reactive<PwdGroup[]>([]);
-const {addGroupHighlight, clickGroupCss} = useCssSwitch()
+const cssSwitchStore = useCssSwitchStore();
 
-
+const {curGroupIndex} = storeToRefs(cssSwitchStore)
 onMounted(() => {
   console.log("Index onMounted");
   initData();
@@ -50,13 +50,15 @@ function initData() {
   userDataInfoStore.setCurPwdInfo(pwdList[0]);
 }
 
-function clickGroup(group: PwdGroup) {
+
+function clickGroup(group: PwdGroup, index: number) {
   console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`);
   userDataInfoStore.setCurGroup(group);
   userDataInfoStore.setCurPwdInfo(group.pwdList[0]);
   Object.assign(curGroup, group);
   // 单击样式
-  clickGroupCss("pwd-ul");
+  cssSwitchStore.setGroupIndex(index)
+  cssSwitchStore.setPwdListIndex(0)
 }
 
 
@@ -83,7 +85,7 @@ function groupInputChange() {
   groupInputShowFlag.value = false;
   groupInputValue.value = "";
 
-  addGroupHighlight("group-ul")
+  cssSwitchStore.addGroupSwitch()
 }
 
 
@@ -133,9 +135,10 @@ function deleteGroup() {
 
         <ul id="group-ul">
           <li
-              v-for="group in pwdGroupList"
-              :key="group.id"
-              @click="clickGroup(group)"
+              v-for="(group,index) in pwdGroupList"
+              :key="index"
+              @click="clickGroup(group,index)"
+              :class="{ selected: curGroupIndex === index }"
           >
             <span v-show="!group.editFlag"> {{ group.title }}</span>
             <el-input
@@ -237,6 +240,10 @@ li:hover {
 }
 
 li.selected {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.selected {
   background: rgba(255, 255, 255, 0.08);
 }
 </style>
