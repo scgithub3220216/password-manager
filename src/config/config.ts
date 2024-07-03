@@ -22,7 +22,7 @@ export const defaultCopyUsernameShortcutKey = 'Ctrl + U';
 export const defaultCopyPwdShortcutKey = 'Ctrl + P';
 export const defaultCopyLinkShortcutKey = 'Ctrl + L';
 export const defaultInsertGroupShortcutKey = 'Ctrl + G';
-export const defaultInsertPwdInfoShortcutKey = 'Ctrl + B';
+export const defaultInsertPwdInfoShortcutKey = 'Ctrl + N';
 
 export const supportLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《详细收支清单》';
 

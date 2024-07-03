@@ -239,7 +239,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 },
                 // 6
                 {
-                    keys: ['Ctrl', 'B'],
+                    keys: ['Ctrl', 'N'],
                     actionName: 'insertPwdInfo',
                     desc: defaultInsertPwdInfoShortcutKey
                 },
