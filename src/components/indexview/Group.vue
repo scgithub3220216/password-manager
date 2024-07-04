@@ -20,7 +20,8 @@ const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const {curGroup, pwdGroupList} = storeToRefs(userDataInfoStore)
 const cssSwitchStore = useCssSwitchStore();
-
+const {userInfo} = storeToRefs(userDataInfoStore)
+const isHover = ref(false);
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 onMounted(() => {
   console.log("Index onMounted");
@@ -123,7 +124,13 @@ function deleteGroup() {
               v-for="(group,index) in pwdGroupList"
               :key="index"
               @click="clickGroup(group,index)"
-              :class="{ selected: curGroupIndex === index }"
+              :class="{
+                  'selected-dark': curGroupIndex === index && userInfo.darkSwitch,
+                  'selected-light': curGroupIndex === index && !userInfo.darkSwitch,
+                  'hover-effect-dark': isHover && userInfo.darkSwitch,
+                  'hover-effect-light': isHover && !userInfo.darkSwitch
+              }"
+              @mouseover="isHover = true" @mouseout="isHover = false"
           >
             <span v-show="!group.editFlag"> {{ group.title }}</span>
             <el-input
@@ -215,12 +222,4 @@ li:last-child {
   border-bottom: 0 #cab8b8 solid;
 }
 
-li:hover {
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-}
-
-.selected {
-  background: rgba(255, 255, 255, 0.08);
-}
 </style>

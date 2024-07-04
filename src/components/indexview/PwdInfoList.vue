@@ -2,7 +2,7 @@
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {onUnmounted} from "vue";
+import {onUnmounted, ref} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
@@ -10,11 +10,11 @@ import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
+const {curGroup, curPwdList, shortCutKeyCombs} = storeToRefs(userDataInfoStore)
+const {userInfo} = storeToRefs(userDataInfoStore)
+const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
-
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
-const {curGroup, curPwdList} = storeToRefs(userDataInfoStore)
 
 let props = defineProps(['transferInputFocus'])
 // 绑定事件
@@ -88,7 +88,13 @@ function deletePwdInfo() {
               v-for="(pwdInfo,index) in curPwdList"
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
-              :class="{ selected: curPwdListIndex === index }"
+              :class="{
+                  'selected-dark': curPwdListIndex === index && userInfo.darkSwitch,
+                  'selected-light': curPwdListIndex === index && !userInfo.darkSwitch,
+                  'hover-effect-dark': isHover && userInfo.darkSwitch,
+                  'hover-effect-light': isHover && !userInfo.darkSwitch
+              }"
+              @mouseover="isHover = true" @mouseout="isHover = false"
           >
             {{ pwdInfo.title }}
           </li>
@@ -130,7 +136,8 @@ function deletePwdInfo() {
   overflow-x: hidden;
   margin-top: 32px;
 }
-.pwd-tools{
+
+.pwd-tools {
   display: flex;
   justify-content: space-around;
 }
@@ -158,12 +165,5 @@ li:last-child {
   border-bottom: 0 #cab8b8 solid;
 }
 
-li:hover {
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-}
 
-li.selected {
-  background: rgba(255, 255, 255, 0.08);
-}
 </style>

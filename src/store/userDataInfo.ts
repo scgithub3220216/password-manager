@@ -219,8 +219,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     copyPwd: defaultCopyPwdShortcutKey,
                 },
                 saveFlag: false
-
             },
+
             shortCutKeyCombs: [
                 {
                     keys: ['Ctrl', 'Alt', "E"],

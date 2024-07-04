@@ -101,6 +101,27 @@ div.msg-tips {
     padding: 0 20px;
 }
 
+
+.selected-dark {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+
+.hover-effect-dark:hover {
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+
+.selected-light {
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.hover-effect-light:hover {
+    background: rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+}
+
 /*index 页面 主题按钮颜色*/
 .search .el-switch__core .el-switch__action {
     background-color: rgba(239, 127, 52, 0.68);
