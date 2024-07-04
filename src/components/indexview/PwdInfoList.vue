@@ -61,10 +61,9 @@ function clickPwdInfo(value: PwdInfo, index: number) {
 
 
 function insertPwdInfo() {
-  // drawer.value = true;
   console.log(`insertPwdInfo curGroup.id:${curGroup.value.id}`);
   // PwdInfo input 输入框的光标
-  props.transferInputFocus(3);
+  props.transferInputFocus();
 
   let newPwdInfo = new PwdInfo(
       userDataInfoStore.generatePwdInfoId(),

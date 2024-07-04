@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdInfo} from "../type.ts";
+import {useSearchResultStore} from "../../store/searchResult.ts";
+import {storeToRefs} from "pinia";
 
-defineProps(['searchResultList'])
 const userDataInfoStore = useUserDataInfoStore();
-
+const searchResultStore = useSearchResultStore();
+const {searchResultList} = storeToRefs(searchResultStore)
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
   if (!row) {

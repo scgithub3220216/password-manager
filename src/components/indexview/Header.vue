@@ -2,7 +2,7 @@
 
 import {Search} from "@element-plus/icons-vue";
 import {toggleDark} from "../../styles/dark/dark.ts";
-import {onUnmounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import SettingDialog from "../SettingDialog.vue";
@@ -10,6 +10,7 @@ import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterLockTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
+import {useSearchResultStore} from "../../store/searchResult.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userInfoStore)
@@ -18,9 +19,15 @@ const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 const {logout} = useLoginAction();
 const search = ref('');
 const searchResultList = reactive<PwdInfo[]>([]);
-const searchInputRef = ref(null);
-let props = defineProps(['updateSearchViewValue', 'updateSearchResultData'])
+const searchInputRef = ref();
 let settingDialogRef = ref();
+
+const searchResultStore = useSearchResultStore();
+onMounted(() => {
+  console.log('Header.vue onMounted')
+  searchInputRef.value.focus();
+  console.log('Header.vue 挂载完毕')
+})
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
@@ -33,19 +40,19 @@ function searchAction() {
   // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
   let searchValue = search.value;
   if (!searchValue.trim()) {
-    props.updateSearchViewValue(false)
+    searchResultStore.closeSearchView();
     searchResultList.splice(0, searchResultList.length);
     return;
   }
 
   // 如果有值
-  props.updateSearchViewValue(true)
+  searchResultStore.openSearchView()
 
   // 将 pwdGroupList 全部转为 pwdInfoList
   let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
   // 在 pwdInfoList 中查找
   let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  props.updateSearchResultData(searchResultListTemp);
+  searchResultStore.setSearchResultData(searchResultListTemp);
 }
 
 
@@ -102,7 +109,6 @@ defineExpose({
         :prefix-icon="Search"
         type="search"
         @search="searchAction()"
-        autofocus
     />
     <div>
       <el-tooltip
