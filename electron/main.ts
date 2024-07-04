@@ -38,7 +38,9 @@ function createWindow() {
     win = new BrowserWindow({
         width: 1000,
         height: 700,
-        frame:false,
+        // 外边框是否展示
+        frame: false,
+        transparent: true, // 设置窗口的背景透明
         // 菜单是否隐藏 按住 Alt 还会展示
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'assets/icon.ico'),
@@ -265,9 +267,6 @@ function setAutoStart(autoStart: boolean) {
     });
 
 }
-
-
-
 
 
 // 窗口 （最小化、最大化/还原、关闭）

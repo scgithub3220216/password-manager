@@ -15,6 +15,7 @@ function close() {
 </script>
 
 <template>
+
   <div class="top titlebar">
     <div class="left">left</div>
     <div class="right">
@@ -29,6 +30,7 @@ function close() {
       <el-button id="close-btn" @click="close">关闭</el-button>
     </div>
   </div>
+
 </template>
 
 <style scoped>
@@ -40,7 +42,11 @@ function close() {
 }
 
 .titlebar {
-    -webkit-app-region: drag;
-    -webkit-user-select: none;
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+
+.right {
+  -webkit-app-region: no-drag;
 }
 </style>
