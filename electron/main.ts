@@ -263,9 +263,6 @@ function setAutoStart(autoStart: boolean) {
         args: [], // 可选，启动时传递给应用的命令行参数
     });
 
-
-
-
 }
 
 
