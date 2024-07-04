@@ -10,7 +10,7 @@ import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {userInfo,curGroup, curPwdList, shortCutKeyCombs,curPwdInfo} = storeToRefs(userDataInfoStore)
+const {userInfo, curGroup, curPwdList, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
@@ -33,12 +33,13 @@ onUnmounted(() => {
   emitter.off(emitterInsertPwdInfoTopic)
 })
 
-function clickDelete(){
+function clickDelete() {
   // 判断当前是否还有账号
   if (curPwdInfo.value && curPwdInfo.value.id) {
     openDelPwdInfoMsgBox();
   }
 }
+
 const openDelPwdInfoMsgBox = () => {
   ElMessageBox.confirm("确认删除此帐号?", {
     confirmButtonText: "确认",
@@ -116,13 +117,13 @@ function deletePwdInfo() {
     <div class="pwd-tools">
       <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
         <span class="tool" @click="insertPwdInfo">
-          <Plus style="width: 20px; height: 20px"
-          /></span>
+          <Plus style="width: 20px; height: 20px"/>
+        </span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <span class="tool" @click="clickDelete">
-          <Delete style="width: 20px; height: 20px"
-          /></span>
+        <el-button style="border: 0;background: none;color: initial;" :disabled="!curPwdInfo || !curPwdInfo.id" class="tool" @click="clickDelete">
+          <Delete style="width: 20px; height: 20px"/>
+        </el-button>
       </el-tooltip>
     </div>
   </div>
