@@ -5,7 +5,6 @@ import path from 'node:path'
 import {readFile, writeFile} from "./utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
 import {defaultOpenMainWinShortcutKey, helpLink} from "../src/config/config.ts";
-/* 引入storeToRefs */
 
 // const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -54,7 +53,7 @@ function createWindow() {
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
     // 调试窗口
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
 
     // Test active push message to Renderer-process.
@@ -144,8 +143,6 @@ const {decryptData} = useCrypto();
 app.whenReady()
     // 读取 文件内容, 然后根据一些设置进行一些操作
     .then(async () => {
-        setAutoStart(true)
-
         console.log('准备读取数据')
         initDataStr = await readFile(getFilePath());
         console.log('数据读取成功')
@@ -180,7 +177,7 @@ function registerGlobalShortcut(openMainWindows: string) {
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
     let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
     let openMainWindows2 = openMainWindows1.replace('Ctrl', replaceValue)
-        // .replace('Control', replaceValue)
+    // .replace('Control', replaceValue)
     console.log('openMainWindows2:', openMainWindows2)
     // 清除快捷键
     globalShortcut.unregisterAll()
@@ -257,15 +254,18 @@ ipcMain.handle('open-browser', (event, arg) => {
 });
 
 
-// todo 有问题
 function setAutoStart(autoStart: boolean) {
-    console.log('设置开机启动')
-    // 设置开机启动
+    console.log('设置开机启动 autoStart:', autoStart)
+    // 设置开机启动 第一种方案
     app.setLoginItemSettings({
         openAtLogin: autoStart, // 设置为true以启用开机启动
         path: process.execPath, // 可选，应用的启动路径
         args: [], // 可选，启动时传递给应用的命令行参数
     });
+
+
+
+
 }
 
 
