@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onUnmounted, ref} from 'vue'
+import {onMounted, onUnmounted, ref} from 'vue'
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
@@ -7,11 +7,21 @@ import useLoginView from "../hooks/useLoginView.ts";
 import emitter from "../utils/emitter.ts";
 
 const initSetPwdRef = ref()
+const pwdInputRef = ref()
 const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 
 const {handleEnter, capsLockFlag, pwd} = useLoginView()
 
+onMounted(() => {
+  console.log("Login onMounted");
+  pwdInputRef.value.focus();
+});
+
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off('initSuccess')
+})
 
 // 绑定事件
 emitter.on('initSuccess', () => {
@@ -24,11 +34,6 @@ emitter.on('initSuccess', () => {
   }
 })
 
-onUnmounted(() => {
-  // 解绑事件
-  emitter.off('initSuccess')
-})
-
 </script>
 
 <template>
@@ -38,6 +43,7 @@ onUnmounted(() => {
 
     <el-input
         class="input-pwd"
+        ref="pwdInputRef"
         v-model="pwd"
         type="password"
         placeholder="开门密码"
