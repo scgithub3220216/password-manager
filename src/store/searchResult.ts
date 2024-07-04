@@ -17,6 +17,7 @@ export const useSearchResultStore = defineStore('searchResult', () => {
     function closeSearchView() {
         searchViewShowFlag.value = false;
         clearSearchResultData()
+        userDataInfoStore.setCurPwdInfo(null)
     }
 
     function setSearchResultData(pwdInfoList: PwdInfo[]) {
@@ -32,7 +33,6 @@ export const useSearchResultStore = defineStore('searchResult', () => {
 
     function clearSearchResultData() {
         searchResultList.splice(0, searchResultList.length)
-        // @ts-ignore
         userDataInfoStore.setCurPwdInfo(null)
     }
 

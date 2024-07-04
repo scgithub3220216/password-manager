@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
@@ -18,8 +18,7 @@ const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
-const curGroup = reactive<PwdGroup>({});
-const pwdGroupList = reactive<PwdGroup[]>([]);
+const {curGroup, pwdGroupList} = storeToRefs(userDataInfoStore)
 const cssSwitchStore = useCssSwitchStore();
 
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
@@ -40,22 +39,18 @@ onUnmounted(() => {
 })
 
 function initData() {
-  Object.assign(pwdGroupList, userDataInfoStore.pwdGroupList);
-  if (!(pwdGroupList && pwdGroupList.length > 0)) {
+  if (!(pwdGroupList.value && pwdGroupList.value.length > 0)) {
     console.log("pwdGroupList 为空");
+    userDataInfoStore.setCurGroup(null);
     return;
   }
-  let pwdList = pwdGroupList[0].pwdList;
-  userDataInfoStore.setCurGroup(pwdGroupList[0]);
-  userDataInfoStore.setCurPwdInfo(pwdList[0]);
+  userDataInfoStore.setCurGroup(pwdGroupList.value[0]);
 }
 
 
 function clickGroup(group: PwdGroup, index: number) {
   console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`);
   userDataInfoStore.setCurGroup(group);
-  userDataInfoStore.setCurPwdInfo(group.pwdList[0]);
-  Object.assign(curGroup, group);
   // 单击样式
   cssSwitchStore.setGroupIndex(index)
   cssSwitchStore.setPwdListIndex(0)
@@ -75,12 +70,7 @@ function groupInputChange() {
     return;
   }
   console.log("groupInputChange2");
-  let pwdGroup = new PwdGroup(
-      userDataInfoStore.generateGroupId(),
-      groupInputValue.value,
-      []
-  );
-  pwdGroupList.push(pwdGroup);
+  let pwdGroup = new PwdGroup(userDataInfoStore.generateGroupId(), groupInputValue.value, [], false);
   userDataInfoStore.insertGroup(pwdGroup);
   groupInputShowFlag.value = false;
   groupInputValue.value = "";
@@ -91,23 +81,23 @@ function groupInputChange() {
 
 async function triggerGroupEdit() {
   console.log("triggerGroupEdit1");
-  userDataInfoStore.editGroupFlag(curGroup.id, true);
+  userDataInfoStore.editGroupFlag(curGroup.value.id, true);
 }
 
 function editGroups() {
   console.log("editGroups");
-  userDataInfoStore.editGroupFlag(curGroup.id, false);
+  userDataInfoStore.editGroupFlag(curGroup.value.id, false);
   userDataInfoStore.editAction();
 }
 
 function deleteGroup() {
   console.log("deleteGroup");
   let flag = false;
-  pwdGroupList.forEach((pwdGroup) => {
+  pwdGroupList.value.forEach((pwdGroup) => {
     if (flag) {
       return;
     }
-    if (pwdGroup.id === curGroup.id) {
+    if (pwdGroup.id === curGroup.value.id) {
       if (pwdGroup.pwdList.length > 0) {
         flag = true;
       }
@@ -117,13 +107,8 @@ function deleteGroup() {
     ElMessage.error("删除失败, 该分组下还有数据");
     return false;
   }
-  userDataInfoStore.deleteGroup(curGroup.id);
-  //  删除 pwdGroupList 中的数据
-  pwdGroupList.splice(
-      0,
-      pwdGroupList.length,
-      ...userDataInfoStore.pwdGroupList
-  );
+  userDataInfoStore.deleteGroup(curGroup.value.id);
+
   ElMessage.success("删除成功");
 }
 </script>
@@ -205,7 +190,6 @@ function deleteGroup() {
 .group-tools span {
   padding: 4px 4px 0 4px;
   margin-left: 5px;
-  /* border: 1px solid rgba(0, 0, 0, 0.15); */
 }
 
 .group-tools span:hover {

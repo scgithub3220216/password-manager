@@ -2,7 +2,7 @@
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {onUnmounted, reactive, watch} from "vue";
+import {onUnmounted} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
@@ -14,6 +14,8 @@ const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
 const cssSwitchStore = useCssSwitchStore();
 
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
+const {curGroup, curPwdList} = storeToRefs(userDataInfoStore)
+
 let props = defineProps(['transferInputFocus'])
 // 绑定事件
 emitter.on(emitterInsertPwdInfoTopic, (value) => {
@@ -41,17 +43,6 @@ const openDelPwdInfoMsgBox = () => {
       .catch(() => {
       });
 };
-const pwdInfoList = reactive<PwdInfo[]>([]);
-// const curGroup = reactive(userDataInfoStore.curGroup);
-const {curGroup} = storeToRefs(userDataInfoStore)
-watch(curGroup.value, (newVal) => {
-  console.log("watch curGroup newVal:", newVal.id);
-  pwdInfoList.splice(
-      0,
-      pwdInfoList.length,
-      ...userDataInfoStore.getPwdInfoListByGroupId(newVal.id)
-  );
-});
 
 function clickPwdInfo(value: PwdInfo, index: number) {
   console.log("clickPwdInfo");
@@ -78,12 +69,6 @@ function insertPwdInfo() {
 
   userDataInfoStore.insertPwdInfo(newPwdInfo);
 
-  pwdInfoList.splice(
-      0,
-      pwdInfoList.length,
-      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
-  );
-
   cssSwitchStore.addPwdListSwitch()
 }
 
@@ -91,12 +76,6 @@ function insertPwdInfo() {
 function deletePwdInfo() {
   console.log("deletePwdInfo");
   userDataInfoStore.deletePwdInfo(userDataInfoStore.curPwdInfo.id);
-  //  删除 pwdGroupList 中的数据
-  pwdInfoList.splice(
-      0,
-      pwdInfoList.length,
-      ...userDataInfoStore.getPwdInfoListByGroupId(curGroup.value.id)
-  );
 }
 </script>
 
@@ -106,7 +85,7 @@ function deletePwdInfo() {
       <el-scrollbar>
         <ul id="pwd-ul">
           <li
-              v-for="(pwdInfo,index) in pwdInfoList"
+              v-for="(pwdInfo,index) in curPwdList"
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
               :class="{ selected: curPwdListIndex === index }"

@@ -12,14 +12,24 @@ const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
 const {openBrowser} = useBrowser();
 const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
+const randomPwdGenerateRef = ref();
 
 defineExpose({keydown, pwdInfoTitleInput});
-// const curPwdInfo = reactive(userDataInfoStore.curPwdInfo);
 const {curPwdInfo} = storeToRefs(userDataInfoStore)
 
 function pwdInfoChange() {
   console.log("pwdInfoChange");
   userDataInfoStore.updatePwdInfo(curPwdInfo.value);
+}
+
+
+function keydown(e: KeyboardEvent) {
+  // console.log('keydown', e)
+  if (e.ctrlKey && e.key === "p") {
+    copyValue(curPwdInfo.value.password ? curPwdInfo.value.password : '');
+  } else if (e.ctrlKey && e.key === "u") {
+    copyValue(curPwdInfo.value.username ? curPwdInfo.value.username : '');
+  }
 }
 
 function copyValue(value: string) {
@@ -33,18 +43,6 @@ function copyValue(value: string) {
       }
   );
 }
-
-function keydown(e: KeyboardEvent) {
-  // console.log('keydown', e)
-  if (e.ctrlKey && e.key === "p") {
-    copyValue(curPwdInfo.value.password);
-  } else if (e.ctrlKey && e.key === "u") {
-    copyValue(curPwdInfo.value.username);
-  }
-}
-
-const randomPwdGenerateRef = ref();
-
 
 function clickPwdImg() {
   console.log("clickPwdImg");

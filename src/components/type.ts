@@ -85,17 +85,17 @@ export class PwdInfo {
 
     groupId: number;
 
-    groupTitle: string;
+    groupTitle?: string;
 
-    title: string;
+    title?: string;
 
-    username: string;
+    username?: string;
 
-    password: string;
+    password?: string;
 
-    link: string;
+    link?: string;
 
-    remark: string;
+    remark?: string;
 
     constructor(id: number, groupId: number, groupTitle: string, title: string, username: string, password: string, link: string, remark: string) {
         this.id = id;
@@ -112,20 +112,18 @@ export class PwdInfo {
 export class PwdGroup {
     id: number;
 
-    // fatherId: number;
 
     title: string;
 
     pwdList: PwdInfo[];
 
-    editFlag: boolean = false;
-
-    // subList: PwdGroup[];
+    editFlag: boolean;
 
 
-    constructor(id: number, title: string, pwdList: PwdInfo[]) {
+    constructor(id: number, title: string, pwdList: PwdInfo[], editFlag: boolean) {
         this.id = id;
         this.title = title;
         this.pwdList = pwdList;
+        this.editFlag = editFlag;
     }
 }

@@ -53,7 +53,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         insertGroup(pwdGroup: PwdGroup) {
             this.pwdGroupList.push(pwdGroup);
             this.setCurGroup(pwdGroup);
-            // @ts-ignore
             this.setCurPwdInfo(null);
             this.editAction();
         },
@@ -107,6 +106,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 pwdGroup.pwdList = pwdGroup.pwdList.filter(pwd => pwd.id !== pwdInfoId);
             })
             this.editAction()
+            this.setCurPwdList(this.getPwdInfoListByGroupId(this.curGroup.id))
         },
 
 
@@ -116,15 +116,26 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         logout() {
             this.userInfo.curLoginStatus = 0;
         },
-        setCurGroup(group: PwdGroup) {
+        setCurGroup(group: PwdGroup | null) {
             console.log('setCurGroup:', group)
             if (!group) {
-                // this.curGroup  设置为空,
                 this.curGroup.id = -1;
                 return;
             }
             this.curGroup.id = group.id;
             this.curGroup.title = group.title;
+            this.setCurPwdList(this.getPwdInfoListByGroupId(group.id))
+        },
+        setCurPwdList(pwdList: PwdInfo[]) {
+            console.log('setCurPwdList:', pwdList)
+            if (!pwdList) {
+                console.log('setCurPwdList pwdList 为空')
+                this.curPwdList = [];
+                this.setCurPwdInfo(null)
+                return;
+            }
+            this.curPwdList = pwdList;
+            this.setCurPwdInfo(pwdList[0])
         },
         setCurPwdInfoPwd(pwd: string) {
             if (!pwd) {
@@ -133,7 +144,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.curPwdInfo.password = pwd;
             this.editAction()
         },
-        setCurPwdInfo(pwdInfo: PwdInfo) {
+        setCurPwdInfo(pwdInfo: PwdInfo | null) {
             console.log('setCurPwdInfo:', pwdInfo)
             if (!pwdInfo) {
                 this.curPwdInfo.id = -1;
@@ -180,7 +191,14 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         },
     },
     // 状态
-    state(): { userInfo: UserInfo, shortCutKeyCombs: ShortCutKeyComb[], pwdGroupList: PwdGroup[], curGroup: PwdGroup, curPwdInfo: PwdInfo } {
+    state(): {
+        userInfo: UserInfo,
+        shortCutKeyCombs: ShortCutKeyComb[],
+        pwdGroupList: PwdGroup[],
+        curGroup: PwdGroup,
+        curPwdList: PwdInfo[],
+        curPwdInfo: PwdInfo
+    } {
         return {
             userInfo: {
                 darkSwitch: true,
@@ -280,6 +298,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             ],
             // @ts-ignore
             curGroup: {},
+            curPwdList: [],
             // @ts-ignore
             curPwdInfo: {}
         }
