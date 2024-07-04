@@ -6,7 +6,7 @@ import {
     defaultCopyUsernameShortcutKey,
     defaultInsertGroupShortcutKey,
     defaultInsertPwdInfoShortcutKey,
-    defaultLockWinShortcutKey,
+    defaultLogoutShortcutKey,
     defaultOpenMainWinShortcutKey,
     defaultPwd
 } from "../config/config.ts";
@@ -228,9 +228,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     desc: defaultOpenMainWinShortcutKey
                 },
                 {
-                    keys: ['Alt', "G"],
-                    actionName: 'lockWin',
-                    desc: defaultLockWinShortcutKey
+                    keys: ["Escape"],
+                    actionName: 'logout',
+                    desc: defaultLogoutShortcutKey
                 },
                 // 2
                 {

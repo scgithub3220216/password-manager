@@ -13,7 +13,7 @@ export default function () {
     //设置秘钥和秘钥偏移量
     const functionMap: { [key: string]: () => void } = {
         // 'openMainWin': openMainWin,
-        'lockWin': lockWin,
+        'logout': logout,
         'copyUsername': copyUsername,
         'copyPwd': copyPwd,
         'copyLink': copyLink,
@@ -46,13 +46,8 @@ export default function () {
         );
     }
 
-    // @ts-ignore
-    function openMainWin() {
-        console.log('openMainWin')
-    }
-
-    function lockWin() {
-        console.log('lockWin')
+    function logout() {
+        console.log('logout')
         emitter.emit(emitterLockTopic, '')
     }
 

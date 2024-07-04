@@ -7,10 +7,10 @@ const {
   handleOpenMainKeyup,
   clearOpenMainKeys,
 
-  lockShortcuts,
-  handleLockKeydown,
-  handleLockKeyup,
-  clearLockKeys,
+  logouts,
+  handleLogoutKeydown,
+  handleLogoutKeyup,
+  clearLogoutKeys,
 
   cpUsernames,
   handleCpUNameKeydown,
@@ -68,10 +68,10 @@ const {
             class="ipt"
             clearable
             placeholder="无"
-            v-model="lockShortcuts"
-            @keydown="handleLockKeydown"
-            @keyup="handleLockKeyup"
-            @keydown.delete="clearLockKeys"
+            v-model="logouts"
+            @keydown="handleLogoutKeydown"
+            @keyup="handleLogoutKeyup"
+            @keydown.delete="clearLogoutKeys"
         />
       </div>
 

@@ -15,7 +15,7 @@ export const saveTime = 1000;
 export const defaultPwd = '123456';
 
 export const defaultOpenMainWinShortcutKey = 'Ctrl + Alt + E';
-export const defaultLockWinShortcutKey = 'Alt + G';
+export const defaultLogoutShortcutKey = 'Escape';
 
 export const defaultCopyUsernameShortcutKey = 'Ctrl + U';
 

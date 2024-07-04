@@ -7,7 +7,7 @@ import {
     defaultCopyUsernameShortcutKey,
     defaultInsertGroupShortcutKey,
     defaultInsertPwdInfoShortcutKey,
-    defaultLockWinShortcutKey,
+    defaultLogoutShortcutKey,
     defaultOpenMainWinShortcutKey
 } from "../config/config.ts";
 
@@ -20,8 +20,8 @@ export default function () {
     const currentOpenMainKeys = ref<string[]>([]);
     const mainShortcuts = ref("");
 
-    const lockShortcuts = ref("");
-    const currentLockKeys = ref<string[]>([]);
+    const logouts = ref("");
+    const logoutArr = ref<string[]>([]);
 
     const cpUsernames = ref("");
     const cpUsernameArr = ref<string[]>([]);
@@ -41,7 +41,7 @@ export default function () {
     onMounted(() => {
         console.log("shorCutKeys onMounted");
         mainShortcuts.value = shortCutKeyCombs.value[0].desc;
-        lockShortcuts.value = shortCutKeyCombs.value[1].desc;
+        logouts.value = shortCutKeyCombs.value[1].desc;
         cpUsernames.value = shortCutKeyCombs.value[2].desc;
         cpPwds.value = shortCutKeyCombs.value[3].desc;
         cpLinks.value = shortCutKeyCombs.value[4].desc;
@@ -84,8 +84,8 @@ export default function () {
     }
 
     // 锁定屏幕
-    function handleLockKeydown(e: any) {
-        console.log('handleLockKeydown')
+    function handleLogoutKeydown(e: any) {
+        console.log('handleLogoutKeydown')
         e.stopPropagation();
 
         let key = e.key;
@@ -93,29 +93,29 @@ export default function () {
         if (key === "Control") {
             key = "Ctrl";
         }
-        if (currentLockKeys.value.includes(key)) {
+        if (logoutArr.value.includes(key)) {
             return;
         }
-        currentLockKeys.value.push(processKey(key));
-        lockShortcuts.value = currentLockKeys.value.join(joinSymbol);
+        logoutArr.value.push(processKey(key));
+        logouts.value = logoutArr.value.join(joinSymbol);
     }
 
-    function handleLockKeyup() {
+    function handleLogoutKeyup() {
         console.log('handleLockKeyup')
         // 在键盘抬起时清空 currentKeys 数组
-        currentLockKeys.value = [];
+        logoutArr.value = [];
     }
 
-    function clearLockKeys() {
-        console.log('clearLockKeys')
-        currentLockKeys.value = [];
-        lockShortcuts.value = ""
+    function clearLogoutKeys() {
+        console.log('clearLogoutKeys')
+        logoutArr.value = [];
+        logouts.value = ""
     }
 
 
-    function saveLockShortcuts() {
-        console.log("saveLockShortcuts lockShortcuts:", lockShortcuts.value);
-        userInfoStore.setShortCutKeyComb(1, lockShortcuts.value);
+    function saveLogoutShortcuts() {
+        console.log("saveLogoutShortcuts logouts:", logouts.value);
+        userInfoStore.setShortCutKeyComb(1, logouts.value);
     }
 
 
@@ -301,7 +301,7 @@ export default function () {
     function saveAll() {
         console.log("saveAll")
         saveOpenMainShortcuts();
-        saveLockShortcuts();
+        saveLogoutShortcuts();
         saveCpUNameShortcuts();
         saveCpPwdsShortcuts();
         saveCpLinksShortcuts();
@@ -315,7 +315,7 @@ export default function () {
     function reset() {
         console.log("reset");
         mainShortcuts.value = defaultOpenMainWinShortcutKey;
-        lockShortcuts.value = defaultLockWinShortcutKey;
+        logouts.value = defaultLogoutShortcutKey;
         cpUsernames.value = defaultCopyUsernameShortcutKey;
         cpPwds.value = defaultCopyPwdShortcutKey;
         cpLinks.value = defaultCopyLinkShortcutKey;
@@ -329,10 +329,10 @@ export default function () {
         handleOpenMainKeyup,
         clearOpenMainKeys,
 
-        lockShortcuts,
-        handleLockKeydown,
-        handleLockKeyup,
-        clearLockKeys,
+        logouts,
+        handleLogoutKeydown,
+        handleLogoutKeyup,
+        clearLogoutKeys,
 
         cpUsernames,
         handleCpUNameKeydown,
