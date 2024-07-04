@@ -16,8 +16,10 @@ const {openBrowser} = useBrowser();
 
 <style scoped>
 span {
-  color: blue;
+  color: rgb(139, 185, 100);
   cursor: pointer;
   text-decoration: underline;
+  font-weight: bold;
+  font-size: 15px;
 }
 </style>
