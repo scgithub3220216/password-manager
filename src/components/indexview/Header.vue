@@ -110,7 +110,7 @@ function clickLock() {
       <el-tooltip
           class="box-item"
           effect="dark"
-          :content="'锁定屏幕,快捷键'+shortCutKeyCombs[1].desc"
+          :content="'退出登录,快捷键'+shortCutKeyCombs[1].desc"
           placement="top"
       >
         <img src="/assets/lock.svg" alt="switch" @click="clickLock" class="search-image">

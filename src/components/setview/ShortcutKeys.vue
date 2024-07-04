@@ -61,7 +61,7 @@ const {
       </div>
 
       <div class="setting-item">
-        <span style="display: block">锁定屏幕:</span>
+        <span style="display: block">退出登录:</span>
         <el-input
             type="text"
             id="shortcuts"
