@@ -48,14 +48,13 @@ function autoStartChange() {
 </script>
 
 <template>
-  <!-- <h2 class="setting-h2title">启动</h2> -->
   <div class="setting-item">
     <el-form-item label="开机启动" prop="delivery">
       <el-switch v-model="autoStart" @change="autoStartChange" />
     </el-form-item>
   </div>
   <div class="setting-item">
-    <el-form-item label="自动锁定时间" prop="delivery">
+    <el-form-item label="自动退出登录时间" prop="delivery">
       <el-input-number
         v-model="lockTime"
         :min="1"
