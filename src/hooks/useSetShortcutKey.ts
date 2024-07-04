@@ -61,7 +61,7 @@ export default function () {
         if (currentOpenMainKeys.value.includes(key)) {
             return;
         }
-        currentOpenMainKeys.value.push(key);
+        currentOpenMainKeys.value.push(processKey(key));
         mainShortcuts.value = currentOpenMainKeys.value.join(joinSymbol);
     }
 
@@ -96,7 +96,7 @@ export default function () {
         if (currentLockKeys.value.includes(key)) {
             return;
         }
-        currentLockKeys.value.push(key);
+        currentLockKeys.value.push(processKey(key));
         lockShortcuts.value = currentLockKeys.value.join(joinSymbol);
     }
 
@@ -130,7 +130,7 @@ export default function () {
         if (cpUsernameArr.value.includes(key)) {
             return;
         }
-        cpUsernameArr.value.push(key);
+        cpUsernameArr.value.push(processKey(key));
         cpUsernames.value = cpUsernameArr.value.join(joinSymbol);
     }
 
@@ -163,7 +163,7 @@ export default function () {
         if (cpPwdArr.value.includes(key)) {
             return;
         }
-        cpPwdArr.value.push(key);
+        cpPwdArr.value.push(processKey(key));
         cpPwds.value = cpPwdArr.value.join(joinSymbol);
     }
 
@@ -196,7 +196,7 @@ export default function () {
         if (cpLinkArr.value.includes(key)) {
             return;
         }
-        cpLinkArr.value.push(key);
+        cpLinkArr.value.push(processKey(key));
         cpLinks.value = cpLinkArr.value.join(joinSymbol);
     }
 
@@ -231,7 +231,7 @@ export default function () {
         if (insertGroupArr.value.includes(key)) {
             return;
         }
-        insertGroupArr.value.push(key);
+        insertGroupArr.value.push(processKey(key));
         insertGroups.value = insertGroupArr.value.join(joinSymbol);
     }
 
@@ -264,7 +264,7 @@ export default function () {
         if (insertPwdInfoArr.value.includes(key)) {
             return;
         }
-        insertPwdInfoArr.value.push(key);
+        insertPwdInfoArr.value.push(processKey(key));
         insertPwdInfos.value = insertPwdInfoArr.value.join(joinSymbol);
     }
 
@@ -284,6 +284,17 @@ export default function () {
     function saveInsertPwdInfosShortcuts() {
         console.log("saveInsertPwdInfosShortcuts", insertPwdInfos.value);
         userInfoStore.setShortCutKeyComb(6, insertPwdInfos.value);
+    }
+
+    function processKey(key: string): string {
+        if (!key) {
+            return key;
+        }
+
+        if (key.length != 1) {
+            return key;
+        }
+        return key.toUpperCase();
     }
 
 
