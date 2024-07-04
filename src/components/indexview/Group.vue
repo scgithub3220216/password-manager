@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
@@ -37,6 +37,21 @@ emitter.on(emitterInsertGroupTopic, (value) => {
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertGroupTopic)
+})
+
+let deleteFlag = computed(() => {
+  let flag = false;
+  pwdGroupList.value.forEach((pwdGroup) => {
+    if (flag) {
+      return;
+    }
+    if (pwdGroup.id === curGroup.value.id) {
+      if (pwdGroup.pwdList.length > 0) {
+        flag = true;
+      }
+    }
+  });
+  return flag
 })
 
 function initData() {
@@ -95,23 +110,7 @@ function editGroups() {
 
 function deleteGroup() {
   console.log("deleteGroup");
-  let flag = false;
-  pwdGroupList.value.forEach((pwdGroup) => {
-    if (flag) {
-      return;
-    }
-    if (pwdGroup.id === curGroup.value.id) {
-      if (pwdGroup.pwdList.length > 0) {
-        flag = true;
-      }
-    }
-  });
-  if (flag) {
-    ElMessage.error("删除失败, 该分组下还有数据");
-    return false;
-  }
   userDataInfoStore.deleteGroup(curGroup.value.id);
-
   ElMessage.success("删除成功");
 }
 </script>
@@ -173,9 +172,9 @@ function deleteGroup() {
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <span class="tool" @click="deleteGroup()">
+        <el-button style="border: 0;background: none;color: initial;" :disabled="deleteFlag" class="tool" @click="deleteGroup()">
           <Delete style="width: 20px; height: 20px"/>
-        </span>
+        </el-button>
       </el-tooltip>
     </div>
   </div>
