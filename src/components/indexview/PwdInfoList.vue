@@ -2,7 +2,7 @@
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
@@ -16,6 +16,12 @@ const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
 
 let props = defineProps(['transferInputFocus'])
+
+onMounted(() => {
+  console.log("PwdInfoList onMounted");
+  cssSwitchStore.setPwdListIndex(0)
+});
+
 // 绑定事件
 emitter.on(emitterInsertPwdInfoTopic, (value) => {
   console.log(emitterInsertPwdInfoTopic, ' 事件被触发 value:', value)

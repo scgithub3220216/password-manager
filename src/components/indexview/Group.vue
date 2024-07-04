@@ -19,9 +19,9 @@ const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const {curGroup, pwdGroupList} = storeToRefs(userDataInfoStore)
-const cssSwitchStore = useCssSwitchStore();
 const {userInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
+const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 onMounted(() => {
   console.log("Index onMounted");
@@ -43,9 +43,11 @@ function initData() {
   if (!(pwdGroupList.value && pwdGroupList.value.length > 0)) {
     console.log("pwdGroupList 为空");
     userDataInfoStore.setCurGroup(null);
+    cssSwitchStore.setGroupIndex(-1)
     return;
   }
   userDataInfoStore.setCurGroup(pwdGroupList.value[0]);
+  cssSwitchStore.setGroupIndex(0)
 }
 
 
