@@ -7,6 +7,8 @@ import {storeToRefs} from "pinia";
 const userDataInfoStore = useUserDataInfoStore();
 const searchResultStore = useSearchResultStore();
 const {searchResultList} = storeToRefs(searchResultStore)
+
+// @ts-ignore
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
   console.log('searchTableClick,row:', row)
   if (!row) {

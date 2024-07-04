@@ -2,11 +2,10 @@
 
 import {Search} from "@element-plus/icons-vue";
 import {toggleDark} from "../../styles/dark/dark.ts";
-import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import SettingDialog from "../SettingDialog.vue";
-import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterLockTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
@@ -14,53 +13,18 @@ import {useSearchResultStore} from "../../store/searchResult.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userInfoStore)
-
+const searchResultStore = useSearchResultStore();
 const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 const {logout} = useLoginAction();
 const search = ref('');
-const searchResultList = reactive<PwdInfo[]>([]);
 const searchInputRef = ref();
-let settingDialogRef = ref();
 
-const searchResultStore = useSearchResultStore();
+let settingDialogRef = ref();
 onMounted(() => {
   console.log('Header.vue onMounted')
   searchInputRef.value.focus();
   console.log('Header.vue 挂载完毕')
 })
-
-function clickDarkSwitch() {
-  console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
-  userInfoStore.setDarkSwitch(themeSwitch.value);
-  toggleDark();
-}
-
-function searchAction() {
-  console.log('searchAction')
-  // 根据输入的内容 筛选 pwdGroupList 和 pwdInfoList
-  let searchValue = search.value;
-  if (!searchValue.trim()) {
-    searchResultStore.closeSearchView();
-    searchResultList.splice(0, searchResultList.length);
-    return;
-  }
-
-  // 如果有值
-  searchResultStore.openSearchView()
-
-  // 将 pwdGroupList 全部转为 pwdInfoList
-  let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
-  // 在 pwdInfoList 中查找
-  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue) || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  searchResultStore.setSearchResultData(searchResultListTemp);
-}
-
-
-function openSettingDialog() {
-  console.log('openSettingDialog')
-  settingDialogRef.value.openSettingDialog();
-}
-
 
 // 绑定事件
 emitter.on(emitterLockTopic, (value) => {
@@ -73,14 +37,46 @@ onUnmounted(() => {
   emitter.off(emitterLockTopic)
 })
 
+function clickDarkSwitch() {
+  console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
+  userInfoStore.setDarkSwitch(themeSwitch.value);
+  toggleDark();
+}
+
+function searchAction() {
+  console.log('searchAction')
+
+  let searchValue = search.value;
+  if (!searchValue.trim()) {
+    searchResultStore.closeSearchView();
+    return;
+  }
+
+  // 将 pwdGroupList 全部转为 pwdInfoList
+  let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
+  // 在 pwdInfoList 中查找
+  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue)
+      || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
+  if (!searchResultListTemp || searchResultListTemp.length === 0) {
+    console.log('searchResultListTemp 为空')
+    return;
+  }
+
+  searchResultStore.setSearchResultData(searchResultListTemp);
+  searchResultStore.openSearchView()
+}
+
+
+function openSettingDialog() {
+  console.log('openSettingDialog')
+  settingDialogRef.value.openSettingDialog();
+}
+
+
 function clickLock() {
   logout();
 }
 
-// 暴露方法给父组件
-defineExpose({
-  searchResultList, searchInputRef
-});
 </script>
 
 <template>
