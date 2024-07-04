@@ -93,7 +93,7 @@ function clickLock() {
             @click="clickDarkSwitch()"
             v-model="themeSwitch"
             class="ml-2"
-            style="--el-switch-on-color: rgba(0,0,0,0.5); --el-switch-off-color: rgba(255,255,255,0.72); margin-left: 10px"
+            style="--el-switch-on-color: rgba(0,0,0,0.19); --el-switch-off-color: rgb(220,209,209); margin-left: 10px"
         />
       </el-tooltip>
     </div>
