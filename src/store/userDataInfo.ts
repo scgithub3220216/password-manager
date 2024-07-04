@@ -147,7 +147,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         setCurPwdInfo(pwdInfo: PwdInfo | null) {
             console.log('setCurPwdInfo:', pwdInfo)
             if (!pwdInfo) {
-                this.curPwdInfo.id = -1;
+                // @ts-ignore
+                this.curPwdInfo= {};
                 return;
             }
             Object.assign(this.curPwdInfo, pwdInfo)
