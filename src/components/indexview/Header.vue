@@ -151,9 +151,7 @@ function clickLock() {
 
 .search-image:hover {
   opacity: 0.4;
-  background: #79797BFF;
-  box-shadow: #888888 0px 0px 5px 0px;
   cursor: pointer;
-
+  transform: scale(1.1);
 }
 </style>

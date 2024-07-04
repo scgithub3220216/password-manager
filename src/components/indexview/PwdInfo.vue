@@ -26,14 +26,17 @@ function pwdInfoChange() {
 function keydown(e: KeyboardEvent) {
   // console.log('keydown', e)
   if (e.ctrlKey && e.key === "p") {
-    copyValue(curPwdInfo.value.password ? curPwdInfo.value.password : '');
+    copyValue(curPwdInfo.value.password);
   } else if (e.ctrlKey && e.key === "u") {
-    copyValue(curPwdInfo.value.username ? curPwdInfo.value.username : '');
+    copyValue(curPwdInfo.value.username);
   }
 }
 
-function copyValue(value: string) {
+function copyValue(value: string | undefined) {
   console.log("copyValue");
+  if (!value) {
+    return;
+  }
   navigator.clipboard.writeText(value).then(
       () => {
         console.log("复制成功");
@@ -53,7 +56,6 @@ function clickPwdImg() {
 <template>
   <div class="pwdInfo">
     <span class="pwdInfo-item">标题</span>
-    <!--    <el-text class="mx-1" style="text-align: left">标题</el-text>-->
     <el-input
         ref="pwdInfoTitleInput"
         v-model="curPwdInfo.title"
@@ -77,7 +79,7 @@ function clickPwdImg() {
             :content="'复制用户名,快捷键'+shortCutKeyCombs[2].desc"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.username)" class="copy"
+          <el-icon @click="copyValue(curPwdInfo.username)" class="img-item"
           >
             <CopyDocument/>
           </el-icon>
@@ -100,7 +102,7 @@ function clickPwdImg() {
             content="明文展示"
             placement="top"
         >
-          <el-icon @click="clickPwdImg" class="copy">
+          <el-icon @click="clickPwdImg" class="img-item">
             <View/>
           </el-icon>
         </el-tooltip>
@@ -110,7 +112,7 @@ function clickPwdImg() {
             content="生成随机密码"
             placement="top"
         >
-          <el-icon @click="randomPwdGenerateRef.dialogVisible = true" class="copy">
+          <el-icon @click="randomPwdGenerateRef.dialogVisible = true" class="img-item">
             <Switch/>
           </el-icon>
         </el-tooltip>
@@ -120,7 +122,7 @@ function clickPwdImg() {
             :content="'复制密码,快捷键'+shortCutKeyCombs[3].desc"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.password)" class="copy">
+          <el-icon @click="copyValue(curPwdInfo.password)" class="img-item">
             <CopyDocument/>
           </el-icon>
 
@@ -142,22 +144,22 @@ function clickPwdImg() {
             content="在浏览器中打开"
             placement="top"
         >
-          <el-icon @click="openBrowser(curPwdInfo.link)" class="copy">
+          <el-icon @click="openBrowser(curPwdInfo.link)" class="img-item">
             <ChromeFilled/>
           </el-icon>
-
         </el-tooltip>
+
         <el-tooltip
             class="box-item"
             effect="dark"
             :content="'复制链接,快捷键'+shortCutKeyCombs[3].desc"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.link)" class="copy">
+          <el-icon @click="copyValue(curPwdInfo.link)" class="img-item">
             <CopyDocument/>
           </el-icon>
-
         </el-tooltip>
+
       </template>
     </el-input>
 
@@ -167,28 +169,24 @@ function clickPwdImg() {
           class="item-textarea input-pwd"
           v-model="curPwdInfo.remark"
           @change="pwdInfoChange()"
-          :rows="5"
+          :rows="9"
           type="textarea"
       />
     </div>
   </div>
 
-  <RandomPwdGenerate
-      ref="randomPwdGenerateRef"
-      :updatePwdInfo="pwdInfoChange"
-  />
+  <RandomPwdGenerate ref="randomPwdGenerateRef" :updatePwdInfo="pwdInfoChange"/>
 </template>
 
 <style scoped>
 .pwdInfo {
   width: 40%;
+  margin-top: 2%;
 }
 
 .pwdInfo-item {
-  margin-top: 0px;
   display: flex;
   padding: 10px;
-  /* border-bottom: 1px solid #000000; */
   flex-direction: column;
   align-items: start;
   font-size: 14px;
@@ -212,7 +210,7 @@ function clickPwdImg() {
   background: transparent;
 }
 
-.copy {
+.img-item {
   width: 22px;
   height: 22px;
   border: 1px solid rgba(204, 204, 204, 0);
@@ -221,10 +219,9 @@ function clickPwdImg() {
   opacity: 0.4;
 }
 
-.copy:hover {
-  opacity: 0.4;
-  background: #79797bff;
-  box-shadow: #888888 0px 0px 5px 0px;
+.img-item:hover {
   cursor: pointer;
+  transform: scale(1.5);
 }
+
 </style>

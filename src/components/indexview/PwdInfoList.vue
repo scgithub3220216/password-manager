@@ -97,12 +97,12 @@ function deletePwdInfo() {
     </div>
     <div class="pwd-tools">
       <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
-        <span @click="insertPwdInfo()">
-          <Plus style="width: 20px; height: 20px; margin-right: 8px"
+        <span class="tool" @click="insertPwdInfo()">
+          <Plus style="width: 20px; height: 20px"
           /></span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <span @click="openDelPwdInfoMsgBox()">
+        <span class="tool" @click="openDelPwdInfoMsgBox()">
           <Delete style="width: 20px; height: 20px"
           /></span>
       </el-tooltip>
@@ -130,11 +130,11 @@ function deletePwdInfo() {
   overflow-x: hidden;
   margin-top: 32px;
 }
-
-.pwd-tools span {
-  padding: 8px 8px 0 8px;
-  margin-left: 10px;
+.pwd-tools{
+  display: flex;
+  justify-content: space-around;
 }
+
 
 ul {
   margin: 0;

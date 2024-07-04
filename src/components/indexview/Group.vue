@@ -147,26 +147,26 @@ function deleteGroup() {
 
     <div class="group-tools">
       <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[5].desc" placement="top">
-        <span @click="triggerGroupsInsert()">
-          <Plus style="width: 20px; height: 20px; margin-right: 8px"
-          /></span>
+        <span class="tool" @click="triggerGroupsInsert()">
+          <Plus style="width: 20px; height: 20px"/>
+        </span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="修改" placement="top">
-        <span @blur="triggerGroupEdit" @click="triggerGroupEdit()">
-          <Edit style="width: 20px; height: 20px; margin-right: 8px"
-          /></span>
+        <span class="tool" @blur="triggerGroupEdit" @click="triggerGroupEdit()">
+          <Edit style="width: 20px; height: 20px"/>
+        </span>
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="导出" placement="top">
-        <span @click="exportExcel">
-          <Download style="width: 20px; height: 20px"
-          /></span>
+        <span class="tool" @click="exportExcel">
+          <Download style="width: 20px; height: 20px"/>
+        </span>
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <span @click="deleteGroup()">
-          <Delete style="width: 20px; height: 20px"
-          /></span>
+        <span class="tool" @click="deleteGroup()">
+          <Delete style="width: 20px; height: 20px"/>
+        </span>
       </el-tooltip>
     </div>
   </div>
@@ -187,14 +187,11 @@ function deleteGroup() {
 
 }
 
-.group-tools span {
-  padding: 4px 4px 0 4px;
-  margin-left: 5px;
+.group-tools {
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.group-tools span:hover {
-  box-shadow: #213547;
-}
 
 ul {
   margin: 0;
@@ -221,10 +218,6 @@ li:last-child {
 li:hover {
   background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
-}
-
-li.selected {
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .selected {
