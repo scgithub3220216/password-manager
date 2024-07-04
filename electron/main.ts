@@ -38,6 +38,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 1000,
         height: 700,
+        frame:false,
         // 菜单是否隐藏 按住 Alt 还会展示
         autoHideMenuBar: true,
         icon: path.join(process.env.VITE_PUBLIC, 'assets/icon.ico'),
@@ -266,3 +267,27 @@ function setAutoStart(autoStart: boolean) {
 }
 
 
+
+
+
+// 窗口 （最小化、最大化/还原、关闭）
+
+ipcMain.handle('minimize', () => {
+    console.log('minimize')
+    win?.minimize()
+})
+
+ipcMain.handle('maximize', () => {
+    console.log('maximize')
+    if (win?.isMaximized()) {
+        win.unmaximize()
+    } else {
+        win?.maximize()
+    }
+})
+
+ipcMain.handle('close-win', () => {
+    console.log('close-win')
+    // 最小化窗口到系统托盘
+    win?.hide();
+})

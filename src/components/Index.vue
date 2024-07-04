@@ -58,7 +58,7 @@ function transferInputFocus() {
 
 .outer {
   width: 100vw;
-  height: 100vh;
+  height: 95vh;
   flex: 1 1 auto;
   overflow: hidden;
 }
@@ -66,7 +66,7 @@ function transferInputFocus() {
 .content {
   display: flex;
   width: 100vw;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 7vh - 5vh);
 }
 
 

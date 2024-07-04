@@ -68,7 +68,7 @@ emitter.on('initSuccess', () => {
 .pwd-outer {
   transition: background-color 1s;
   width: 100vw;
-  height: 100vh;
+  height: 95vh;
   display: flex;
   justify-content: center;
   align-items: center;

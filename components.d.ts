@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BasicSet: typeof import('./src/components/setview/BasicSet.vue')['default']
-    ElBatton: typeof import('element-plus/es')['ElBatton']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
@@ -42,6 +41,7 @@ declare module 'vue' {
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
     ShortcutKeys: typeof import('./src/components/setview/ShortcutKeys.vue')['default']
     Support: typeof import('./src/components/setview/Support.vue')['default']
+    Top: typeof import('./src/components/indexview/Top.vue')['default']
     UpdatePwd: typeof import('./src/components/setview/UpdatePwd.vue')['default']
   }
 }

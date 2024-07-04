@@ -132,7 +132,7 @@ function clickLock() {
 
 <style scoped>
 .search {
-  height: 45px;
+  height: 7vh;
   width: 100vw;
   margin-top: 5px;
   display: flex;
