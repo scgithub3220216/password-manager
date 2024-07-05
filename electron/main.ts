@@ -30,7 +30,8 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let initDataStr = '';
 let win: BrowserWindow | null
 let tray
-let clickExitTime = 0;
+
+// let clickExitTime = 0;
 
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
@@ -49,14 +50,12 @@ function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, 'preload.mjs'),
             spellcheck: false, // 关闭拼写检查
-            // nodeIntegration: true,
-            // contextIsolation: false
         },
     })
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
     // 调试窗口
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
 
     // Test active push message to Renderer-process.
@@ -67,22 +66,21 @@ function createWindow() {
     if (VITE_DEV_SERVER_URL) {
         win.loadURL(VITE_DEV_SERVER_URL)
     } else {
-        // win.loadFile('dist/index.html')
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
-
+    // @ts-ignore
     win.on('close', (e) => {
         console.log('close event')
-        // true 说明是 主窗口触发的
-        if (new Date().getTime() - clickExitTime >= 1000) {
-            console.log('主窗口关闭, 最小化到托盘')
-            // 阻止默认的关闭操作
-            e.preventDefault();
-
-            // 最小化窗口到系统托盘
-            win?.hide();
-            return;
-        }
+        // true 说明是 主窗口触发的 // 20240705 因为自定义顶部工具栏,不适用默认的关闭方法, 因为所以下面注释
+        // if (new Date().getTime() - clickExitTime >= 1000) {
+        //     console.log('主窗口关闭, 最小化到托盘')
+        //     // 阻止默认的关闭操作
+        //     e.preventDefault();
+        //
+        //     // 最小化窗口到系统托盘
+        //     win?.hide();
+        //     return;
+        // }
 
         quit();
     });
@@ -110,7 +108,8 @@ function createTrayMenu() {
         },
         {
             label: '退出', click() {
-                clickExitTime = new Date().getTime()
+                // 20240705 因为自定义顶部工具栏,不适用默认的关闭方法, 因为所以下面注释
+                // clickExitTime = new Date().getTime()
                 app.quit()
             }
         },
