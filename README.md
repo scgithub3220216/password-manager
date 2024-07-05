@@ -46,6 +46,12 @@
 
 ![image-20240704164816680](./README.assets/image-20240704164816680.png)
 
+# 软件下载地址
+
+### 百度网盘
+
+链接：https://pan.baidu.com/s/1cuRzhTleXLY0ttTg0knaEw?pwd=da2o
+提取码：da2o
 
 
 # 未来待做
