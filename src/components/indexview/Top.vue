@@ -20,8 +20,11 @@ const isMaximized = ref(false)
 
 <template>
 
-  <div class="top titlebar">
-    <div class="left">left</div>
+  <div class="top title-bar">
+    <div class="left">
+      <img class="logo" src="/assets/icon-top.ico" alt="logo"/>
+      <el-text class="mx-1 title">密码管理器</el-text>
+    </div>
     <div class="right">
       <!--最小化-->
       <el-button class="btn" @click="minimize">
@@ -60,9 +63,21 @@ const isMaximized = ref(false)
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.titlebar {
+/*可拖动*/
+.title-bar {
   -webkit-app-region: drag;
   -webkit-user-select: none;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.title {
+  margin-left: 8px;
+  font-weight: 480;
 }
 
 .right {
