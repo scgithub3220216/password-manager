@@ -85,8 +85,10 @@ const isMaximized = ref(false)
 }
 
 .btn {
+  height: 100%;
   margin: 0;
   border: none;
+  background: none;
 }
 
 .btn:hover {
