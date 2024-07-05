@@ -54,10 +54,10 @@ const isMaximized = ref(false)
 
 <style scoped>
 .top {
-  height: calc(5vh - 1px);
+  height: calc(5vh - 3px);
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .titlebar {
