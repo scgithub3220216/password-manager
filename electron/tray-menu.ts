@@ -1,6 +1,7 @@
 import {app, BrowserWindow, Menu, nativeImage, shell, Tray} from "electron";
 import path from "node:path";
 import {helpLink} from "../src/config/config.ts";
+import {showWindows} from "./common.ts";
 
 export const createTrayMenu = (win: BrowserWindow | null) => {
     if (!win) return;
@@ -34,6 +35,6 @@ export const createTrayMenu = (win: BrowserWindow | null) => {
     tray.setTitle('密码管理器')
 
     tray.on('click', () => {
-        win.show();
+        showWindows(win)
     });
 }

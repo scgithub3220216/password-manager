@@ -1,4 +1,4 @@
-import {app, BrowserWindow, globalShortcut, ipcMain, Menu, shell} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
@@ -7,6 +7,7 @@ import useCrypto from "../src/hooks/useCrypto.ts";
 import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
+import {registerGlobalShortcut} from "./common.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -76,22 +77,6 @@ function createWindow() {
 }
 
 
-//  打开窗口 ,如果已经打开了, 则缩小
-function showWindows() {
-    if (win) {
-        if (win.isVisible()) {
-            win.hide(); // 如果窗口已显示，则隐藏
-        } else {
-            win.show(); // 如果窗口未显示或被隐藏，则显示
-            if (process.platform === 'darwin') {
-                app.dock.show(); // 在macOS上，从Dock中显示应用
-            }
-        }
-    } else {
-        createWindow()
-    }
-}
-
 const {decryptData} = useCrypto();
 
 app.whenReady()
@@ -103,7 +88,7 @@ app.whenReady()
         if (!initDataStr) {
             console.log('数据为空')
             setAutoStart(true)
-            registerGlobalShortcut(defaultOpenMainWinShortcutKey);
+            registerGlobalShortcut(defaultOpenMainWinShortcutKey, win);
             return;
         }
         // 解析数据
@@ -117,7 +102,7 @@ app.whenReady()
         }
 
         // 设置快捷键
-        registerGlobalShortcut(fileDataObj.shortCutKeyCombs[0].desc);
+        registerGlobalShortcut(fileDataObj.shortCutKeyCombs[0].desc, win);
 
     })
     .then(() => {
@@ -125,25 +110,6 @@ app.whenReady()
         createTrayMenu(win)
     })
 
-function registerGlobalShortcut(openMainWindows: string) {
-    console.log('openMainWindows:', openMainWindows)
-    let replaceValue = 'CommandOrControl';
-    // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
-    let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
-    let openMainWindows2 = openMainWindows1.replace('Ctrl', replaceValue)
-    // .replace('Control', replaceValue)
-    console.log('openMainWindows2:', openMainWindows2)
-    // 清除快捷键
-    globalShortcut.unregisterAll()
-    try {
-        globalShortcut.register(openMainWindows2, () => {
-            showWindows()
-        })
-    } catch (e) {
-        console.log('注册快捷键失败:', e)
-        globalShortcut.unregisterAll()
-    }
-}
 
 function getFilePath() {
     const userDataPath = app.getPath('userData');
@@ -194,7 +160,7 @@ ipcMain.handle('save-data', (event, arg) => {
 // @ts-ignore
 ipcMain.handle('save-shortcuts', (event, arg) => {
     console.log(`Received auto-start: ${arg}`);
-    registerGlobalShortcut(arg)
+    registerGlobalShortcut(arg, win);
 });
 // @ts-ignore
 ipcMain.handle('auto-start', (event, arg) => {
@@ -216,7 +182,6 @@ function setAutoStart(autoStart: boolean) {
         path: process.execPath, // 可选，应用的启动路径
         args: [], // 可选，启动时传递给应用的命令行参数
     });
-
 }
 
 
