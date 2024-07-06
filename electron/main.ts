@@ -1,12 +1,14 @@
-import {app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeImage, shell, Tray} from 'electron'
-// import {createRequire} from 'node:module'
+import {app, BrowserWindow, globalShortcut, ipcMain, Menu, shell} from 'electron'
+import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {readFile, writeFile} from "./utils/fileUtils.ts";
 import useCrypto from "../src/hooks/useCrypto.ts";
-import {defaultOpenMainWinShortcutKey, helpLink} from "../src/config/config.ts";
-
-// const require = createRequire(import.meta.url)
+import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
+import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
+import {createTrayMenu} from "./tray-menu.ts";
+//@ts-ignore
+const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // The built directory structure
@@ -29,20 +31,20 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 let initDataStr = '';
 let win: BrowserWindow | null
-let tray
 
 
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
     app.setAppUserModelId('password-manager')
     win = new BrowserWindow({
-        width: 1000,
-        height: 700,
+        width: WINDOW_INDEX_WIDTH,
+        height: WINDOW_INDEX_HEIGHT,
         // 外边框是否展示
-        frame: false,
-        transparent: true, // 设置窗口的背景透明
+        frame: FRAME,
+        // 设置窗口的背景透明
+        transparent: TRANSPARENT,
         // 菜单是否隐藏 按住 Alt 还会展示
-        autoHideMenuBar: true,
+        autoHideMenuBar: AUTO_HIDE_MENU_BAR,
         icon: path.join(process.env.VITE_PUBLIC, 'assets/icon.ico'),
 
         // skipTaskbar: true, // this will hide the window from the taskbar
@@ -55,7 +57,6 @@ function createWindow() {
     Menu.setApplicationMenu(null);
     // 调试窗口
     // win.webContents.openDevTools()
-
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
@@ -72,40 +73,6 @@ function createWindow() {
         quit();
     });
 
-}
-
-function createTrayMenu() {
-    let trayIcon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'assets/icon.ico'))
-    trayIcon = trayIcon.resize({width: 22, height: 22})
-
-    tray = new Tray(trayIcon)
-
-    tray.setToolTip('密码管理器')
-
-    const trayMenu = Menu.buildFromTemplate([
-        {
-            label: '显示主界面', click() {
-                win?.show();
-            }
-        },
-        {
-            label: '帮助', click() {
-                shell.openExternal(helpLink);
-            }
-        },
-        {
-            label: '退出', click() {
-                app.quit()
-            }
-        },
-    ])
-    tray.setContextMenu(trayMenu)
-    tray.setToolTip('密码管理器')
-    tray.setTitle('密码管理器')
-
-    tray.on('click', () => {
-        showWindows()
-    });
 }
 
 
@@ -155,7 +122,7 @@ app.whenReady()
     })
     .then(() => {
         createWindow()
-        createTrayMenu()
+        createTrayMenu(win)
     })
 
 function registerGlobalShortcut(openMainWindows: string) {
