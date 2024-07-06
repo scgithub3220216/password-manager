@@ -8,6 +8,8 @@ import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {registerGlobalShortcut, setAutoStart} from "./common.ts";
+import {initTable} from "./db/sqlite/init-sql.ts";
+import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -79,9 +81,14 @@ function createWindow() {
 
 const {decryptData} = useCrypto();
 
-app.whenReady()
-    // 读取 文件内容, 然后根据一些设置进行一些操作
+app.whenReady().then(async () => {
+    createWindow()
+    createTrayMenu(win)
+    SQLiteIPC();
+    await initTable();
+})
     .then(async () => {
+
         console.log('准备读取数据')
         initDataStr = await readFile(getFilePath());
         console.log('数据读取成功')
@@ -103,11 +110,6 @@ app.whenReady()
 
         // 设置快捷键
         registerGlobalShortcut(fileDataObj.shortCutKeyCombs[0].desc, win);
-
-    })
-    .then(() => {
-        createWindow()
-        createTrayMenu(win)
     })
 
 
@@ -172,8 +174,6 @@ ipcMain.handle('open-browser', (event, arg) => {
     console.log(`open-browser:${arg} `);
     shell.openExternal(arg);
 });
-
-
 
 
 // 窗口 （最小化、最大化/还原、关闭）

@@ -1,5 +1,3 @@
-
-
 // WINDOW INDEX
 export const WINDOW_INDEX_WIDTH = 1000;
 export const WINDOW_INDEX_HEIGHT = 700;
@@ -12,7 +10,19 @@ export const AUTO_HIDE_MENU_BAR = true;
 export const WINDOW_INDEX_COLOR = '#fff';
 
 // IPC SQLITE
+
+// config
+export const IPC_SQLITE_UPDATE_CONFIG_DATA = 'ipc-sqlite-update-config-data';
+export const IPC_SQLITE_SELECT_CONFIG_DATA = 'ipc-sqlite-select-config-data';
+// group
 export const IPC_SQLITE_INSERT_GROUP_DATA = 'ipc-sqlite-insert-group-data';
 export const IPC_SQLITE_DELETE_GROUP_DATA = 'ipc-sqlite-delete-group-data';
 export const IPC_SQLITE_UPDATE_GROUP_DATA = 'ipc-sqlite-update-group-data';
 export const IPC_SQLITE_SELECT_GROUP_DATA = 'ipc-sqlite-select-group-data';
+
+// pwdInfo
+export const IPC_SQLITE_INSERT_PWD_INFO_DATA = 'ipc-sqlite-insert-pwd-info-data';
+export const IPC_SQLITE_DELETE_PWD_INFO_DATA = 'ipc-sqlite-delete-pwd-info-data';
+export const IPC_SQLITE_UPDATE_PWD_INFO_DATA = 'ipc-sqlite-update-pwd-info-data';
+export const IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA = 'ipc-sqlite-select-list-pwd-info-data';
+export const IPC_SQLITE_SELECT_GET_PWD_INFO_DATA = 'ipc-sqlite-select-get-pwd-info-data';
