@@ -2,14 +2,16 @@ import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import {readFile, writeFile} from "./utils/fileUtils.ts";
-import useCrypto from "../src/hooks/useCrypto.ts";
-import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
+import {writeFile} from "./utils/fileUtils.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {registerGlobalShortcut, setAutoStart} from "./common.ts";
 import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
+import {getConfig} from "./db/sqlite/mapper/config.ts";
+import {autoStart, openMainWindows} from "./db/sqlite/components/configConstants.ts";
+import {getShortcutKey} from "./db/sqlite/mapper/shortcutKey.ts";
+import {Config, ShortCutKeyComb} from "../src/components/type.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -78,9 +80,6 @@ function createWindow() {
 
 }
 
-
-const {decryptData} = useCrypto();
-
 app.whenReady().then(async () => {
     createWindow()
     createTrayMenu(win)
@@ -88,28 +87,18 @@ app.whenReady().then(async () => {
     await initTable();
 })
     .then(async () => {
-
         console.log('准备读取数据')
-        initDataStr = await readFile(getFilePath());
-        console.log('数据读取成功')
-        if (!initDataStr) {
-            console.log('数据为空')
-            setAutoStart(true)
-            registerGlobalShortcut(defaultOpenMainWinShortcutKey, win);
-            return;
-        }
-        // 解析数据
-        let text = decryptData(initDataStr);
-        const fileDataObj = JSON.parse(text);
-        let userInfo = fileDataObj.userInfo
+        let config: Config = await getConfig(autoStart);
+        console.log('数据读取成功 config:', config)
+
         // 如果是第一次登录
-        if (userInfo.firstLoginFlag) {
+        if (config && config.value) {
             // 设置开机启动
             setAutoStart(true)
         }
-
+        let shortcutKey: ShortCutKeyComb = await getShortcutKey(openMainWindows);
         // 设置快捷键
-        registerGlobalShortcut(fileDataObj.shortCutKeyCombs[0].desc, win);
+        registerGlobalShortcut(shortcutKey?.desc, win);
     })
 
 

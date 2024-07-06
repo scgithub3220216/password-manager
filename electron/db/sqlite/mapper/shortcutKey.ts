@@ -1,4 +1,5 @@
-import {baseListSql, baseUpdateSql} from "../components/baseSql.ts";
+import {baseGetSql, baseUpdateSql} from "../components/baseSql.ts";
+import {ShortCutKeyComb} from "../../../../src/components/type.ts";
 
 
 /**
@@ -11,11 +12,11 @@ export const updateShortcutKey = async (...params: any[]) => {
                                 WHERE action_name = ?;`, ...params);
 }
 
-export const getShortcutKey = async (actionName: string) => {
+export const getShortcutKey = async (actionName: string): Promise<ShortCutKeyComb> => {
     console.log(`getShortcutKey actionName:${actionName}`)
-    return await baseListSql(`SELECT "desc"
-                              FROM "shortcut_key"
-                              WHERE action_name = ?;`, actionName);
+    return await baseGetSql(`SELECT "desc"
+                             FROM "shortcut_key"
+                             WHERE action_name = ?;`, actionName);
 }
 
 

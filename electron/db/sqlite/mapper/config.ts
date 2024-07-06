@@ -1,4 +1,5 @@
-import {baseListSql, baseUpdateSql} from "../components/baseSql.ts";
+import {baseGetSql, baseUpdateSql} from "../components/baseSql.ts";
+import {Config} from "../../../../src/components/type.ts";
 
 
 /**
@@ -11,11 +12,11 @@ export const updateConfig = async (...params: any[]) => {
                                 WHERE code = ?;`, ...params);
 }
 
-export const getConfig = async (code: string) => {
+export const getConfig = async (code: string):Promise<Config> => {
     console.log(`getConfig code:${code}`)
-    return await baseListSql(`SELECT value
-                              FROM "config"
-                              WHERE code = ?;`, code);
+    return await baseGetSql(`SELECT value
+                             FROM "config"
+                             WHERE code = ?;`, code);
 }
 
 

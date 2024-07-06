@@ -22,6 +22,15 @@ export interface ShortCutKeyComb {
 
 }
 
+export interface Config {
+
+    id: number;
+
+    code: string;
+
+    value: string;
+}
+
 
 // 存放用户的一些设置数据
 export interface UserInfo {
