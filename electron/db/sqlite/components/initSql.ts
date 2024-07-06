@@ -1,6 +1,6 @@
 // 链接数据库
 import {getDB} from "./db.ts";
-import {initFlag} from "./base-sql.ts";
+import {initFlag} from "./baseSql.ts";
 import {
     autoLockTime,
     autoLockTimeUnit,
@@ -16,14 +16,13 @@ import {
     pwd
 } from "./configConstants.ts";
 
-
+let db: any;
 // 初始化表结构
 
 export const initTable = async () => {
 
-// 连接到SQLite数据库
-    const db = getDB()
-
+    // 连接到SQLite数据库
+    db = getDB()
 
     //  判断 config 表是否存在  如果存在, 不做任何操作  如果不存在, 创建表并且添加默认数据
     let flag = false;
@@ -36,11 +35,10 @@ export const initTable = async () => {
         return;
     }
 
-    createTable(db);
-
+    createTable();
 }
 
-function createTable(db: any) {
+function createTable() {
     // 创建  表
     db.exec(`
         CREATE TABLE IF NOT EXISTS "group"
@@ -73,12 +71,34 @@ function createTable(db: any) {
             CONSTRAINT "uni_code" UNIQUE ("code")
         );
     `);
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS "shortcut_key"
+        (
+            "id"          integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "action_name" TEXT    NOT NULL,
+            "desc"        TEXT
+        );
+    `);
 
     console.log('表创建成功');
-    insertData(db);
+
+    insertData();
 }
 
-function insertData(db: any) {
+function insertData() {
+    try {
+        insertConfigData()
+        insertShortcutKeyData()
+        insertGroupData()
+        insertPwdInfoData()
+        console.log('批量插入成功');
+    } catch (err) {
+        console.error('批量插入时出错:', err);
+    }
+}
+
+
+function insertConfigData() {
     // config
     const configInserts = [
         {code: autoStart, value: autoStartValue},
@@ -87,28 +107,46 @@ function insertData(db: any) {
         {code: darkSwitch, value: darkSwitchValue},
         {code: autoLockTime, value: autoLockTimeValue},
         {code: autoLockTimeUnit, value: autoLockTimeUnitValue},
-        // 更多数据...
     ];
 
     const configValues = configInserts.map(({code, value}) => `('${code}', '${value}')`).join(',');
     const configInsertSql = `INSERT INTO "config" ("code", "value")
                              VALUES ${configValues};`;
-    // group
+    db.exec(configInsertSql);
+}
 
+function insertShortcutKeyData() {
+    // shortcutKey
+    const shortcutKeyArr: string[] = [
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (1, 'openMainWindows', 'Ctrl + Alt + E');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (2, 'logout', 'Escape');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (3, 'copyUsername', 'Ctrl + U');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (4, 'copyPwd', 'Ctrl + P');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (5, 'copyLink', 'Ctrl + L');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (6, 'insertGroup', 'Ctrl + G');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (7, 'insertPwdInfo', 'Ctrl + N');`]
+    shortcutKeyArr.forEach(shortcutKey => db.exec(shortcutKey));
+}
+
+function insertGroupData() {
+    // group
     const groupInsertSql = `INSERT INTO "group" ("id", "title", "father_id")
                             VALUES (1, '默认分组', 0);`;
+    db.exec(groupInsertSql);
 
+}
+
+function insertPwdInfoData() {
     // pwdInfo
     const pwdInfoInsertSq = `INSERT INTO "pwd_info"
                                  ("id", "group_id", "group_title", "title", "username", "password", "link", "remark")
                              VALUES (1, 1, '默认分组', '默认百度账号标题', 'admin', '123456', 'https://www.baidu.com', '默认备注');`;
-
-    try {
-        db.exec(configInsertSql);
-        db.exec(groupInsertSql);
-        db.exec(pwdInfoInsertSq);
-        console.log('批量插入成功');
-    } catch (err) {
-        console.error('批量插入时出错:', err);
-    }
+    db.exec(pwdInfoInsertSq);
 }

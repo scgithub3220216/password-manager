@@ -8,7 +8,7 @@ import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {registerGlobalShortcut, setAutoStart} from "./common.ts";
-import {initTable} from "./db/sqlite/init-sql.ts";
+import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)

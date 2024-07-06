@@ -11,23 +11,17 @@ import {
     IPC_SQLITE_SELECT_GET_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_GROUP_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
+    IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA,
     IPC_SQLITE_UPDATE_CONFIG_DATA,
     IPC_SQLITE_UPDATE_GROUP_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA,
+    IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
 } from '../../constant.ts';
-import {
-    delGroup,
-    delPwdInfo,
-    getConfig,
-    getPwdInfo,
-    insertGroup,
-    insertPwdInfo,
-    listGroup,
-    listPwdInfo,
-    updateConfig,
-    updateGroup,
-    updatePwdInfo
-} from "./sql-main.ts";
+import {getConfig, updateConfig} from "./mapper/config.ts";
+import {delGroup, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
+import {delPwdInfo, getPwdInfo, insertPwdInfo, listPwdInfo, updatePwdInfo} from "./mapper/pwdInfo.ts";
+import {getShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
+
 
 // sqlite
 
@@ -105,6 +99,19 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_SELECT_GET_PWD_INFO_DATA, async (event, args) => {
         console.log(`IPC_SQLITE_SELECT_GET_PWD_INFO_DATA  args : ${args}`);
         return await getPwdInfo(args);
+    });
+
+    // shortcutKey
+    // ipc sqlite update data
+    ipcMain.handle(IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA, async (event, ...args) => {
+        console.log(`IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA  args : ${args}`);
+        return await updateShortcutKey(...args);
+    });
+
+    // ipc sqlite select data
+    ipcMain.handle(IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA, async (event, args) => {
+        console.log(`IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA  args : ${args}`);
+        return await getShortcutKey(args);
     });
 
 };
