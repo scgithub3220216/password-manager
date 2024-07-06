@@ -14,7 +14,7 @@ export const showWindows = (win: BrowserWindow | null) => {
     }
 }
 
-
+// 设置 全局快捷键
 export const registerGlobalShortcut = (openMainWindows: string, win: BrowserWindow | null) => {
     console.log('openMainWindows:', openMainWindows)
     let replaceValue = 'CommandOrControl';
@@ -33,4 +33,15 @@ export const registerGlobalShortcut = (openMainWindows: string, win: BrowserWind
         console.log('注册快捷键失败:', e)
         globalShortcut.unregisterAll()
     }
+}
+
+// 设置开机启动
+export const setAutoStart = (autoStart: boolean) => {
+    console.log('设置开机启动 autoStart:', autoStart)
+    // 设置开机启动 第一种方案
+    app.setLoginItemSettings({
+        openAtLogin: autoStart, // 设置为true以启用开机启动
+        path: process.execPath, // 可选，应用的启动路径
+        args: [], // 可选，启动时传递给应用的命令行参数
+    });
 }

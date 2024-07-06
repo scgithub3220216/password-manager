@@ -7,7 +7,7 @@ import useCrypto from "../src/hooks/useCrypto.ts";
 import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
-import {registerGlobalShortcut} from "./common.ts";
+import {registerGlobalShortcut, setAutoStart} from "./common.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -174,15 +174,6 @@ ipcMain.handle('open-browser', (event, arg) => {
 });
 
 
-function setAutoStart(autoStart: boolean) {
-    console.log('设置开机启动 autoStart:', autoStart)
-    // 设置开机启动 第一种方案
-    app.setLoginItemSettings({
-        openAtLogin: autoStart, // 设置为true以启用开机启动
-        path: process.execPath, // 可选，应用的启动路径
-        args: [], // 可选，启动时传递给应用的命令行参数
-    });
-}
 
 
 // 窗口 （最小化、最大化/还原、关闭）
