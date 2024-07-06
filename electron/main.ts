@@ -31,7 +31,6 @@ let initDataStr = '';
 let win: BrowserWindow | null
 let tray
 
-// let clickExitTime = 0;
 
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
@@ -68,20 +67,8 @@ function createWindow() {
     } else {
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
-    // @ts-ignore
-    win.on('close', (e) => {
+    win.on('close', () => {
         console.log('close event')
-        // true 说明是 主窗口触发的 // 20240705 因为自定义顶部工具栏,不适用默认的关闭方法, 因为所以下面注释
-        // if (new Date().getTime() - clickExitTime >= 1000) {
-        //     console.log('主窗口关闭, 最小化到托盘')
-        //     // 阻止默认的关闭操作
-        //     e.preventDefault();
-        //
-        //     // 最小化窗口到系统托盘
-        //     win?.hide();
-        //     return;
-        // }
-
         quit();
     });
 
@@ -108,8 +95,6 @@ function createTrayMenu() {
         },
         {
             label: '退出', click() {
-                // 20240705 因为自定义顶部工具栏,不适用默认的关闭方法, 因为所以下面注释
-                // clickExitTime = new Date().getTime()
                 app.quit()
             }
         },
