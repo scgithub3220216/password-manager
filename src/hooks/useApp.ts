@@ -1,7 +1,7 @@
 // @ts-ignore
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import useLoginAction from "./useLoginAction.ts";
-import useUserInfo from "./useUserInfo.ts";
+import useUserInfo from "./useBasicSet.ts";
 import {computed, onMounted, ref} from "vue";
 import Login from "../components/Login.vue";
 import Index from "../components/Index.vue";
