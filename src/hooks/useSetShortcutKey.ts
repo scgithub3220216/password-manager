@@ -1,6 +1,5 @@
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {
     defaultCopyLinkShortcutKey,
     defaultCopyPwdShortcutKey,
@@ -10,12 +9,24 @@ import {
     defaultLogoutShortcutKey,
     defaultOpenMainWinShortcutKey
 } from "../config/config.ts";
+import useDBShortcutKey from "./useDBShortcutKey.ts";
+import {
+    copyLink,
+    copyPwd,
+    copyUsername,
+    insertGroup,
+    insertPwdInfo,
+    logout,
+    openMainWindows
+} from "../../electron/db/sqlite/components/configConstants.ts";
+import {useShortcutKeyStore} from "../store/shortcutKey.ts";
 
 export default function () {
 
+    const {updateShortCutKey} = useDBShortcutKey()
     let joinSymbol = " + ";
-    const userInfoStore = useUserDataInfoStore();
-    const {shortCutKeyCombs} = storeToRefs(userInfoStore)
+    const shortcutKeyStore = useShortcutKeyStore();
+    const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 
     const currentOpenMainKeys = ref<string[]>([]);
     const mainShortcuts = ref("");
@@ -80,7 +91,9 @@ export default function () {
         console.log("saveOpenMainShortcuts", mainShortcuts.value);
         // 发送事件给主进程
         window.ipcRenderer.invoke("save-shortcuts", mainShortcuts.value);
-        userInfoStore.setShortCutKeyComb(0, mainShortcuts.value);
+
+        shortcutKeyStore.setShortCutKeyComb(0, mainShortcuts.value);
+        updateShortCutKey(openMainWindows, mainShortcuts.value)
     }
 
     // 锁定屏幕
@@ -115,7 +128,8 @@ export default function () {
 
     function saveLogoutShortcuts() {
         console.log("saveLogoutShortcuts logouts:", logouts.value);
-        userInfoStore.setShortCutKeyComb(1, logouts.value);
+        shortcutKeyStore.setShortCutKeyComb(1, logouts.value);
+        updateShortCutKey(logout, logouts.value)
     }
 
 
@@ -149,7 +163,8 @@ export default function () {
 
     function saveCpUNameShortcuts() {
         console.log("saveCpUNameShortcuts cpUsernames:", cpUsernames.value);
-        userInfoStore.setShortCutKeyComb(2, cpUsernames.value);
+        shortcutKeyStore.setShortCutKeyComb(2, cpUsernames.value);
+        updateShortCutKey(copyUsername, cpUsernames.value)
     }
 
     // 复制密码 cpPwds
@@ -182,7 +197,8 @@ export default function () {
 
     function saveCpPwdsShortcuts() {
         console.log("saveCpPwdsShortcuts", cpPwds.value);
-        userInfoStore.setShortCutKeyComb(3, cpPwds.value);
+        shortcutKeyStore.setShortCutKeyComb(3, cpPwds.value);
+        updateShortCutKey(copyPwd, cpPwds.value)
     }
 
     // 复制链接 cpLinks
@@ -215,7 +231,8 @@ export default function () {
 
     function saveCpLinksShortcuts() {
         console.log("saveCpLinksShortcuts", cpLinks.value);
-        userInfoStore.setShortCutKeyComb(4, cpLinks.value);
+        shortcutKeyStore.setShortCutKeyComb(4, cpLinks.value);
+        updateShortCutKey(copyLink, cpLinks.value)
     }
 
 
@@ -250,7 +267,8 @@ export default function () {
 
     function saveInsertGroupsShortcuts() {
         console.log("saveInsertGroupsShortcuts", insertGroups.value);
-        userInfoStore.setShortCutKeyComb(5, insertGroups.value);
+        shortcutKeyStore.setShortCutKeyComb(5, insertGroups.value);
+        updateShortCutKey(insertGroup, insertGroups.value)
     }
 
     // 新增密码信息 insertPwdInfos
@@ -283,7 +301,8 @@ export default function () {
 
     function saveInsertPwdInfosShortcuts() {
         console.log("saveInsertPwdInfosShortcuts", insertPwdInfos.value);
-        userInfoStore.setShortCutKeyComb(6, insertPwdInfos.value);
+        shortcutKeyStore.setShortCutKeyComb(6, insertPwdInfos.value);
+        updateShortCutKey(insertPwdInfo, insertPwdInfos.value)
     }
 
     function processKey(key: string): string {
@@ -307,9 +326,6 @@ export default function () {
         saveCpLinksShortcuts();
         saveInsertGroupsShortcuts();
         saveInsertPwdInfosShortcuts();
-
-        userInfoStore.editAction()
-
     }
 
     function reset() {

@@ -1,15 +1,20 @@
 import {onBeforeUnmount, onMounted} from 'vue'
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
+import useDBShortcutKey from "./useDBShortcutKey.ts";
+import {ShortCutKeyComb} from "../components/type.ts";
+import {useShortcutKeyStore} from "../store/shortcutKey.ts";
 
 
 export default function () {
-    const userDataInfoStore = useUserDataInfoStore();
     const pressedKeys = new Set()
+    const {listShortcutKey} = useDBShortcutKey()
 
-    const {shortCutKeyCombs} = storeToRefs(userDataInfoStore);
-    onMounted(() => {
+    const shortcutKeyStore = useShortcutKeyStore();
+    const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
+    onMounted(async () => {
         console.log('useShortcutKey onMounted')
+        let shortcutKeyList: ShortCutKeyComb[] = await listShortcutKey();
+        shortcutKeyStore.initData(shortcutKeyList);
         window.addEventListener('keyup', handleKeyUp);
         window.addEventListener('keydown', handleKeyDown);
     })

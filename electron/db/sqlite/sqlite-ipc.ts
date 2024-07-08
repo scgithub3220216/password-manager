@@ -22,7 +22,7 @@ import {
 import {getConfig, updateConfig} from "./mapper/config.ts";
 import {delGroup, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
 import {countPwdInfo, delPwdInfo, getPwdInfo, insertPwdInfo, listPwdInfo, listPwdInfoBySearch, updatePwdInfo} from "./mapper/pwdInfo.ts";
-import {getShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
+import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
 
 
 // sqlite
@@ -125,7 +125,7 @@ export const SQLiteIPC = () => {
     // ipc sqlite select data
     ipcMain.handle(IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA  args : ${args}`);
-        return await getShortcutKey(args);
+        return await listShortcutKey();
     });
 
 };
