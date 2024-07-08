@@ -8,13 +8,16 @@ import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
+import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const {userInfo, curGroup, curPwdList, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
+const {insertPwdInfo, delPwdInfo, listPwdInfo} = useDBPwdInfo();
 
+const pwdInfoList = ref<PwdInfo[]>();
 let props = defineProps(['transferInputFocus'])
 
 onMounted(() => {
@@ -25,13 +28,28 @@ onMounted(() => {
 // 绑定事件
 emitter.on(emitterInsertPwdInfoTopic, (value) => {
   console.log(emitterInsertPwdInfoTopic, ' 事件被触发 value:', value)
-  insertPwdInfo()
+  addPwdInfo()
 })
 
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertPwdInfoTopic)
 })
+
+function addPwdInfo() {
+  // PwdInfo input 输入框的光标
+  props.transferInputFocus();
+
+  insertPwdInfo(curGroup.value.id, curGroup.value.title)
+      .then(async () => {
+        // 重新查询
+        pwdInfoList.value = await listPwdInfo(curGroup.value.id);
+
+        userDataInfoStore.setCurPwdInfo(pwdInfoList.value[pwdInfoList.value.length - 1])
+        // css
+        cssSwitchStore.setPwdListIndex(pwdInfoList.value.length - 1)
+      })
+}
 
 function clickDelete() {
   // 判断当前是否还有账号
@@ -64,31 +82,9 @@ function clickPwdInfo(value: PwdInfo, index: number) {
 }
 
 
-function insertPwdInfo() {
-  console.log(`insertPwdInfo curGroup.id:${curGroup.value.id}`);
-  // PwdInfo input 输入框的光标
-  props.transferInputFocus();
-
-  let newPwdInfo = new PwdInfo(
-      userDataInfoStore.generatePwdInfoId(),
-      curGroup.value.id,
-      curGroup.value.title,
-      "",
-      "",
-      "",
-      "",
-      ""
-  );
-
-  userDataInfoStore.insertPwdInfo(newPwdInfo);
-
-  cssSwitchStore.addPwdListSwitch()
-}
-
-
 function deletePwdInfo() {
   console.log("deletePwdInfo");
-  userDataInfoStore.deletePwdInfo(userDataInfoStore.curPwdInfo.id);
+  delPwdInfo(curPwdInfo.value.id);
 }
 </script>
 
@@ -116,7 +112,7 @@ function deletePwdInfo() {
     </div>
     <div class="pwd-tools">
       <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
-        <span class="tool" @click="insertPwdInfo">
+        <span class="tool" @click="addPwdInfo">
           <Plus style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
