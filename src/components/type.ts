@@ -1,3 +1,5 @@
+import PwdInfo from "./indexview/PwdInfo.vue";
+
 export class FileDataObj {
     userInfo: UserInfo;
     pwdGroupList: PwdGroup[];
@@ -124,14 +126,17 @@ export class PwdGroup {
 
     title: string;
 
+    fatherId: number;
+
     pwdList: PwdInfo[];
 
     editFlag: boolean;
 
 
-    constructor(id: number, title: string, pwdList: PwdInfo[], editFlag: boolean) {
+    constructor(id: number, title: string, fatherId: number, pwdList: PwdInfo[], editFlag: boolean) {
         this.id = id;
         this.title = title;
+        this.fatherId = fatherId;
         this.pwdList = pwdList;
         this.editFlag = editFlag;
     }
