@@ -2,7 +2,7 @@
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
 import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
@@ -11,7 +11,7 @@ import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {userInfo, curGroup, curPwdList, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
+const {userInfo, curGroup, changePwdInfoFlag, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
@@ -20,10 +20,34 @@ const {insertPwdInfo, delPwdInfo, listPwdInfo} = useDBPwdInfo();
 const pwdInfoList = ref<PwdInfo[]>();
 let props = defineProps(['transferInputFocus'])
 
+
 onMounted(() => {
   console.log("PwdInfoList onMounted");
-  cssSwitchStore.setPwdListIndex(0)
+  queryAndRefreshIndex(curGroup.value.id)
 });
+watch(curGroup.value, (newVal) => {
+  queryPwdInfo(newVal.id)
+  queryAndRefreshIndex(newVal.id)
+})
+
+function queryAndRefreshIndex(groupId: number) {
+  if (!groupId) return;
+
+  queryPwdInfo(groupId)
+  cssSwitchStore.setPwdListIndex(0)
+}
+
+watch(changePwdInfoFlag, (newVal) => {
+  console.log('changePwdInfoFlag: newVal', newVal)
+  if (newVal) {
+    queryPwdInfo(curGroup.value.id)
+    userDataInfoStore.setChangePwdInfoFlag(false)
+  }
+})
+
+async function queryPwdInfo(groupId: number) {
+  pwdInfoList.value = await listPwdInfo(groupId);
+}
 
 // 绑定事件
 emitter.on(emitterInsertPwdInfoTopic, (value) => {
@@ -42,10 +66,13 @@ function addPwdInfo() {
 
   insertPwdInfo(curGroup.value.id, curGroup.value.title)
       .then(async () => {
+        console.log('新增 PwdInfo 结束')
         // 重新查询
         pwdInfoList.value = await listPwdInfo(curGroup.value.id);
-
+        console.log(pwdInfoList.value)
         userDataInfoStore.setCurPwdInfo(pwdInfoList.value[pwdInfoList.value.length - 1])
+        console.log(userDataInfoStore.curPwdInfo)
+
         // css
         cssSwitchStore.setPwdListIndex(pwdInfoList.value.length - 1)
       })
@@ -84,7 +111,7 @@ function clickPwdInfo(value: PwdInfo, index: number) {
 
 function deletePwdInfo() {
   console.log("deletePwdInfo");
-  delPwdInfo(curPwdInfo.value.id);
+  delPwdInfo(curPwdInfo.value.id).then(() => queryAndRefreshIndex(curGroup.value.id))
 }
 </script>
 
@@ -94,7 +121,7 @@ function deletePwdInfo() {
       <el-scrollbar>
         <ul id="pwd-ul">
           <li
-              v-for="(pwdInfo,index) in curPwdList"
+              v-for="(pwdInfo,index) in pwdInfoList"
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
               :class="{

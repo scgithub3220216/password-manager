@@ -10,12 +10,15 @@ import {
     defaultOpenMainWinShortcutKey,
     defaultPwd
 } from "../config/config.ts";
-import {FileDataObj, PwdGroup, PwdInfo, ShortCutKeyComb, UserInfo} from "../components/type.ts";
+import {PwdGroup, PwdInfo, ShortCutKeyComb, UserInfo} from "../components/type.ts";
 
 // 存放用户的一些设置数据
 export const useUserDataInfoStore = defineStore('userDataInfo', {
     // 动作
     actions: {
+        setChangePwdInfoFlag(value: boolean) {
+            this.changePwdInfoFlag = value;
+        },
 
         setDarkSwitch(darkSwitch: boolean) {
             this.userInfo.darkSwitch = darkSwitch;
@@ -74,7 +77,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
 
         insertPwdInfo(pwdInfo: PwdInfo) {
             this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === pwdInfo.groupId) {
+                if (pwdGroup.id === pwdInfo.group_id) {
                     pwdGroup.pwdList.push(pwdInfo);
                 }
             })
@@ -87,7 +90,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             }
             // 修改 pwdGroupList 中的 pwdList
             this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === pwdInfo.groupId) {
+                if (pwdGroup.id === pwdInfo.group_id) {
                     pwdGroup.pwdList.forEach(pwd => {
                         if (pwd.id === pwdInfo.id) {
                             pwd.title = pwdInfo.title;
@@ -141,7 +144,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             console.log('setCurPwdInfo:', pwdInfo)
             if (!pwdInfo) {
                 // @ts-ignore
-                this.curPwdInfo= {};
+                this.curPwdInfo = {};
                 return;
             }
             Object.assign(this.curPwdInfo, pwdInfo)
@@ -159,11 +162,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             return ++this.userInfo.pwdInfoId;
         },
 
-        setUserInfo(fileDataObj: FileDataObj) {
-            this.userInfo = fileDataObj.userInfo;
-            this.pwdGroupList = fileDataObj.pwdGroupList;
-            this.shortCutKeyCombs = fileDataObj.shortCutKeyCombs;
-        },
         setShortCutKeyCombs(shortCutKeyCombs: ShortCutKeyComb[]) {
             this.shortCutKeyCombs = shortCutKeyCombs;
             this.editAction()
@@ -190,6 +188,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
     },
     // 状态
     state(): {
+        changePwdInfoFlag: boolean,
         userInfo: UserInfo,
         shortCutKeyCombs: ShortCutKeyComb[],
         pwdGroupList: PwdGroup[],
@@ -198,6 +197,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         curPwdInfo: PwdInfo
     } {
         return {
+            changePwdInfoFlag: false,
             userInfo: {
                 darkSwitch: true,
                 autoStart: true,
@@ -221,42 +221,42 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             shortCutKeyCombs: [
                 {
                     keys: ['Ctrl', 'Alt', "E"],
-                    actionName: 'openMainWindows',
+                    action_name: 'openMainWindows',
                     desc: defaultOpenMainWinShortcutKey
                 },
                 {
                     keys: ["Escape"],
-                    actionName: 'logout',
+                    action_name: 'logout',
                     desc: defaultLogoutShortcutKey
                 },
                 // 2
                 {
                     keys: ['Ctrl', 'U'],
-                    actionName: 'copyUsername',
+                    action_name: 'copyUsername',
                     desc: defaultCopyUsernameShortcutKey
                 },
                 // 3
                 {
                     keys: ['Ctrl', 'P'],
-                    actionName: 'copyPwd',
+                    action_name: 'copyPwd',
                     desc: defaultCopyPwdShortcutKey
                 },
                 // 4
                 {
                     keys: ['Ctrl', 'L'],
-                    actionName: 'copyLink',
+                    action_name: 'copyLink',
                     desc: defaultCopyLinkShortcutKey
                 },
                 // 5
                 {
                     keys: ['Ctrl', 'G'],
-                    actionName: 'insertGroup',
+                    action_name: 'insertGroup',
                     desc: defaultInsertGroupShortcutKey
                 },
                 // 6
                 {
                     keys: ['Ctrl', 'N'],
-                    actionName: 'insertPwdInfo',
+                    action_name: 'insertPwdInfo',
                     desc: defaultInsertPwdInfoShortcutKey
                 },
 
@@ -272,9 +272,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                     pwdList: [
                         {
                             id: 1,
-                            groupId: 1,
+                            group_id: 1,
                             title: '百度',
-                            groupTitle: '默认分组',
+                            group_title: '默认分组',
                             username: 'admin',
                             password: '123456',
                             link: 'https://www.baidu.com',
@@ -282,9 +282,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                         },
                         {
                             id: 2,
-                            groupId: 1,
+                            group_id: 1,
                             title: '谷歌',
-                            groupTitle: '默认分组',
+                            group_title: '默认分组',
                             username: 'admin',
                             password: '123456',
                             link: 'https://www.google.com',

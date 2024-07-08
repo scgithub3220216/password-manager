@@ -6,6 +6,7 @@ import RandomPwdGenerate from "./RandomPwdGenerate.vue";
 
 import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Switch, UserFilled, View,} from "@element-plus/icons-vue";
 import {storeToRefs} from "pinia";
+import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
@@ -16,10 +17,11 @@ const randomPwdGenerateRef = ref();
 
 defineExpose({keydown, pwdInfoTitleInput});
 const {curPwdInfo} = storeToRefs(userDataInfoStore)
+const {updatePwdInfo} = useDBPwdInfo();
 
 function pwdInfoChange() {
   console.log("pwdInfoChange");
-  userDataInfoStore.updatePwdInfo(curPwdInfo.value);
+  updatePwdInfo(curPwdInfo.value).then(() => userDataInfoStore.setChangePwdInfoFlag(true))
 }
 
 

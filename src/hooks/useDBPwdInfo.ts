@@ -4,7 +4,6 @@ import {
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA
 } from "../../electron/constant.ts";
-import group from "../components/indexview/PwdInfo.vue";
 import {PwdInfo} from "../components/type.ts";
 
 export default function () {
@@ -19,9 +18,9 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_PWD_INFO_DATA, id);
     }
 
-    function updatePwdInfo(title: string, id: number) {
-        console.log(`useDBPwdInfo.ts updatePwdInfo title:${group},id:${id}`)
-        window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_PWD_INFO_DATA, title, id);
+    async function updatePwdInfo(pwdInfo: PwdInfo) {
+        console.log(`useDBPwdInfo.ts updatePwdInfo  pwdInfo:${pwdInfo}`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, pwdInfo.password, pwdInfo.link, pwdInfo.remark, pwdInfo.id);
     }
 
     async function listPwdInfo(groupId: number): Promise<PwdInfo[]> {

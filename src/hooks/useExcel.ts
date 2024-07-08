@@ -15,7 +15,7 @@ export default function () {
         let pwdInfoList: PwdInfo[] = await listPwdInfo(0)
         // 将 userDataInfo.pwdGroupList 转成 dataList 格式的数据
         pwdInfoList.forEach((pwdInfo) => {
-            dataList.push([pwdInfo.groupTitle, pwdInfo.title, pwdInfo.username, pwdInfo.password, pwdInfo.link, pwdInfo.remark]);
+            dataList.push([pwdInfo.group_title, pwdInfo.title, pwdInfo.username, pwdInfo.password, pwdInfo.link, pwdInfo.remark]);
         });
 
         // 将数据转换为工作簿

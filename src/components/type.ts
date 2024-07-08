@@ -1,16 +1,5 @@
 import PwdInfo from "./indexview/PwdInfo.vue";
 
-export class FileDataObj {
-    userInfo: UserInfo;
-    pwdGroupList: PwdGroup[];
-    shortCutKeyCombs: ShortCutKeyComb[];
-
-    constructor(userInfo: UserInfo, pwdGroupList: PwdGroup[], shortCutKeyCombs: ShortCutKeyComb[]) {
-        this.userInfo = userInfo;
-        this.pwdGroupList = pwdGroupList;
-        this.shortCutKeyCombs = shortCutKeyCombs;
-    }
-}
 
 export interface ShortCutKeyComb {
 
@@ -18,7 +7,7 @@ export interface ShortCutKeyComb {
 
     action?: () => void;
 
-    actionName: string;
+    action_name: string;
 
     desc: string;
 
@@ -94,9 +83,9 @@ export class ShortcutKey {
 export interface PwdInfo {
     id: number;
 
-    groupId: number;
+    group_id: number;
 
-    groupTitle: string;
+    group_title: string;
 
     title: string;
 
@@ -115,7 +104,7 @@ export interface PwdGroup {
 
     title: string;
 
-    fatherId: number;
+    father_id: number;
 
     pwdList: PwdInfo[];
 

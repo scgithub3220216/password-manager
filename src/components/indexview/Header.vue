@@ -55,7 +55,7 @@ function searchAction() {
   // 将 pwdGroupList 全部转为 pwdInfoList
   let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
   // 在 pwdInfoList 中查找
-  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.groupTitle?.includes(searchValue)
+  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.group_title?.includes(searchValue)
       || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
   if (!searchResultListTemp || searchResultListTemp.length === 0) {
     console.log('searchResultListTemp 为空')
