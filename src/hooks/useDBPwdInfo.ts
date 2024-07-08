@@ -2,6 +2,7 @@ import {
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
+    IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA
 } from "../../electron/constant.ts";
 import {PwdInfo} from "../components/type.ts";
@@ -28,6 +29,11 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA, groupId);
     }
 
+    async function listPwdInfoBySearch(searchValue: string): Promise<PwdInfo[]> {
+        console.log(`useDBPwdInfo.ts listPwdInfoBySearch searchValue:${searchValue}`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA, searchValue);
+    }
 
-    return {insertPwdInfo, delPwdInfo, updatePwdInfo, listPwdInfo};
+
+    return {insertPwdInfo, delPwdInfo, updatePwdInfo, listPwdInfo,listPwdInfoBySearch};
 }

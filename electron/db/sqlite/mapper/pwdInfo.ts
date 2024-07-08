@@ -41,6 +41,18 @@ export const listPwdInfo = async (groupId: number) => {
                                   FROM "pwd_info"`);
     }
 }
+
+export const listPwdInfoBySearch = async (searchValue: string) => {
+    console.log(`listPwdInfo queryValue:${searchValue}`)
+    if (!searchValue) return [];
+    return await baseListSql(`SELECT *
+                              FROM "pwd_info"
+                              WHERE title like '%' || ? || '%'
+                                        or username like '%' || ? || '%';`, searchValue, searchValue);
+
+}
+
+
 export const getPwdInfo = async (id: number) => {
     console.log(`getPwdInfo id:${id}`)
     return await baseGetSql(`SELECT *

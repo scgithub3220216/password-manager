@@ -10,12 +10,14 @@ import emitter from "../../utils/emitter.ts";
 import {emitterLockTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useSearchResultStore} from "../../store/searchResult.ts";
+import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userInfoStore)
 const searchResultStore = useSearchResultStore();
 const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
 const {logout} = useLoginAction();
+const {listPwdInfoBySearch} = useDBPwdInfo();
 const search = ref('');
 const searchInputRef = ref();
 
@@ -43,7 +45,7 @@ function clickDarkSwitch() {
   toggleDark();
 }
 
-function searchAction() {
+async function searchAction() {
   console.log('searchAction')
 
   let searchValue = search.value;
@@ -51,18 +53,9 @@ function searchAction() {
     searchResultStore.closeSearchView();
     return;
   }
+  let pwdInfoList = await listPwdInfoBySearch(searchValue);
 
-  // 将 pwdGroupList 全部转为 pwdInfoList
-  let pwdInfoListTemp = userInfoStore.pwdGroupList.map(pwdGroup => pwdGroup.pwdList).flat();
-  // 在 pwdInfoList 中查找
-  let searchResultListTemp = pwdInfoListTemp.filter(pwdInfo => pwdInfo?.group_title?.includes(searchValue)
-      || pwdInfo?.title?.includes(searchValue) || pwdInfo?.username?.includes(searchValue));
-  if (!searchResultListTemp || searchResultListTemp.length === 0) {
-    console.log('searchResultListTemp 为空')
-    return;
-  }
-
-  searchResultStore.setSearchResultData(searchResultListTemp);
+  searchResultStore.setSearchResultData(pwdInfoList);
   searchResultStore.openSearchView()
 }
 
