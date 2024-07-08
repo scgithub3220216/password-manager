@@ -1,14 +1,14 @@
 import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
+import useConfig from "./useConfig.ts";
+import {firstLoginFlag, pwd} from "../../electron/db/sqlite/components/configConstants.ts";
 
 export default function () {
 
-    const userInfoStore = useUserDataInfoStore();
     const pwdDialogVisible = ref(false)
-
+    const {setConfigValue} = useConfig()
     const ruleFormRef = ref<FormInstance>()
     const passForm = reactive({
         oldPassword: '',
@@ -22,7 +22,9 @@ export default function () {
         formEl.validate((valid) => {
             if (valid) {
                 console.log('submit!')
-                userInfoStore.setInitPwd(passForm.newPassword)
+                setConfigValue(passForm.confirmPassword, pwd)
+                setConfigValue('0', firstLoginFlag)
+
                 pwdDialogVisible.value = false
             } else {
                 console.log('error submit!')
@@ -68,15 +70,13 @@ export default function () {
 
     const submitForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return
+
         formEl.validate((valid) => {
             if (valid) {
                 console.log('submit!')
-                if (!userInfoStore.setPwd(passForm.oldPassword, passForm.confirmPassword)) {
-                    ElMessage.error('密码修改失败');
-                } else {
-                    ElMessage.success('密码修改成功');
-                    resetForm(formEl)
-                }
+                setConfigValue(passForm.confirmPassword, pwd)
+                ElMessage.success('密码修改成功');
+                resetForm(formEl)
             } else {
                 console.log('error submit!')
                 // return false
@@ -98,7 +98,7 @@ export default function () {
         // 存储原始背景颜色
         let originalColor = element.style.backgroundColor;
 
-// 设置新的背景色触发过渡效果
+        // 设置新的背景色触发过渡效果
         element.style.backgroundColor = '#ea918b';
 
         // 过渡完成后恢复原背景色
@@ -119,11 +119,9 @@ export default function () {
                 }
             })
             .then(() => {
-                // 设置已经进行初始化了
-                userInfoStore.setInitPwd(defaultPwd)
 
                 done()
-                ElMessageBox.alert('初始密码为 123456', {
+                ElMessageBox.alert('初始密码为 ' + defaultPwd, {
                     confirmButtonText: '确认'
                 })
             })

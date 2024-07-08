@@ -1,7 +1,9 @@
+import {defaultPwd} from "../../../../src/config/config.ts";
+
 export const autoStart = 'auto_start';
 export const autoStartValue = 1;
 export const pwd = 'pwd';
-export const defaultPwdValue = '123456';
+export const defaultPwdValue = defaultPwd;
 export const firstLoginFlag = 'first_login_flag';
 export const firstLoginFlagValue = 1;
 export const darkSwitch = 'dark_switch';

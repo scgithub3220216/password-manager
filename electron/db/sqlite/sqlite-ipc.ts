@@ -31,9 +31,9 @@ import {getShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
 export const SQLiteIPC = () => {
     // config
     // ipc sqlite update data
-    ipcMain.handle(IPC_SQLITE_UPDATE_CONFIG_DATA, async (_event, ...args) => {
+    ipcMain.handle(IPC_SQLITE_UPDATE_CONFIG_DATA, (_event, ...args) => {
         console.log(`IPC_SQLITE_UPDATE_CONFIG_DATA  args : ${args}`);
-        return await updateConfig(...args);
+        updateConfig(...args);
     });
 
     // ipc sqlite select data

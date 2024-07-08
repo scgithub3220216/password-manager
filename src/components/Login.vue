@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from 'vue'
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
+import {onMounted, ref} from 'vue'
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
-import emitter from "../utils/emitter.ts";
+import {IPC_FIRST_LOGIN, IPC_SQLITE_SELECT_CONFIG_DATA} from "../../electron/constant.ts";
+import {firstLoginFlag} from "../../electron/db/sqlite/components/configConstants.ts";
 
 const initSetPwdRef = ref()
 const pwdInputRef = ref()
-const userInfoStore = useUserDataInfoStore();
 const {setPwdMsgTips} = usePwd()
 
-const {handleEnter, capsLockFlag, pwd} = useLoginView()
+const {handleEnter, capsLockFlag, password} = useLoginView()
+
 
 onMounted(() => {
   console.log("Login onMounted");
   pwdInputRef.value.focus();
+  firstLogin()
 });
 
-onUnmounted(() => {
-  // 解绑事件
-  emitter.off('initSuccess')
-})
-
-// 绑定事件
-emitter.on('initSuccess', () => {
-  console.log('initSuccess 事件被触发')
+async function firstLogin() {
+  console.log('firstLogin')
   // 判断用户是否第一次登录 , 如果是 设置登录密码
-  if (userInfoStore.userInfo.firstLoginFlag != 0) {
-    console.log('设置登录密码')
-    initSetPwdRef.value.pwdDialogVisible = true
-    setPwdMsgTips();
+  let firstLoginFlagValue = await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_CONFIG_DATA, firstLoginFlag);
+
+  if (firstLoginFlagValue != 1) {
+    console.log('不是第一次登录')
+    return;
   }
-})
+  console.log('设置登录密码')
+  initSetPwdRef.value.pwdDialogVisible = true
+  setPwdMsgTips();
+  await window.ipcRenderer.invoke(IPC_FIRST_LOGIN);
+}
 
 </script>
 
@@ -44,7 +44,7 @@ emitter.on('initSuccess', () => {
     <el-input
         class="input-pwd"
         ref="pwdInputRef"
-        v-model="pwd"
+        v-model="password"
         type="password"
         placeholder="开门密码"
         show-password

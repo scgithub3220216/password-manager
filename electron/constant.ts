@@ -30,3 +30,7 @@ export const IPC_SQLITE_SELECT_GET_PWD_INFO_DATA = 'ipc-sqlite-select-get-pwd-in
 // shortcutKey
 export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-key-data';
 export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-key-data';
+
+export const IPC_FIRST_LOGIN = 'first-login';
+
+

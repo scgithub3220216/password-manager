@@ -1,12 +1,15 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
+import useConfig from "./useConfig.ts";
+import {pwd} from "../../electron/db/sqlite/components/configConstants.ts";
 
 export default function () {
 
     const capsLockFlag = ref(false)
-    const userInfoStore = useUserDataInfoStore();
+    const {pwdError} = usePwd()
+    const {login} = useLoginAction()
+    const {getConfigValue} = useConfig()
     onMounted(() => {
         console.log('useCapsLock onMounted')
         window.addEventListener('keydown', handleCapsKeydown);
@@ -18,6 +21,7 @@ export default function () {
     })
 
 
+
     function handleCapsKeydown(event: any) {
         if (event.key !== 'CapsLock') {
             return;
@@ -25,19 +29,20 @@ export default function () {
         capsLockFlag.value = !!event.getModifierState('CapsLock');
     }
 
-    const pwd = ref('')
+    const password = ref('')
 
-    const {pwdError} = usePwd()
-    const {login} = useLoginAction()
 
     function loginSuccess() {
         console.log('login success')
         login();
     }
 
-    function handleEnter() {
-        userInfoStore.userInfo.pwd == pwd.value ? loginSuccess() : pwdError()
+    async function handleEnter() {
+        console.log('handlerEnter')
+        let pwdValue = await getConfigValue(pwd);
+        console.log(`pwdValue:${pwdValue}; password.value:${password.value}`)
+        pwdValue == password.value ? loginSuccess() : pwdError()
     }
 
-    return {handleEnter, pwd, capsLockFlag};
+    return {handleEnter, password, capsLockFlag};
 }

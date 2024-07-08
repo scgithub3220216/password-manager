@@ -3,15 +3,13 @@ import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {writeFile} from "./utils/fileUtils.ts";
-import {AUTO_HIDE_MENU_BAR, FRAME, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
+import {AUTO_HIDE_MENU_BAR, FRAME, IPC_FIRST_LOGIN, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {registerGlobalShortcut, setAutoStart} from "./common.ts";
 import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
-import {getConfig} from "./db/sqlite/mapper/config.ts";
-import {autoStart, openMainWindows} from "./db/sqlite/components/configConstants.ts";
+import {openMainWindows} from "./db/sqlite/components/configConstants.ts";
 import {getShortcutKey} from "./db/sqlite/mapper/shortcutKey.ts";
-import {Config, ShortCutKeyComb} from "../src/components/type.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -61,7 +59,7 @@ function createWindow() {
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
     // 调试窗口
-    // win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
@@ -85,21 +83,8 @@ app.whenReady().then(async () => {
     createTrayMenu(win)
     SQLiteIPC();
     await initTable();
+    registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
 })
-    .then(async () => {
-        console.log('准备读取数据')
-        let config: Config = await getConfig(autoStart);
-        console.log('数据读取成功 config:', config)
-
-        // 如果是第一次登录
-        if (config && config.value) {
-            // 设置开机启动
-            setAutoStart(true)
-        }
-        let shortcutKey: ShortCutKeyComb = await getShortcutKey(openMainWindows);
-        // 设置快捷键
-        registerGlobalShortcut(shortcutKey?.desc, win);
-    })
 
 
 function getFilePath() {
@@ -151,6 +136,11 @@ ipcMain.handle('save-shortcuts', (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     registerGlobalShortcut(arg, win);
 });
+ipcMain.handle(IPC_FIRST_LOGIN, (_event, arg) => {
+    console.log(`Received ${IPC_FIRST_LOGIN}: ${arg}`);
+    setAutoStart(true);
+});
+
 ipcMain.handle('auto-start', (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
