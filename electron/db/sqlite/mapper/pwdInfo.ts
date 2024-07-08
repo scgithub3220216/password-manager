@@ -32,9 +32,14 @@ export const updatePwdInfo = async (...params: any[]) => {
 
 export const listPwdInfo = async (groupId: number) => {
     console.log(`listPwdInfo groupId:${groupId}`)
-    return await baseListSql(`SELECT *
-                              FROM "pwd_info"
-                              WHERE group_id = ?;`, groupId);
+    if (groupId) {
+        return await baseListSql(`SELECT *
+                                  FROM "pwd_info"
+                                  WHERE group_id = ?;`, groupId);
+    } else {
+        return await baseListSql(`SELECT *
+                                  FROM "pwd_info"`);
+    }
 }
 export const getPwdInfo = async (id: number) => {
     console.log(`getPwdInfo id:${id}`)

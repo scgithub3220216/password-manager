@@ -91,36 +91,25 @@ export class ShortcutKey {
 }
 
 // 存放 密码数据
-export class PwdInfo {
+export interface PwdInfo {
     id: number;
 
     groupId: number;
 
-    groupTitle?: string;
+    groupTitle: string;
 
-    title?: string;
+    title: string;
 
-    username?: string;
+    username: string;
 
-    password?: string;
+    password: string;
 
-    link?: string;
+    link: string;
 
-    remark?: string;
-
-    constructor(id: number, groupId: number, groupTitle: string, title: string, username: string, password: string, link: string, remark: string) {
-        this.id = id;
-        this.groupId = groupId;
-        this.groupTitle = groupTitle;
-        this.title = title;
-        this.username = username;
-        this.password = password;
-        this.link = link;
-        this.remark = remark;
-    }
+    remark: string;
 }
 
-export class PwdGroup {
+export interface PwdGroup {
     id: number;
 
 
@@ -132,12 +121,4 @@ export class PwdGroup {
 
     editFlag: boolean;
 
-
-    constructor(id: number, title: string, fatherId: number, pwdList: PwdInfo[], editFlag: boolean) {
-        this.id = id;
-        this.title = title;
-        this.fatherId = fatherId;
-        this.pwdList = pwdList;
-        this.editFlag = editFlag;
-    }
 }

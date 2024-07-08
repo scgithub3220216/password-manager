@@ -1,21 +1,21 @@
 import * as XLSX from 'xlsx';
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
+import useDBPwdInfo from "./useDBPwdInfo.ts";
+import {PwdInfo} from "../components/type.ts";
 
 export default function () {
 
-    const exportExcel = () => {
+    const {listPwdInfo} = useDBPwdInfo()
+    const exportExcel = async () => {
         console.log('exportExcel')
         // 创建工作表的数据
         const dataList = [
             ['分组', '标题', '用户名', '密码', '链接', '说明']
         ];
         // 获取 所有数据
-        let userDataInfo = useUserDataInfoStore();
+        let pwdInfoList: PwdInfo[] = await listPwdInfo(0)
         // 将 userDataInfo.pwdGroupList 转成 dataList 格式的数据
-        userDataInfo.pwdGroupList.forEach((group) => {
-            group.pwdList.forEach((pwd) => {
-                dataList.push([group.title, pwd.title, pwd.username, pwd.password, pwd.link, pwd.remark]);
-            });
+        pwdInfoList.forEach((pwdInfo) => {
+            dataList.push([pwdInfo.groupTitle, pwdInfo.title, pwdInfo.username, pwdInfo.password, pwdInfo.link, pwdInfo.remark]);
         });
 
         // 将数据转换为工作簿
