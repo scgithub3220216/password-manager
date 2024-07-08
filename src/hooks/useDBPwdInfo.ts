@@ -1,6 +1,7 @@
 import {
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
+    IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA
@@ -34,6 +35,12 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA, searchValue);
     }
 
+    async function countPwdInfo(groupId: number): Promise<number> {
+        console.log(`useDBPwdInfo.ts countPwdInfo groupId:${groupId}`)
+        let data = await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA, groupId);
+        return data?.count;
+    }
 
-    return {insertPwdInfo, delPwdInfo, updatePwdInfo, listPwdInfo,listPwdInfoBySearch};
+
+    return {insertPwdInfo, delPwdInfo, updatePwdInfo, listPwdInfo, listPwdInfoBySearch, countPwdInfo};
 }

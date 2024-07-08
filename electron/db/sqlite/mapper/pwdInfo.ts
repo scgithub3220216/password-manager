@@ -49,7 +49,14 @@ export const listPwdInfoBySearch = async (searchValue: string) => {
                               FROM "pwd_info"
                               WHERE title like '%' || ? || '%'
                                         or username like '%' || ? || '%';`, searchValue, searchValue);
+}
 
+export const countPwdInfo = async (groupId: string) => {
+    console.log(`listPwdInfo countPwdInfo:${groupId}`)
+    if (!groupId) return 0;
+    return await baseGetSql(`SELECT count(*) as count
+                              FROM "pwd_info"
+                              WHERE group_id = ?;`, groupId);
 }
 
 

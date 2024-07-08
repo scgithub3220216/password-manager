@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {computed, onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
@@ -10,6 +10,7 @@ import {emitterInsertGroupTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
+import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
@@ -19,13 +20,14 @@ const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
-const {curGroup, pwdGroupList} = storeToRefs(userDataInfoStore)
+const {curGroup} = storeToRefs(userDataInfoStore)
 const {userInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 const curEditGroupIndex = ref(-1)
 const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
+const {countPwdInfo} = useDBPwdInfo()
 const groupList = ref<PwdGroup[]>()
 
 onMounted(() => {
@@ -44,7 +46,7 @@ onUnmounted(() => {
   emitter.off(emitterInsertGroupTopic)
 })
 
-let deleteFlag = computed(() => {
+/*let deleteFlag = computed(() => {
   let flag = false;
   pwdGroupList.value.forEach((pwdGroup) => {
     if (flag) {
@@ -57,7 +59,7 @@ let deleteFlag = computed(() => {
     }
   });
   return flag
-})
+})*/
 
 async function initData() {
   groupList.value = await listGroup();
@@ -119,8 +121,15 @@ function editGroups() {
   updateGroup(curGroup.value.title, curGroup.value.id);
 }
 
-function deleteGroup() {
+async function deleteGroup() {
   console.log("deleteGroup");
+  // 判断下面是否还有数据
+  let count = await countPwdInfo(curGroup.value.id);
+  if (count > 0) {
+    ElMessage.error("该分组下还有账号,不能删除");
+    return;
+  }
+
   delGroup(curGroup.value.id).then(async () => {
     ElMessage.success("删除成功");
     groupList.value = await listGroup();
@@ -187,7 +196,8 @@ function deleteGroup() {
       </el-tooltip>
 
       <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <el-button style="border: 0;background: none;color: initial;" :disabled="deleteFlag" class="tool" @click="deleteGroup()">
+        <!--        <el-button style="border: 0;background: none;color: initial;" :disabled="deleteFlag" class="tool" @click="deleteGroup()">-->
+        <el-button style="border: 0;background: none;color: initial;" class="tool" @click="deleteGroup()">
           <Delete style="width: 20px; height: 20px"/>
         </el-button>
       </el-tooltip>

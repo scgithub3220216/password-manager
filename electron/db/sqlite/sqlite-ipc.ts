@@ -8,6 +8,7 @@ import {
     IPC_SQLITE_INSERT_GROUP_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_CONFIG_DATA,
+    IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_GET_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_GROUP_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
@@ -20,7 +21,7 @@ import {
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
 import {delGroup, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
-import {delPwdInfo, getPwdInfo, insertPwdInfo, listPwdInfo, listPwdInfoBySearch, updatePwdInfo} from "./mapper/pwdInfo.ts";
+import {countPwdInfo, delPwdInfo, getPwdInfo, insertPwdInfo, listPwdInfo, listPwdInfoBySearch, updatePwdInfo} from "./mapper/pwdInfo.ts";
 import {getShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
 
 
@@ -106,6 +107,12 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA  args : ${args}`);
         return await listPwdInfoBySearch(args);
+    });
+
+    // ipc sqlite select COUNT data
+    ipcMain.handle(IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA  args : ${args}`);
+        return await countPwdInfo(args);
     });
 
     // shortcutKey
