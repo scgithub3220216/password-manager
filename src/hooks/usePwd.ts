@@ -8,7 +8,7 @@ import {firstLoginFlag, pwd} from "../../electron/db/sqlite/components/configCon
 export default function () {
 
     const pwdDialogVisible = ref(false)
-    const {setConfigValue} = useConfig()
+    const {getConfigValue,setConfigValue} = useConfig()
     const ruleFormRef = ref<FormInstance>()
     const passForm = reactive({
         oldPassword: '',
@@ -71,9 +71,14 @@ export default function () {
     const submitForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return
 
-        formEl.validate((valid) => {
+        formEl.validate(async (valid) => {
             if (valid) {
                 console.log('submit!')
+                let oldValue = await getConfigValue(pwd);
+                if(oldValue !== passForm.oldPassword){
+                    ElMessage.error('旧密码错误');
+                    return;
+                }
                 setConfigValue(passForm.confirmPassword, pwd)
                 ElMessage.success('密码修改成功');
                 resetForm(formEl)

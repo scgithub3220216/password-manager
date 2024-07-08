@@ -26,7 +26,7 @@ onMounted(() => {
   queryAndRefreshIndex(curGroup.value.id)
 });
 watch(curGroup.value, (newVal) => {
-  console.log('watch curGroup:',newVal)
+  console.log('watch curGroup:', newVal)
   queryPwdInfo(newVal.id)
   queryAndRefreshIndex(newVal.id)
 })
@@ -34,8 +34,12 @@ watch(curGroup.value, (newVal) => {
 function queryAndRefreshIndex(groupId: number) {
   if (!groupId) return;
 
-  queryPwdInfo(groupId)
-  cssSwitchStore.setPwdListIndex(0)
+  queryPwdInfo(groupId).then(() => {
+    if (!pwdInfoList.value) return;
+    userDataInfoStore.setCurPwdInfo(pwdInfoList.value[0])
+    cssSwitchStore.setPwdListIndex(0)
+  })
+
 }
 
 watch(changePwdInfoFlag, (newVal) => {
@@ -48,7 +52,6 @@ watch(changePwdInfoFlag, (newVal) => {
 
 async function queryPwdInfo(groupId: number) {
   pwdInfoList.value = await listPwdInfo(groupId);
-  userDataInfoStore.setCurPwdInfo(pwdInfoList.value[0])
 }
 
 // 绑定事件
