@@ -9,6 +9,7 @@ import emitter from "../../utils/emitter.ts";
 import {emitterInsertGroupTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
+import useDBGroup from "../../hooks/useDBGroup.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const groupInputRef = ref();
@@ -23,6 +24,9 @@ const {userInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
+const curEditGroupIndex = ref(-1)
+const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
+const groupList = ref<PwdGroup[]>()
 
 onMounted(() => {
   console.log("Index onMounted");
@@ -55,14 +59,15 @@ let deleteFlag = computed(() => {
   return flag
 })
 
-function initData() {
-  if (!(pwdGroupList.value && pwdGroupList.value.length > 0)) {
+async function initData() {
+  groupList.value = await listGroup();
+  if (!(groupList.value && groupList.value.length > 0)) {
     console.log("pwdGroupList 为空");
     userDataInfoStore.setCurGroup(null);
     cssSwitchStore.setGroupIndex(-1)
     return;
   }
-  userDataInfoStore.setCurGroup(pwdGroupList.value[0]);
+  userDataInfoStore.setCurGroup(groupList.value[0]);
   cssSwitchStore.setGroupIndex(0)
 }
 
@@ -89,30 +94,39 @@ function groupInputChange() {
     return;
   }
   console.log("groupInputChange2");
-  let pwdGroup = new PwdGroup(userDataInfoStore.generateGroupId(), groupInputValue.value, [], false);
-  userDataInfoStore.insertGroup(pwdGroup);
-  groupInputShowFlag.value = false;
-  groupInputValue.value = "";
+  insertGroup(groupInputValue.value, 0)
+      .then(async () => {
+        console.log("新增成功");
+        groupInputShowFlag.value = false;
+        groupInputValue.value = "";
 
-  cssSwitchStore.addGroupSwitch()
+        groupList.value = await listGroup();
+        userDataInfoStore.setCurGroup(groupList.value[groupList.value?.length - 1]);
+        cssSwitchStore.setGroupIndex(groupList.value?.length - 1)
+      })
+
 }
 
 
-async function triggerGroupEdit() {
+function triggerGroupEdit() {
   console.log("triggerGroupEdit1");
-  userDataInfoStore.editGroupFlag(curGroup.value.id, true);
+  curEditGroupIndex.value = curGroupIndex.value;
 }
 
 function editGroups() {
   console.log("editGroups");
-  userDataInfoStore.editGroupFlag(curGroup.value.id, false);
-  userDataInfoStore.editAction();
+  curEditGroupIndex.value = -1;
+  updateGroup(curGroup.value.title, curGroup.value.id);
 }
 
 function deleteGroup() {
   console.log("deleteGroup");
-  userDataInfoStore.deleteGroup(curGroup.value.id);
-  ElMessage.success("删除成功");
+  delGroup(curGroup.value.id).then(async () => {
+    ElMessage.success("删除成功");
+    groupList.value = await listGroup();
+    cssSwitchStore.setGroupIndex(-1)
+    userDataInfoStore.setCurGroup(null);
+  })
 }
 </script>
 
@@ -123,7 +137,7 @@ function deleteGroup() {
 
         <ul id="group-ul">
           <li
-              v-for="(group,index) in pwdGroupList"
+              v-for="(group,index) in groupList"
               :key="index"
               @click="clickGroup(group,index)"
               :class="{
@@ -134,9 +148,9 @@ function deleteGroup() {
               }"
               @mouseover="isHover = true" @mouseout="isHover = false"
           >
-            <span v-show="!group.editFlag"> {{ group.title }}</span>
+            <span v-show="index !== curEditGroupIndex"> {{ group.title }}</span>
             <el-input
-                v-show="group.editFlag"
+                v-show="index === curEditGroupIndex"
                 ref="groupInput2Ref"
                 v-model="group.title"
                 @change="editGroups()"
@@ -161,7 +175,7 @@ function deleteGroup() {
         </span>
       </el-tooltip>
       <el-tooltip class="box-item" effect="dark" content="修改" placement="top">
-        <span class="tool" @blur="triggerGroupEdit" @click="triggerGroupEdit()">
+        <span class="tool" @click="triggerGroupEdit()">
           <Edit style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
