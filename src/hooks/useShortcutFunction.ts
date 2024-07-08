@@ -1,11 +1,11 @@
 // @ts-ignore
 
 
-import {ShortCutKeyComb} from "../store/type.ts";
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
 import emitter from "../utils/emitter.ts";
 import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic, emitterLockTopic} from "../config/config.ts";
+import {ShortCutKeyComb} from "../components/type.ts";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
@@ -27,8 +27,8 @@ export default function () {
             return [];
         }
         shortCutKeyCombs.forEach(comb => {
-            if (comb.actionName in functionMap) {
-                comb.action = functionMap[comb.actionName];
+            if (comb.action_name in functionMap) {
+                comb.action = functionMap[comb.action_name];
             }
         });
         return shortCutKeyCombs;
