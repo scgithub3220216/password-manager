@@ -143,23 +143,19 @@ ipcMain.handle('init-data', () => {
     console.log(`Received message from renderer`);
     return initDataStr;
 });
-// @ts-ignore
-ipcMain.handle('save-data', (event, arg) => {
+ipcMain.handle('save-data', (_event, arg) => {
     console.log(`Received save-data:`);
     saveInfoToDB(arg);
 });
-// @ts-ignore
-ipcMain.handle('save-shortcuts', (event, arg) => {
+ipcMain.handle('save-shortcuts', (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     registerGlobalShortcut(arg, win);
 });
-// @ts-ignore
-ipcMain.handle('auto-start', (event, arg) => {
+ipcMain.handle('auto-start', (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
 });
-// @ts-ignore
-ipcMain.handle('open-browser', (event, arg) => {
+ipcMain.handle('open-browser', (_event, arg) => {
     console.log(`open-browser:${arg} `);
     shell.openExternal(arg);
 });
