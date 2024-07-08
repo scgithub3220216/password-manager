@@ -127,7 +127,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             }
             this.curGroup.id = group.id;
             this.curGroup.title = group.title;
-            this.setCurPwdList(this.getPwdInfoListByGroupId(group.id))
         },
         setCurPwdList(pwdList: PwdInfo[]) {
             console.log('setCurPwdList:', pwdList)

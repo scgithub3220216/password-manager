@@ -26,6 +26,7 @@ onMounted(() => {
   queryAndRefreshIndex(curGroup.value.id)
 });
 watch(curGroup.value, (newVal) => {
+  console.log('watch curGroup:',newVal)
   queryPwdInfo(newVal.id)
   queryAndRefreshIndex(newVal.id)
 })
@@ -47,6 +48,7 @@ watch(changePwdInfoFlag, (newVal) => {
 
 async function queryPwdInfo(groupId: number) {
   pwdInfoList.value = await listPwdInfo(groupId);
+  userDataInfoStore.setCurPwdInfo(pwdInfoList.value[0])
 }
 
 // 绑定事件
