@@ -23,6 +23,7 @@ const {userInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
+
 onMounted(() => {
   console.log("Index onMounted");
   initData();

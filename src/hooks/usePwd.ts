@@ -2,7 +2,7 @@ import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
 import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
-import useConfig from "./useConfig.ts";
+import useConfig from "./useDBConfig.ts";
 import {firstLoginFlag, pwd} from "../../electron/db/sqlite/components/configConstants.ts";
 
 export default function () {

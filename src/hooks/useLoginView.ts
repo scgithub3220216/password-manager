@@ -1,7 +1,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
-import useConfig from "./useConfig.ts";
+import useConfig from "./useDBConfig.ts";
 import {pwd} from "../../electron/db/sqlite/components/configConstants.ts";
 
 export default function () {

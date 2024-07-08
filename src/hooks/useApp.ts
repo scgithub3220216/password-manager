@@ -8,7 +8,7 @@ import Index from "../components/Index.vue";
 import {useDark} from "@vueuse/core";
 import {toggleDark} from "../styles/dark/dark.ts";
 import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
-import useConfig from "./useConfig.ts";
+import useConfig from "./useDBConfig.ts";
 
 export default function () {
 
