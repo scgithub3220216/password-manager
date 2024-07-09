@@ -133,10 +133,10 @@ async function deleteGroup() {
               :key="index"
               @click="clickGroup(group,index)"
               :class="{
-                  'selected-dark': curGroupIndex === index && darkSwitch,
-                  'selected-light': curGroupIndex === index && !darkSwitch,
-                  'hover-effect-dark': isHover && darkSwitch,
-                  'hover-effect-light': isHover && !darkSwitch
+                  'selected-dark-group': curGroupIndex === index && darkSwitch,
+                  'selected-light-group': curGroupIndex === index && !darkSwitch,
+                  'hover-effect-dark-group': isHover && darkSwitch,
+                  'hover-effect-light-group': isHover && !darkSwitch
               }"
               @mouseover="isHover = true" @mouseout="isHover = false"
           >

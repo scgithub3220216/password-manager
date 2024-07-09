@@ -130,10 +130,10 @@ function deletePwdInfo() {
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
               :class="{
-                  'selected-dark': curPwdListIndex === index && darkSwitch,
-                  'selected-light': curPwdListIndex === index && !darkSwitch,
-                  'hover-effect-dark': isHover && darkSwitch,
-                  'hover-effect-light': isHover && !darkSwitch
+                  'selected-dark-pwdList': curPwdListIndex === index && darkSwitch,
+                  'selected-light-pwdList': curPwdListIndex === index && !darkSwitch,
+                  'hover-effect-dark-pwdList': isHover && darkSwitch,
+                  'hover-effect-light-pwdList': isHover && !darkSwitch
               }"
               @mouseover="isHover = true" @mouseout="isHover = false"
           >

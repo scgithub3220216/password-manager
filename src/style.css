@@ -102,23 +102,45 @@ div.msg-tips {
 }
 
 
-.selected-dark {
+
+.selected-dark-group {
     background: rgba(255, 255, 255, 0.08);
 }
 
-
-.hover-effect-dark:hover {
+.hover-effect-dark-group:hover {
     background: rgba(255, 255, 255, 0.08);
     cursor: pointer;
 }
 
 
-.selected-light {
-    background: rgba(0, 0, 0, 0.18);
+.selected-light-group {
+    background: rgba(80, 74, 74, 0.11);
 }
 
-.hover-effect-light:hover {
-    background: rgba(0, 0, 0, 0.18);
+.hover-effect-light-group:hover {
+    background: rgba(80, 74, 74, 0.11);
+    cursor: pointer;
+}
+
+
+
+
+.selected-dark-pwdList {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.hover-effect-dark-pwdList:hover {
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+
+.selected-light-pwdList {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.hover-effect-light-pwdList:hover {
+    background: rgba(0, 0, 0, 0.1);
     cursor: pointer;
 }
 
