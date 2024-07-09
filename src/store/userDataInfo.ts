@@ -22,11 +22,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
 
         setDarkSwitch(darkSwitch: boolean) {
             this.userInfo.darkSwitch = darkSwitch;
-            this.editAction()
         },
         setAutoStart(flag: boolean) {
             this.userInfo.autoStart = flag;
-            this.editAction()
         },
         setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
             console.log('userDataInfoStore setLockTime:', autoLockTime, '----', autoLockTimeUnit)
@@ -34,89 +32,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.timeUnit = autoLockTimeUnit ? autoLockTimeUnit : 1000;
         },
 
-        setInitPwd(pass: string) {
-            this.userInfo.pwd = pass
-            this.userInfo.firstLoginFlag = 0
-            this.editAction()
-        },
-        setPwd(oldPwd: string, newPwd: string) {
-            console.log('setPwd')
-            if (this.userInfo.pwd === oldPwd) {
-                this.userInfo.pwd = newPwd
-                this.editAction()
-                console.log('setPwd success newPwd:', newPwd)
-                return true;
-            } else {
-                return false;
-            }
-        },
-
-        insertGroup(pwdGroup: PwdGroup) {
-            this.pwdGroupList.push(pwdGroup);
-            this.setCurGroup(pwdGroup);
-            this.setCurPwdInfo(null);
-            this.editAction();
-        },
-        deleteGroup(groupId: number) {
-            this.pwdGroupList = this.pwdGroupList.filter(pwdGroup => pwdGroup.id !== groupId);
-            this.editAction();
-        },
-        editGroupFlag(groupId: number, flag: boolean) {
-            if (!groupId) {
-                return;
-            }
-            this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === groupId) {
-                    pwdGroup.editFlag = flag;
-                }
-            })
-            this.editAction();
-        },
-
-        insertPwdInfo(pwdInfo: PwdInfo) {
-            this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === pwdInfo.group_id) {
-                    pwdGroup.pwdList.push(pwdInfo);
-                }
-            })
-            this.setCurPwdInfo(pwdInfo)
-            this.editAction()
-        },
-        updatePwdInfo(pwdInfo: PwdInfo) {
-            if (!pwdInfo) {
-                return;
-            }
-            // 修改 pwdGroupList 中的 pwdList
-            this.pwdGroupList.forEach(pwdGroup => {
-                if (pwdGroup.id === pwdInfo.group_id) {
-                    pwdGroup.pwdList.forEach(pwd => {
-                        if (pwd.id === pwdInfo.id) {
-                            pwd.title = pwdInfo.title;
-                            pwd.username = pwdInfo.username;
-                            pwd.password = pwdInfo.password;
-                            pwd.link = pwdInfo.link;
-                            pwd.remark = pwdInfo.remark;
-                        }
-                    })
-                }
-            })
-            this.editAction()
-        },
-        deletePwdInfo(pwdInfoId: number) {
-            this.pwdGroupList.forEach(pwdGroup => {
-                pwdGroup.pwdList = pwdGroup.pwdList.filter(pwd => pwd.id !== pwdInfoId);
-            })
-            this.editAction()
-            this.setCurPwdList(this.getPwdInfoListByGroupId(this.curGroup.id))
-        },
-
-
-        login() {
-            this.userInfo.curLoginStatus = 1;
-        },
-        logout() {
-            this.userInfo.curLoginStatus = 0;
-        },
         setCurGroup(group: PwdGroup | null) {
             console.log('setCurGroup:', group)
             if (!group) {
@@ -146,41 +61,19 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             }
             Object.assign(this.curPwdInfo, pwdInfo)
         },
-        setCurPwdInfoPwd(pwd: string) {
-            this.curPwdInfo.password = pwd;
-            this.editAction()
-        },
-        generateGroupId() {
-            this.editAction()
-            return ++this.userInfo.pwdGroupId;
-        },
-        generatePwdInfoId() {
-            this.editAction()
-            return ++this.userInfo.pwdInfoId;
-        },
 
         setShortCutKeyCombs(shortCutKeyCombs: ShortCutKeyComb[]) {
             this.shortCutKeyCombs = shortCutKeyCombs;
-            this.editAction()
         },
         setShortCutKeyComb(index: number, desc: string) {
             this.shortCutKeyCombs[index].desc = desc;
             this.shortCutKeyCombs[index].keys = desc.split("+");
         },
-
-        getGroupLength() {
-            return this.pwdGroupList.length;
+        login() {
+            this.userInfo.curLoginStatus = 1;
         },
-
-        getPwdListLength() {
-            return this.pwdGroupList.find(pwdGroup => pwdGroup.id === this.curGroup.id)?.pwdList.length || 0;
-        },
-
-        editAction() {
-            this.userInfo.saveFlag = true;
-        },
-        saveOver() {
-            this.userInfo.saveFlag = false;
+        logout() {
+            this.userInfo.curLoginStatus = 0;
         },
     },
     // 状态
@@ -190,7 +83,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         changePwdInfoFlag: boolean,
         userInfo: UserInfo,
         shortCutKeyCombs: ShortCutKeyComb[],
-        pwdGroupList: PwdGroup[],
         curGroup: PwdGroup,
         curPwdList: PwdInfo[],
         curPwdInfo: PwdInfo
@@ -263,38 +155,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
 
             ],
 
-            pwdGroupList: [
-                {
-                    id: 1,
-                    title: '默认分组',
-                    editFlag: false,
-                    // fatherId: 0,
-                    // subList: [],
-                    pwdList: [
-                        {
-                            id: 1,
-                            group_id: 1,
-                            title: '百度',
-                            group_title: '默认分组',
-                            username: 'admin',
-                            password: '123456',
-                            link: 'https://www.baidu.com',
-                            remark: '这是百度的密码'
-                        },
-                        {
-                            id: 2,
-                            group_id: 1,
-                            title: '谷歌',
-                            group_title: '默认分组',
-                            username: 'admin',
-                            password: '123456',
-                            link: 'https://www.google.com',
-                            remark: '这是谷歌的密码'
-                        }
-                    ]
-                }
-
-            ],
             // @ts-ignore
             curGroup: {},
             curPwdList: [],
@@ -303,11 +163,5 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         }
     },
     // 计算
-    getters: {
-        // getPwdInfoListByGroupId(groupId: number):PwdGroup[]  => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];
-        getPwdInfoListByGroupId: (state) => {
-            return (groupId: number) => state.pwdGroupList.find((pwdGroup: PwdGroup) => pwdGroup.id === groupId)?.pwdList || [];
-        }
-
-    }
+    getters: {}
 })

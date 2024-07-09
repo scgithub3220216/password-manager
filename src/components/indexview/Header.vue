@@ -11,20 +11,24 @@ import {emitterLockTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useSearchResultStore} from "../../store/searchResult.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
+import useDBConfig from "../../hooks/useDBConfig.ts";
+import {darkSwitch} from "../../../electron/db/sqlite/components/configConstants.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userInfoStore)
 const searchResultStore = useSearchResultStore();
-const themeSwitch = ref(userInfoStore.userInfo.darkSwitch)
+const themeSwitch = ref(false)
 const {logout} = useLoginAction();
 const {listPwdInfoBySearch} = useDBPwdInfo();
 const search = ref('');
 const searchInputRef = ref();
+const {setConfigValue, getConfigValue} = useDBConfig()
 
 let settingDialogRef = ref();
-onMounted(() => {
+onMounted(async () => {
   console.log('Header.vue onMounted')
   searchInputRef.value.focus();
+  themeSwitch.value = !!parseInt(await getConfigValue(darkSwitch));
   console.log('Header.vue 挂载完毕')
 })
 
@@ -41,7 +45,7 @@ onUnmounted(() => {
 
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
-  userInfoStore.setDarkSwitch(themeSwitch.value);
+  setConfigValue(themeSwitch.value ? '1' : '0', darkSwitch)
   toggleDark();
 }
 

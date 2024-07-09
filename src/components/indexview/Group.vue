@@ -46,25 +46,11 @@ onUnmounted(() => {
   emitter.off(emitterInsertGroupTopic)
 })
 
-/*let deleteFlag = computed(() => {
-  let flag = false;
-  pwdGroupList.value.forEach((pwdGroup) => {
-    if (flag) {
-      return;
-    }
-    if (pwdGroup.id === curGroup.value.id) {
-      if (pwdGroup.pwdList.length > 0) {
-        flag = true;
-      }
-    }
-  });
-  return flag
-})*/
+
 
 async function initData() {
   groupList.value = await listGroup();
   if (!(groupList.value && groupList.value.length > 0)) {
-    console.log("pwdGroupList 为空");
     userDataInfoStore.setCurGroup(null);
     cssSwitchStore.setGroupIndex(-1)
     return;

@@ -13,7 +13,6 @@ export default function () {
         ];
         // 获取 所有数据
         let pwdInfoList: PwdInfo[] = await listPwdInfo(0)
-        // 将 userDataInfo.pwdGroupList 转成 dataList 格式的数据
         pwdInfoList.forEach((pwdInfo) => {
             dataList.push([pwdInfo.group_title, pwdInfo.title, pwdInfo.username, pwdInfo.password, pwdInfo.link, pwdInfo.remark]);
         });
