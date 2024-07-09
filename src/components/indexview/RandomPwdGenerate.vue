@@ -59,37 +59,28 @@ function refreshPsd() {
         <el-checkbox-group v-model="selectedTypes">
           <el-row :gutter="20">
             <el-col :span="4">
-              <el-checkbox label="uppercase" @change="generatePassword"
-              >A-Z
-              </el-checkbox
-              >
-            </el-col
-            >
-            <el-col :span="4"
-            >
-              <el-checkbox label="lowercase" @change="generatePassword"
-              >a-z
-              </el-checkbox
-              >
-            </el-col
-            >
+              <el-checkbox label="uppercase" @change="generatePassword">
+                A-Z
+              </el-checkbox>
+            </el-col>
             <el-col :span="4">
-              <el-checkbox label="numbers" @change="generatePassword"
-              >0-9
-              </el-checkbox
-              >
-            </el-col
-            >
-            <el-col :span="8"
-            >
+              <el-checkbox label="lowercase" @change="generatePassword">
+                a-z
+              </el-checkbox>
+            </el-col>
+            <el-col :span="4">
+              <el-checkbox label="numbers" @change="generatePassword">
+                0-9
+              </el-checkbox>
+            </el-col>
+            <el-col :span="8">
               <el-checkbox label="special" @change="generatePassword">
                 <el-input
                     v-model="specialChars"
                     :disabled="!selectedTypes.includes('special')"
                     style="width: 240px"
                 />
-              </el-checkbox
-              >
+              </el-checkbox>
             </el-col>
           </el-row>
         </el-checkbox-group>
