@@ -1,6 +1,6 @@
 import {reactive, ref} from 'vue'
 import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus'
-import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
+import {setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
 import useConfig from "./useDBConfig.ts";
 import {firstLoginFlag, pwd} from "../../electron/db/sqlite/components/configConstants.ts";
@@ -8,7 +8,7 @@ import useCrypto from "./useCrypto.ts";
 
 export default function () {
 
-    const {sha512HexHash, pwdAddSalt} = useCrypto()
+    const {sha512HexHash} = useCrypto()
     const pwdDialogVisible = ref(false)
     const {getConfigValue, setConfigValue} = useConfig()
     const ruleFormRef = ref<FormInstance>()
@@ -24,7 +24,7 @@ export default function () {
         formEl.validate((valid) => {
             if (valid) {
                 console.log('submit!')
-                setConfigValue(sha512HexHash(pwdAddSalt(passForm.confirmPassword)), pwd)
+                setConfigValue(sha512HexHash((passForm.confirmPassword)), pwd)
                 setConfigValue('0', firstLoginFlag)
 
                 pwdDialogVisible.value = false
@@ -77,11 +77,11 @@ export default function () {
             if (valid) {
                 console.log('submit!')
                 let oldValue = await getConfigValue(pwd);
-                if (oldValue !== sha512HexHash(pwdAddSalt(passForm.oldPassword))) {
+                if (oldValue !== sha512HexHash((passForm.oldPassword))) {
                     ElMessage.error('旧密码错误');
                     return;
                 }
-                setConfigValue(sha512HexHash(pwdAddSalt(passForm.confirmPassword)), pwd)
+                setConfigValue(sha512HexHash((passForm.confirmPassword)), pwd)
                 ElMessage.success('密码修改成功');
                 resetForm(formEl)
             } else {
@@ -127,9 +127,11 @@ export default function () {
                 }
             })
             .then(() => {
+                // 修改 firstLogin
+                setConfigValue('0', firstLoginFlag)
 
                 done()
-                ElMessageBox.alert('初始密码为 ' + defaultPwd, {
+                ElMessageBox.alert('初始密码为 123456', {
                     confirmButtonText: '确认'
                 })
             })

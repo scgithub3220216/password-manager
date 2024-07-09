@@ -8,7 +8,7 @@ import useCrypto from "./useCrypto.ts";
 export default function () {
 
     const capsLockFlag = ref(false)
-    const {sha512HexHash, pwdAddSalt} = useCrypto()
+    const {sha512HexHash} = useCrypto()
     const {pwdError} = usePwd()
     const {login} = useLoginAction()
     const {getConfigValue} = useDBConfig()
@@ -42,7 +42,7 @@ export default function () {
         console.log('handlerEnter')
         let pwdValue = await getConfigValue(pwd);
         console.log(`pwdValue:${pwdValue}; password.value:${password.value}`)
-        pwdValue === sha512HexHash(pwdAddSalt(password.value)) ? loginSuccess() : pwdError()
+        pwdValue === sha512HexHash((password.value)) ? loginSuccess() : pwdError()
     }
 
     return {handleEnter, password, capsLockFlag};

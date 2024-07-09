@@ -13,14 +13,17 @@ export default function () {
         // 输出十六进制字符串
         return hash.toString(CryptoJS.enc.Hex);
     }
+
     function pwdAddSalt(pwd: string) {
         return pwd + salt
     }
 
 
     // 计算sha512-十六进制
-    function sha512HexHash(input: string) {
-        const sha512 = CryptoJS.SHA512(input);
+    function sha512HexHash(pwd: string) {
+        if (!pwd) pwd = '123456';
+        let saltPwd = pwdAddSalt(pwd);
+        const sha512 = CryptoJS.SHA512(saltPwd);
         return sha512.toString(CryptoJS.enc.Hex);
     }
 
@@ -61,5 +64,5 @@ export default function () {
         return decrypt.toString(CryptoJS.enc.Utf8);
     }
 
-    return {encryptData, decryptData, md5HexHash, sha512HexHash,pwdAddSalt};
+    return {encryptData, decryptData, md5HexHash, sha512HexHash};
 }

@@ -4,17 +4,15 @@ export const emitterInsertGroupTopic = 'insertGroupTopic';
 export const emitterLockTopic = 'lockTopic';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
 
-export const salt = '`fn"iaj4~';
+export const salt = '`f:i+(o ====~.~====  Hello world n"iaj4~R>0@';
 
 
 // Aes 加密 Key
 export const aesKey = '0iq5<`fn"iaj4nD>';
 
 export const aesIv = '|T@R>0@/:i+(ox,&';
-// 文件自动保存时间, 单位: ms
-export const saveTime = 1000;
 
-export const defaultPwd = '123456';
+export const defaultPwd = 'c1eed9e510f0c45e301ec7f3b535daf5ec9bfc5afbaded2e82ab61aa004d3b72af6aaf92a3b0d244bf044cf0cbdcded707cbf765154b47113ec2e76831d99d39';
 
 export const defaultOpenMainWinShortcutKey = 'Ctrl + Alt + E';
 export const defaultLogoutShortcutKey = 'Escape';

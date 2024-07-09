@@ -3,12 +3,15 @@ import {onMounted, ref} from 'vue'
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
-import {IPC_FIRST_LOGIN, IPC_SQLITE_SELECT_CONFIG_DATA} from "../../electron/constant.ts";
+import {IPC_FIRST_LOGIN} from "../../electron/constant.ts";
 import {firstLoginFlag} from "../../electron/db/sqlite/components/configConstants.ts";
+import useDBConfig from "../hooks/useDBConfig.ts";
 
 const initSetPwdRef = ref()
 const pwdInputRef = ref()
 const {setPwdMsgTips} = usePwd()
+const {getConfigValue} = useDBConfig()
+
 
 const {handleEnter, capsLockFlag, password} = useLoginView()
 
@@ -22,9 +25,9 @@ onMounted(() => {
 async function firstLogin() {
   console.log('firstLogin')
   // 判断用户是否第一次登录 , 如果是 设置登录密码
-  let firstLoginFlagValue = await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_CONFIG_DATA, firstLoginFlag);
-
-  if (firstLoginFlagValue != 1) {
+  let firstLoginFlagValue = await getConfigValue(firstLoginFlag);
+  console.log("firstLoginFlagValue:", firstLoginFlagValue)
+  if (firstLoginFlagValue !== '1') {
     console.log('不是第一次登录')
     return;
   }
