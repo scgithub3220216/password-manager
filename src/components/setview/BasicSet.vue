@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useBasicSet from "../../hooks/useBasicSet.ts";
 
-const { autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
+const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
 
 
 </script>

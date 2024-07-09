@@ -30,10 +30,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         },
         setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
             console.log('userDataInfoStore setLockTime:', autoLockTime, '----', autoLockTimeUnit)
-            this.userInfo.autoLock.autoLockTime = autoLockTime ? autoLockTime : 60;
-            this.userInfo.autoLock.autoLockTimeUnit = autoLockTimeUnit ? autoLockTimeUnit : 1000;
-            console.log('userDataInfoStore setLockTime:', this.userInfo.autoLock.autoLockTime, '----', this.userInfo.autoLock.autoLockTimeUnit)
-            this.editAction()
+            this.lockTime = autoLockTime ? autoLockTime : 60;
+            this.timeUnit = autoLockTimeUnit ? autoLockTimeUnit : 1000;
         },
 
         setInitPwd(pass: string) {
@@ -187,6 +185,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
     },
     // 状态
     state(): {
+        lockTime: number,
+        timeUnit: number,
         changePwdInfoFlag: boolean,
         userInfo: UserInfo,
         shortCutKeyCombs: ShortCutKeyComb[],
@@ -196,6 +196,8 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         curPwdInfo: PwdInfo
     } {
         return {
+            lockTime: 60,
+            timeUnit: 1000,
             changePwdInfoFlag: false,
             userInfo: {
                 darkSwitch: true,

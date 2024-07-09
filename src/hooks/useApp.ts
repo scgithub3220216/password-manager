@@ -18,6 +18,7 @@ export default function () {
     onMounted(() => {
         console.log(`App onMounted `)
         setDarkTheme()
+        setAutoLogout()
     });
 
     async function setDarkTheme() {
@@ -42,9 +43,11 @@ export default function () {
         }, getLockTime());
     }
 
-    document.addEventListener('mousemove', resetTimer);
-    document.addEventListener('keydown', resetTimer);
-    document.addEventListener('scroll', resetTimer);
+    function setAutoLogout() {
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keydown', resetTimer);
+        document.addEventListener('scroll', resetTimer);
+    }
 
 
     // 监听路由哈希

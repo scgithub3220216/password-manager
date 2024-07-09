@@ -2,19 +2,20 @@ import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
 import {autoLockTime, autoLockTimeUnit, autoStart} from "../../electron/db/sqlite/components/configConstants.ts";
 import {onMounted, ref} from "vue";
+import {storeToRefs} from "pinia";
 
 export default function () {
     const userInfoStore = useUserDataInfoStore();
+    const {lockTime, timeUnit} = storeToRefs(userInfoStore)
     const {getConfigValue, setConfigValue} = useDBConfig()
     const autoStartValue = ref(false);
-    const lockTime = ref();
-    const timeUnit = ref();
 
     onMounted(async () => {
         console.log("BasicSet 挂载完毕");
         autoStartValue.value = await getConfigValue(autoStart) === '1';
-        lockTime.value = +await getConfigValue(autoLockTime)
-        timeUnit.value = +await getConfigValue(autoLockTimeUnit)
+        // userInfoStore.lockTime = +await getConfigValue(autoLockTime)
+        // userInfoStore.timeUnit = +await getConfigValue(autoLockTimeUnit)
+        userInfoStore.setLockTime(+await getConfigValue(autoLockTime), +await getConfigValue(autoLockTimeUnit))
     });
 
     const timeUnits = [
@@ -39,11 +40,8 @@ export default function () {
 
 
     function getLockTime() {
-        let autoLock = userInfoStore.userInfo.autoLock;
-        if (!autoLock) {
-            return 60 * 1000;
-        }
-        return autoLock.autoLockTime * autoLock.autoLockTimeUnit;
+        // console.log('getLockTime:', lockTime.value, '----', timeUnit.value)
+        return lockTime.value * timeUnit.value;
     }
 
     function setLockTime(lockTimeValue: number, lockTimeUnitValue: number) {
