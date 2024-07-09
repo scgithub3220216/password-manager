@@ -29,13 +29,12 @@ function generatePassword() {
   if (selectedTypes.value.includes("uppercase")) charPool += uppercase;
   if (selectedTypes.value.includes("lowercase")) charPool += lowercase;
   if (selectedTypes.value.includes("numbers")) charPool += numbers;
-  if (selectedTypes.value.includes("special")) charPool += specialChars;
+  if (selectedTypes.value.includes("special")) charPool += specialChars.value;
 
   let result = "";
   for (let i = 0; i < length.value; i++) {
     result += charPool.charAt(Math.floor(Math.random() * charPool.length));
   }
-
   password.value = result;
 }
 
