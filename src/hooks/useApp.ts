@@ -3,9 +3,10 @@ import useBasicSet from "./useBasicSet.ts";
 import {computed, onMounted, ref} from "vue";
 import Login from "../components/Login.vue";
 import Index from "../components/Index.vue";
-import {useDark, useToggle} from "@vueuse/core";
+import {useDark} from "@vueuse/core";
 import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
 import useDBConfig from "./useDBConfig.ts";
+import {toggleDark} from "../styles/dark/dark.ts";
 
 export default function () {
 
@@ -27,9 +28,6 @@ export default function () {
 
         // darkFlag 当前值  : false 白色  ; true 黑色
         const isDark = useDark()
-        const toggleDark = useToggle(isDark)
-
-
         console.log('isDark:', isDark.value)
 
         if (darkSwitchValue && isDark.value) {
