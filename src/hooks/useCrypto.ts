@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js';
 import {aesIv, aesKey, salt} from "../config/config.ts";
+import {PwdInfo} from "../components/type.ts";
 
 export default function () {
     //  look 加密方法 参考 @link https://blog.csdn.net/lkp1603645756/article/details/137722801
@@ -63,6 +64,13 @@ export default function () {
         });
         return decrypt.toString(CryptoJS.enc.Utf8);
     }
+    function decryptList(pwdInfoList: PwdInfo[]){
+        if (!pwdInfoList) return pwdInfoList;
+        pwdInfoList.forEach(pwdInfo => {
+            pwdInfo.password = decryptData(pwdInfo.password)
+        })
+        return pwdInfoList;
+    }
 
-    return {encryptData, decryptData, md5HexHash, sha512HexHash};
+    return {encryptData, decryptData, md5HexHash, sha512HexHash,decryptList};
 }
