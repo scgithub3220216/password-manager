@@ -41,17 +41,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.curGroup.id = group.id;
             this.curGroup.title = group.title;
         },
-        setCurPwdList(pwdList: PwdInfo[]) {
-            console.log('setCurPwdList:', pwdList)
-            if (!pwdList) {
-                console.log('setCurPwdList pwdList 为空')
-                this.curPwdList = [];
-                this.setCurPwdInfo(null)
-                return;
-            }
-            this.curPwdList = pwdList;
-            this.setCurPwdInfo(pwdList[0])
-        },
+
         setCurPwdInfo(pwdInfo: PwdInfo | null) {
             console.log('setCurPwdInfo:', pwdInfo)
             if (!pwdInfo) {
@@ -60,6 +50,9 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
                 return;
             }
             Object.assign(this.curPwdInfo, pwdInfo)
+        },
+        setCurPwdInfoPwd(pwd:string){
+            this.curPwdInfo.password = pwd;
         },
 
         setShortCutKeyCombs(shortCutKeyCombs: ShortCutKeyComb[]) {
