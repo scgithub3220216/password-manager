@@ -27,10 +27,10 @@ export const initTable = async () => {
     //  判断 config 表是否存在  如果存在, 不做任何操作  如果不存在, 创建表并且添加默认数据
     let flag = false;
     await initFlag().then((res) => {
-        console.log('initFlag:', res)
+        console.log('initTable initFlag:', res)
         flag = res;
     })
-    console.log('flag:', flag)
+    console.log('initTable flag:', flag)
     if (flag) {
         return;
     }
