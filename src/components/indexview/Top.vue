@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {Close, CopyDocument, FullScreen, Minus} from "@element-plus/icons-vue";
+import {Close, FullScreen, Minus} from "@element-plus/icons-vue";
 import {ref} from 'vue'
+import WinRestore from "../svg/WinRestore.vue";
 
 function minimize() {
   window.ipcRenderer.invoke('minimize');
@@ -37,7 +38,7 @@ const isMaximized = ref(false)
       <el-button class="btn" @click="maximize">
 
         <el-icon v-if="isMaximized">
-          <CopyDocument/>
+          <WinRestore/>
         </el-icon>
         <el-icon v-else>
           <FullScreen/>

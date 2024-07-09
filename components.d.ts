@@ -47,5 +47,6 @@ declare module 'vue' {
     Support: typeof import('./src/components/setview/Support.vue')['default']
     Top: typeof import('./src/components/indexview/Top.vue')['default']
     UpdatePwd: typeof import('./src/components/setview/UpdatePwd.vue')['default']
+    WinRestore: typeof import('./src/components/svg/WinRestore.vue')['default']
   }
 }
