@@ -3,10 +3,12 @@ import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
 import useDBConfig from "./useDBConfig.ts";
 import {pwd} from "../../electron/db/sqlite/components/configConstants.ts";
+import useCrypto from "./useCrypto.ts";
 
 export default function () {
 
     const capsLockFlag = ref(false)
+    const {sha512HexHash, pwdAddSalt} = useCrypto()
     const {pwdError} = usePwd()
     const {login} = useLoginAction()
     const {getConfigValue} = useDBConfig()
@@ -19,7 +21,6 @@ export default function () {
         console.log('useCapsLock onBeforeUnmount')
         window.removeEventListener('keydown', handleCapsKeydown);
     })
-
 
 
     function handleCapsKeydown(event: any) {
@@ -41,7 +42,7 @@ export default function () {
         console.log('handlerEnter')
         let pwdValue = await getConfigValue(pwd);
         console.log(`pwdValue:${pwdValue}; password.value:${password.value}`)
-        pwdValue == password.value ? loginSuccess() : pwdError()
+        pwdValue === sha512HexHash(pwdAddSalt(password.value)) ? loginSuccess() : pwdError()
     }
 
     return {handleEnter, password, capsLockFlag};
