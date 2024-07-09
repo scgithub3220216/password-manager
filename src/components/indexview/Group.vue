@@ -20,8 +20,7 @@ const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
-const {curGroup} = storeToRefs(userDataInfoStore)
-const {userInfo} = storeToRefs(userDataInfoStore)
+const {curGroup, darkSwitch} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
@@ -45,8 +44,6 @@ onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertGroupTopic)
 })
-
-
 
 async function initData() {
   groupList.value = await listGroup();
@@ -136,10 +133,10 @@ async function deleteGroup() {
               :key="index"
               @click="clickGroup(group,index)"
               :class="{
-                  'selected-dark': curGroupIndex === index && userInfo.darkSwitch,
-                  'selected-light': curGroupIndex === index && !userInfo.darkSwitch,
-                  'hover-effect-dark': isHover && userInfo.darkSwitch,
-                  'hover-effect-light': isHover && !userInfo.darkSwitch
+                  'selected-dark': curGroupIndex === index && darkSwitch,
+                  'selected-light': curGroupIndex === index && !darkSwitch,
+                  'hover-effect-dark': isHover && darkSwitch,
+                  'hover-effect-light': isHover && !darkSwitch
               }"
               @mouseover="isHover = true" @mouseout="isHover = false"
           >

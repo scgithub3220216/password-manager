@@ -30,7 +30,9 @@ let settingDialogRef = ref();
 onMounted(async () => {
   console.log('Header.vue onMounted')
   searchInputRef.value.focus();
-  themeSwitch.value = !!parseInt(await getConfigValue(darkSwitch));
+  let switchValue = !!parseInt(await getConfigValue(darkSwitch));
+  themeSwitch.value = switchValue;
+  userInfoStore.darkSwitch = switchValue;
   console.log('Header.vue 挂载完毕')
 })
 
@@ -48,6 +50,7 @@ onUnmounted(() => {
 function clickDarkSwitch() {
   console.log('clickDarkSwitch themeSwitch.value:', themeSwitch.value)
   setConfigValue(themeSwitch.value ? '1' : '0', darkSwitch)
+  userInfoStore.darkSwitch = themeSwitch.value;
   toggleDark();
 }
 

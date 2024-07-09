@@ -11,7 +11,7 @@ import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {userInfo, curGroup, changePwdInfoFlag, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
+const {darkSwitch, curGroup, changePwdInfoFlag, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
@@ -130,10 +130,10 @@ function deletePwdInfo() {
               :key="index"
               @click="clickPwdInfo(pwdInfo,index)"
               :class="{
-                  'selected-dark': curPwdListIndex === index && userInfo.darkSwitch,
-                  'selected-light': curPwdListIndex === index && !userInfo.darkSwitch,
-                  'hover-effect-dark': isHover && userInfo.darkSwitch,
-                  'hover-effect-light': isHover && !userInfo.darkSwitch
+                  'selected-dark': curPwdListIndex === index && darkSwitch,
+                  'selected-light': curPwdListIndex === index && !darkSwitch,
+                  'hover-effect-dark': isHover && darkSwitch,
+                  'hover-effect-light': isHover && !darkSwitch
               }"
               @mouseover="isHover = true" @mouseout="isHover = false"
           >

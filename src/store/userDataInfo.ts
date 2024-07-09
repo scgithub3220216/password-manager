@@ -58,6 +58,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
     },
     // 状态
     state(): {
+        darkSwitch:boolean,
         lockTime: number,
         timeUnit: number,
         changePwdInfoFlag: boolean,
@@ -66,6 +67,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         curPwdInfo: PwdInfo
     } {
         return {
+            darkSwitch:true,
             lockTime: 60,
             timeUnit: 1000,
             changePwdInfoFlag: false,
