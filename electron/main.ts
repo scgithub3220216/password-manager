@@ -2,7 +2,6 @@ import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import {writeFile} from "./utils/fileUtils.ts";
 import {AUTO_HIDE_MENU_BAR, FRAME, IPC_FIRST_LOGIN, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {registerGlobalShortcut, setAutoStart} from "./common.ts";
@@ -87,11 +86,6 @@ app.whenReady().then(async () => {
 })
 
 
-function getFilePath() {
-    const userDataPath = app.getPath('userData');
-    console.log('path:', userDataPath);
-    return path.join(userDataPath, 'example.txt');
-}
 
 function quit() {
     app.quit()
@@ -102,10 +96,7 @@ app.on('before-quit', () => {
     console.log('before-quit')
 })
 
-function saveInfoToDB(fileDataObjJson: string) {
-    // 写入文件
-    writeFile(getFilePath(), fileDataObjJson)
-}
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -128,10 +119,7 @@ ipcMain.handle('init-data', () => {
     console.log(`Received message from renderer`);
     return initDataStr;
 });
-ipcMain.handle('save-data', (_event, arg) => {
-    console.log(`Received save-data:`);
-    saveInfoToDB(arg);
-});
+
 ipcMain.handle('save-shortcuts', (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     registerGlobalShortcut(arg, win);
