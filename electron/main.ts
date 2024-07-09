@@ -59,7 +59,7 @@ function createWindow() {
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
     // 调试窗口
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
