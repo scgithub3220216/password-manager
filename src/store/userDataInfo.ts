@@ -7,10 +7,9 @@ import {
     defaultInsertGroupShortcutKey,
     defaultInsertPwdInfoShortcutKey,
     defaultLogoutShortcutKey,
-    defaultOpenMainWinShortcutKey,
-    defaultPwd
+    defaultOpenMainWinShortcutKey
 } from "../config/config.ts";
-import {PwdGroup, PwdInfo, ShortCutKeyComb, UserInfo} from "../components/type.ts";
+import {PwdGroup, PwdInfo, ShortCutKeyComb} from "../components/type.ts";
 
 // 存放用户的一些设置数据
 export const useUserDataInfoStore = defineStore('userDataInfo', {
@@ -20,12 +19,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.changePwdInfoFlag = value;
         },
 
-        setDarkSwitch(darkSwitch: boolean) {
-            this.userInfo.darkSwitch = darkSwitch;
-        },
-        setAutoStart(flag: boolean) {
-            this.userInfo.autoStart = flag;
-        },
         setLockTime(autoLockTime: number, autoLockTimeUnit: number) {
             console.log('userDataInfoStore setLockTime:', autoLockTime, '----', autoLockTimeUnit)
             this.lockTime = autoLockTime ? autoLockTime : 60;
@@ -51,7 +44,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             }
             Object.assign(this.curPwdInfo, pwdInfo)
         },
-        setCurPwdInfoPwd(pwd:string){
+        setCurPwdInfoPwd(pwd: string) {
             this.curPwdInfo.password = pwd;
         },
 
@@ -62,48 +55,20 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             this.shortCutKeyCombs[index].desc = desc;
             this.shortCutKeyCombs[index].keys = desc.split("+");
         },
-        login() {
-            this.userInfo.curLoginStatus = 1;
-        },
-        logout() {
-            this.userInfo.curLoginStatus = 0;
-        },
     },
     // 状态
     state(): {
         lockTime: number,
         timeUnit: number,
         changePwdInfoFlag: boolean,
-        userInfo: UserInfo,
         shortCutKeyCombs: ShortCutKeyComb[],
         curGroup: PwdGroup,
-        curPwdList: PwdInfo[],
         curPwdInfo: PwdInfo
     } {
         return {
             lockTime: 60,
             timeUnit: 1000,
             changePwdInfoFlag: false,
-            userInfo: {
-                darkSwitch: true,
-                autoStart: true,
-                pwd: defaultPwd,
-                firstLoginFlag: 1,
-                autoLock: {
-                    autoLockTime: 60,
-                    autoLockTimeUnit: 1000
-                },
-                curLoginStatus: 0,
-                pwdInfoId: 3,
-                pwdGroupId: 3,
-                shortcutKey: {
-                    openMainWindows: defaultOpenMainWinShortcutKey,
-                    copyUsername: defaultCopyUsernameShortcutKey,
-                    copyPwd: defaultCopyPwdShortcutKey,
-                },
-                saveFlag: false
-            },
-
             shortCutKeyCombs: [
                 {
                     keys: ['Ctrl', 'Alt', "E"],
@@ -150,7 +115,6 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
 
             // @ts-ignore
             curGroup: {},
-            curPwdList: [],
             // @ts-ignore
             curPwdInfo: {}
         }
