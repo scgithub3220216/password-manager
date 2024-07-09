@@ -4,11 +4,13 @@ import {defaultPwd, setPwdMsgTipsStr} from "../config/config.ts";
 import {InternalRuleItem} from "async-validator/dist-types/interface";
 import useConfig from "./useDBConfig.ts";
 import {firstLoginFlag, pwd} from "../../electron/db/sqlite/components/configConstants.ts";
+import useCrypto from "./useCrypto.ts";
 
 export default function () {
 
+    const {sha512HexHash, pwdAddSalt} = useCrypto()
     const pwdDialogVisible = ref(false)
-    const {getConfigValue,setConfigValue} = useConfig()
+    const {getConfigValue, setConfigValue} = useConfig()
     const ruleFormRef = ref<FormInstance>()
     const passForm = reactive({
         oldPassword: '',
@@ -22,7 +24,7 @@ export default function () {
         formEl.validate((valid) => {
             if (valid) {
                 console.log('submit!')
-                setConfigValue(passForm.confirmPassword, pwd)
+                setConfigValue(sha512HexHash(pwdAddSalt(passForm.confirmPassword)), pwd)
                 setConfigValue('0', firstLoginFlag)
 
                 pwdDialogVisible.value = false
@@ -75,11 +77,11 @@ export default function () {
             if (valid) {
                 console.log('submit!')
                 let oldValue = await getConfigValue(pwd);
-                if(oldValue !== passForm.oldPassword){
+                if (oldValue !== sha512HexHash(pwdAddSalt(passForm.oldPassword))) {
                     ElMessage.error('旧密码错误');
                     return;
                 }
-                setConfigValue(passForm.confirmPassword, pwd)
+                setConfigValue(sha512HexHash(pwdAddSalt(passForm.confirmPassword)), pwd)
                 ElMessage.success('密码修改成功');
                 resetForm(formEl)
             } else {
@@ -88,6 +90,7 @@ export default function () {
             }
         })
     }
+
 
     const resetForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return

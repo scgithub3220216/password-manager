@@ -1,8 +1,29 @@
-// @ts-ignore 
 import CryptoJS from 'crypto-js';
-import {aesIv, aesKey} from "../config/config.ts";
+import {aesIv, aesKey, salt} from "../config/config.ts";
 
 export default function () {
+    //  look 加密方法 参考 @link https://blog.csdn.net/lkp1603645756/article/details/137722801
+    /**
+     * md5HexHash
+     * @param input
+     */
+    function md5HexHash(input: string) {
+        // 计算 MD5
+        const hash = CryptoJS.MD5(input);
+        // 输出十六进制字符串
+        return hash.toString(CryptoJS.enc.Hex);
+    }
+    function pwdAddSalt(pwd: string) {
+        return pwd + salt
+    }
+
+
+    // 计算sha512-十六进制
+    function sha512HexHash(input: string) {
+        const sha512 = CryptoJS.SHA512(input);
+        return sha512.toString(CryptoJS.enc.Hex);
+    }
+
 
     //设置秘钥和秘钥偏移量
     const SECRET_KEY = CryptoJS.enc.Utf8.parse(aesKey);
@@ -40,5 +61,5 @@ export default function () {
         return decrypt.toString(CryptoJS.enc.Utf8);
     }
 
-    return {encryptData, decryptData};
+    return {encryptData, decryptData, md5HexHash, sha512HexHash,pwdAddSalt};
 }

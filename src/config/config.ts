@@ -4,6 +4,8 @@ export const emitterInsertGroupTopic = 'insertGroupTopic';
 export const emitterLockTopic = 'lockTopic';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
 
+export const salt = '`fn"iaj4~';
+
 
 // Aes 加密 Key
 export const aesKey = '0iq5<`fn"iaj4nD>';
