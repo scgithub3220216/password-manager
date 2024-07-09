@@ -126,11 +126,11 @@ div.msg-tips {
 
 
 .selected-dark-pwdList {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.20);
 }
 
 .hover-effect-dark-pwdList:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.20);
     cursor: pointer;
 }
 
