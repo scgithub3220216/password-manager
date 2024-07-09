@@ -1,26 +1,23 @@
-// @ts-ignore
-import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import useLoginAction from "./useLoginAction.ts";
-import useUserInfo from "./useBasicSet.ts";
+import useBasicSet from "./useBasicSet.ts";
 import {computed, onMounted, ref} from "vue";
 import Login from "../components/Login.vue";
 import Index from "../components/Index.vue";
 import {useDark} from "@vueuse/core";
 import {toggleDark} from "../styles/dark/dark.ts";
 import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
-import useConfig from "./useDBConfig.ts";
+import useDBConfig from "./useDBConfig.ts";
 
 export default function () {
 
 
     const {logout} = useLoginAction();
-    const {getLockTime} = useUserInfo()
-    const {getConfigValue} = useConfig()
+    const {getLockTime} = useBasicSet()
+    const {getConfigValue} = useDBConfig()
 
     onMounted(() => {
         console.log(`App onMounted `)
         setDarkTheme()
-
     });
 
     async function setDarkTheme() {

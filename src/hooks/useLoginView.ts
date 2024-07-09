@@ -1,7 +1,7 @@
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import usePwd from "./usePwd.ts";
 import useLoginAction from "./useLoginAction.ts";
-import useConfig from "./useDBConfig.ts";
+import useDBConfig from "./useDBConfig.ts";
 import {pwd} from "../../electron/db/sqlite/components/configConstants.ts";
 
 export default function () {
@@ -9,7 +9,7 @@ export default function () {
     const capsLockFlag = ref(false)
     const {pwdError} = usePwd()
     const {login} = useLoginAction()
-    const {getConfigValue} = useConfig()
+    const {getConfigValue} = useDBConfig()
     onMounted(() => {
         console.log('useCapsLock onMounted')
         window.addEventListener('keydown', handleCapsKeydown);
