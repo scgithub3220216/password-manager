@@ -13,6 +13,8 @@ import {useSearchResultStore} from "../../store/searchResult.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import useDBConfig from "../../hooks/useDBConfig.ts";
 import {darkSwitch} from "../../../electron/db/sqlite/components/configConstants.ts";
+import Moon from "../svg/Moon.vue";
+import Sunny from "../svg/Sunny.vue";
 
 const userInfoStore = useUserDataInfoStore();
 const {shortCutKeyCombs} = storeToRefs(userInfoStore)
@@ -90,7 +92,9 @@ function clickLock() {
             @click="clickDarkSwitch()"
             v-model="themeSwitch"
             class="ml-2"
-            style="--el-switch-on-color: rgba(0,0,0,0.19); --el-switch-off-color: rgb(220,209,209); margin-left: 10px"
+            :active-action-icon="Moon"
+            :inactive-action-icon="Sunny"
+            style="--el-switch-on-color: rgba(0,0,0,0.06); --el-switch-off-color: rgb(220,209,209); margin-left: 10px"
         />
       </el-tooltip>
     </div>
@@ -151,4 +155,5 @@ function clickLock() {
   cursor: pointer;
   transform: scale(1.1);
 }
+
 </style>
