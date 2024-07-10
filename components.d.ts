@@ -51,7 +51,6 @@ declare module 'vue' {
     SettingDialog: typeof import('./src/components/SettingDialog.vue')['default']
     ShortcutKeys: typeof import('./src/components/setview/ShortcutKeys.vue')['default']
     Sunny: typeof import('./src/components/svg/Sunny.vue')['default']
-    Sunny2: typeof import('./src/components/svg/Moon.vue')['default']
     Support: typeof import('./src/components/setview/Support.vue')['default']
     Top: typeof import('./src/components/indexview/Top.vue')['default']
     TopMenu: typeof import('./src/components/indexview/TopMenu.vue')['default']

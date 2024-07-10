@@ -24,7 +24,7 @@ function openDevTools() {
 
 <template>
 
-  <el-dropdown>
+  <el-dropdown trigger="click">
     <el-button class="btn">
       <el-icon>
         <Menu/>
