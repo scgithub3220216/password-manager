@@ -20,6 +20,7 @@ import {
     openMainWindows
 } from "../../electron/db/sqlite/components/configConstants.ts";
 import {useShortcutKeyStore} from "../store/shortcutKey.ts";
+import {ElMessage} from "element-plus";
 
 export default function () {
 
@@ -319,13 +320,19 @@ export default function () {
 
     function saveAll() {
         console.log("saveAll")
-        saveOpenMainShortcuts();
-        saveLogoutShortcuts();
-        saveCpUNameShortcuts();
-        saveCpPwdsShortcuts();
-        saveCpLinksShortcuts();
-        saveInsertGroupsShortcuts();
-        saveInsertPwdInfosShortcuts();
+        try {
+            saveOpenMainShortcuts();
+            saveLogoutShortcuts();
+            saveCpUNameShortcuts();
+            saveCpPwdsShortcuts();
+            saveCpLinksShortcuts();
+            saveInsertGroupsShortcuts();
+            saveInsertPwdInfosShortcuts();
+        } catch (e) {
+            console.log("saveAll error:", e);
+            ElMessage.error('快捷键设置失败');
+        }
+        ElMessage.success('快捷键设置成功');
     }
 
     function reset() {

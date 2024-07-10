@@ -6,6 +6,7 @@ import useLoginView from "../hooks/useLoginView.ts";
 import {IPC_FIRST_LOGIN} from "../../electron/constant.ts";
 import {firstLoginFlag} from "../../electron/db/sqlite/components/configConstants.ts";
 import useDBConfig from "../hooks/useDBConfig.ts";
+import Enter from "./svg/Enter.vue";
 
 const initSetPwdRef = ref()
 const pwdInputRef = ref()
@@ -55,7 +56,7 @@ async function firstLogin() {
         autofocus
     >
       <template #suffix>
-        <img src="/assets/enter.png" alt="enter" @click="handleEnter" class="enter">
+        <Enter @click="handleEnter" class="enter"/>
       </template>
     </el-input>
     <div :style="{ visibility: capsLockFlag ? 'visible' : 'hidden'}" style="font-size: 14px">
