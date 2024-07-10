@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
+import {Delete, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
@@ -180,12 +180,6 @@ async function deleteGroup() {
       <el-tooltip class="box-item" effect="dark" content="修改" placement="top">
         <span class="tool" @click="triggerGroupEdit()">
           <Edit style="width: 20px; height: 20px"/>
-        </span>
-      </el-tooltip>
-
-      <el-tooltip class="box-item" effect="dark" content="导出" placement="top">
-        <span class="tool" @click="exportExcel">
-          <Download style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
 
