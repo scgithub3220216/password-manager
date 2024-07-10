@@ -27,11 +27,11 @@ defineExpose({
       style="height: 400px"
   >
     <el-tabs tab-position="left" class="demo-tabs">
-      <el-tab-pane label="通用">
+      <el-tab-pane label="通&emsp;用&emsp;">
         <BasicSet/>
       </el-tab-pane>
 
-      <el-tab-pane label="快捷键">
+      <el-tab-pane label="快捷键&emsp;">
         <ShortcutKeys/>
       </el-tab-pane>
 
@@ -39,14 +39,16 @@ defineExpose({
         <UpdatePwd/>
       </el-tab-pane>
 
-      <el-tab-pane label="支持/捐赠">
-        <Support/>
-      </el-tab-pane>
-      <el-tab-pane label="导入">
+      <el-tab-pane label="导入文件">
         <Import/>
       </el-tab-pane>
-      <el-tab-pane label="数据同步">
+
+      <el-tab-pane label="多端数据同步">
         <DataSync/>
+      </el-tab-pane>
+
+      <el-tab-pane label="支持/捐赠">
+        <Support/>
       </el-tab-pane>
     </el-tabs>
   </el-dialog>
