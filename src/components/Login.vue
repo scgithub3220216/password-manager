@@ -51,12 +51,18 @@ async function firstLogin() {
         v-model="password"
         type="password"
         placeholder="开门密码"
-        show-password
         @keyup.enter="handleEnter"
         autofocus
     >
       <template #suffix>
-        <Enter @click="handleEnter" class="enter"/>
+        <el-tooltip
+            class="box-item"
+            effect="dark"
+            content="登录"
+            placement="top"
+        >
+          <Enter @click="handleEnter" class="enter"/>
+        </el-tooltip>
       </template>
     </el-input>
     <div :style="{ visibility: capsLockFlag ? 'visible' : 'hidden'}" style="font-size: 14px">
