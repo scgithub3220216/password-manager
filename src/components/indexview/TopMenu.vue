@@ -8,10 +8,6 @@ import Import from "../setview/Import.vue";
 const {exportExcel} = useExcel();
 const importRef = ref();
 
-function clickImport() {
-  console.log('clickImport')
-}
-
 </script>
 
 <template>
@@ -29,7 +25,7 @@ function clickImport() {
         <el-dropdown-item>帮助</el-dropdown-item>
         <el-dropdown-item>关于</el-dropdown-item>
         <el-dropdown-item>支持/捐赠</el-dropdown-item>
-        <el-dropdown-item>开发</el-dropdown-item>
+        <el-dropdown-item>开发调试</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
