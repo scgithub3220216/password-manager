@@ -50,6 +50,7 @@ declare module 'vue' {
     Sunny2: typeof import('./src/components/svg/Moon.vue')['default']
     Support: typeof import('./src/components/setview/Support.vue')['default']
     Top: typeof import('./src/components/indexview/Top.vue')['default']
+    TopMenu: typeof import('./src/components/indexview/TopMenu.vue')['default']
     UpdatePwd: typeof import('./src/components/setview/UpdatePwd.vue')['default']
     WinRestore: typeof import('./src/components/svg/WinRestore.vue')['default']
   }

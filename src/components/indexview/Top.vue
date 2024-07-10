@@ -2,6 +2,7 @@
 import {Close, FullScreen, Minus} from "@element-plus/icons-vue";
 import {ref} from 'vue'
 import WinRestore from "../svg/WinRestore.vue";
+import TopMenu from "./TopMenu.vue";
 
 function minimize() {
   window.ipcRenderer.invoke('minimize');
@@ -27,6 +28,7 @@ const isMaximized = ref(false)
       <el-text class="mx-1 title">密码管理器</el-text>
     </div>
     <div class="right">
+      <TopMenu/>
       <!--最小化-->
       <el-button class="btn" @click="minimize">
         <el-icon>
@@ -36,7 +38,6 @@ const isMaximized = ref(false)
 
       <!--最大化/还原-->
       <el-button class="btn" @click="maximize">
-
         <el-icon v-if="isMaximized">
           <WinRestore/>
         </el-icon>
