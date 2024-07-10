@@ -36,5 +36,6 @@ export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-k
 export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-key-data';
 
 export const IPC_FIRST_LOGIN = 'first-login';
+export const DEV_TOOLS = 'dev-tools';
 
 

@@ -45,3 +45,9 @@ export const setAutoStart = (autoStart: boolean) => {
         args: [], // 可选，启动时传递给应用的命令行参数
     });
 }
+
+export const openDevTools = (win: BrowserWindow) => {
+    console.log('openDevTools')
+    // 调试窗口
+    win.webContents.openDevTools()
+}

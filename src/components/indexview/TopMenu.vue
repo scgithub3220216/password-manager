@@ -1,12 +1,17 @@
 <script setup lang="ts">
 
-import {Menu} from '@element-plus/icons-vue'
+import {Download, Menu, Tools, Upload} from '@element-plus/icons-vue'
 import useExcel from "../../hooks/useExcel.ts";
 import {ref} from "vue";
 import Import from "../setview/Import.vue";
+import {DEV_TOOLS} from "../../../electron/constant.ts";
 
 const {exportExcel} = useExcel();
 const importRef = ref();
+
+function openDevTools() {
+  window.ipcRenderer.invoke(DEV_TOOLS);
+}
 
 </script>
 
@@ -19,13 +24,34 @@ const importRef = ref();
       </el-icon>
     </el-button>
     <template #dropdown>
+
       <el-dropdown-menu>
-        <el-dropdown-item @click="importRef.importDialogVisible=true">导入</el-dropdown-item>
-        <el-dropdown-item @click="exportExcel">导出</el-dropdown-item>
         <el-dropdown-item>帮助</el-dropdown-item>
+
+        <el-dropdown-item @click="importRef.importDialogVisible=true">
+          <el-icon class="el-icon--left">
+            <Upload/>
+          </el-icon>
+          导入数据
+        </el-dropdown-item>
+
+        <el-dropdown-item @click="exportExcel">
+          <el-icon class="el-icon--left">
+            <Download/>
+          </el-icon>
+          导出数据
+        </el-dropdown-item>
+
         <el-dropdown-item>关于</el-dropdown-item>
+
         <el-dropdown-item>支持/捐赠</el-dropdown-item>
-        <el-dropdown-item>开发调试</el-dropdown-item>
+
+        <el-dropdown-item @click="openDevTools">
+          <el-icon>
+            <Tools/>
+          </el-icon>
+          开发调试
+        </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

@@ -2,9 +2,9 @@ import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import {AUTO_HIDE_MENU_BAR, FRAME, IPC_FIRST_LOGIN, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
+import {AUTO_HIDE_MENU_BAR, DEV_TOOLS, FRAME, IPC_FIRST_LOGIN, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
-import {registerGlobalShortcut, setAutoStart} from "./common.ts";
+import {openDevTools, registerGlobalShortcut, setAutoStart} from "./common.ts";
 import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 import {openMainWindows} from "./db/sqlite/components/configConstants.ts";
@@ -57,8 +57,7 @@ function createWindow() {
     })
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
-    // 调试窗口
-    win.webContents.openDevTools()
+
 
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
@@ -136,6 +135,12 @@ ipcMain.handle('auto-start', (_event, arg) => {
 ipcMain.handle('open-browser', (_event, arg) => {
     console.log(`open-browser:${arg} `);
     shell.openExternal(arg);
+});
+
+ipcMain.handle(DEV_TOOLS, (_event, arg) => {
+    console.log(`DEV_TOOLS :${arg} `);
+    if(!win) return;
+    openDevTools(win);
 });
 
 
