@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="content">
+    <p>使用支付宝/微信支付捐赠后请留言或者通过邮件提供您的名字/昵称和网站，格式为：</p>
+    <p>名字/昵称 [&lt;网站>][：留言]</p>
+
+    <p> 网站与留言为可选部分，以下是一个例子：</p>
+    <p style="font-style:italic"> star-sc &lt;gitee.com/star-sc>：加油！</p>
+
+    <p> 通过邮件发送时，请还提供以下信息：</p>
+    <div class="main-info"> 捐赠金额：&lt;金额></div>
+    <div class="main-info"> 支付平台：&lt;支付宝/微信支付></div>
+    <div class="main-info"> 账单号（后5位）：&lt;账单号></div>
+    <p></p>
+
+    <div> 邮箱地址：17786925624@163.com (点击发送邮件)</div>
+    <div> 您提供的名字、网站和捐赠总额将会被添加到 <a href="#" onclick="function openBr() {
+        window.ipcRenderer.invoke('open-browser', 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》');
+    }
+    openBr()"> 捐赠者</a>列表中。</div>
+    <div> 感谢您的慷慨捐赠！</div>
+</div>
+
+</body>
+</html>
+
+<style>
+    .main-info {
+        font-style: italic;
+        font-weight: bold;
+    }
+</style>
+

@@ -24,11 +24,54 @@ export const defaultCopyLinkShortcutKey = 'Ctrl + L';
 export const defaultInsertGroupShortcutKey = 'Ctrl + G';
 export const defaultInsertPwdInfoShortcutKey = 'Ctrl + N';
 
-export const supportLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《详细收支清单》';
+export const supportLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》';
 
 export const helpLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/nwnlnh2yg81h1n0q?singleDoc# 《帮助手册-Pc端》';
 
+export const giteeCodeLink = 'https://gitee.com/star-sc/password-manager';
+export const giteeIssueLink = 'https://gitee.com/star-sc/password-manager/issues';
 
+export const supportDesc = '<!DOCTYPE html>\n' +
+    '<html lang="en">\n' +
+    '<head>\n' +
+    '    <meta charset="UTF-8">\n' +
+    '    <title>Title</title>\n' +
+    '</head>\n' +
+    '<script>\n' +
+    '    \n' +
+    '</script>\n' +
+    '<body>\n' +
+    '<div class="content">\n' +
+    '    <p>使用支付宝/微信支付捐赠后请留言或者通过邮件提供您的名字/昵称和网站，格式为：</p>\n' +
+    '    <p>名字/昵称 [&lt;网站>][：留言]</p>\n' +
+    '\n' +
+    '    <p> 网站与留言为可选部分，以下是一个例子：</p>\n' +
+    '    <p style="font-style:italic"> star-sc &lt;gitee.com/star-sc>：加油！</p>\n' +
+    '\n' +
+    '    <p> 通过邮件发送时，请还提供以下信息：</p>\n' +
+    '    <div class="main-info"> 捐赠金额：&lt;金额></div>\n' +
+    '    <div class="main-info"> 支付平台：&lt;支付宝/微信支付></div>\n' +
+    '    <div class="main-info"> 账单号（后5位）：&lt;账单号></div>\n' +
+    '    <p></p>\n' +
+    '\n' +
+    '    <div> 邮箱地址：17786925624@163.com </div>\n' +
+    '    <div> 您提供的名字、网站和捐赠总额将会被添加到 <a href="#" onclick="function openBr() {\n' +
+    '        window.ipcRenderer.invoke(\'open-browser\', \'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》\');\n' +
+    '    }\n' +
+    '    openBr()"> 捐赠者</a>列表中。</div>\n' +
+    '    <div> 感谢您的慷慨捐赠！</div>\n' +
+    '</div>\n' +
+    '\n' +
+    '</body>\n' +
+    '</html>\n' +
+    '\n' +
+    '<style>\n' +
+    '    .main-info {\n' +
+    '        font-style: italic;\n' +
+    '        font-weight: bold;\n' +
+    '    }\n' +
+    '</style>\n' +
+    '\n';
 export const setPwdMsgTipsStr = '<!DOCTYPE html>\n' +
     '<html lang="en">\n' +
     '<head>\n' +
