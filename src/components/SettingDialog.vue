@@ -4,6 +4,8 @@ import Support from "./setview/Support.vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
 import ShortcutKeys from "./setview/ShortcutKeys.vue";
+import Import from "./setview/Import.vue";
+import DataSync from "./setview/DataSync.vue";
 
 const settingDialogVisible = ref(false);
 
@@ -19,26 +21,32 @@ defineExpose({
 
 <template>
   <el-dialog
-    v-model="settingDialogVisible"
-    title=""
-    width="500"
-    style="height: 400px"
+      v-model="settingDialogVisible"
+      title=""
+      width="500"
+      style="height: 400px"
   >
-    <el-tabs type="card" class="demo-tabs">
+    <el-tabs tab-position="left" class="demo-tabs">
       <el-tab-pane label="通用">
-        <BasicSet />
+        <BasicSet/>
       </el-tab-pane>
 
       <el-tab-pane label="快捷键">
-        <ShortcutKeys />
+        <ShortcutKeys/>
       </el-tab-pane>
 
       <el-tab-pane label="修改密码">
-        <UpdatePwd />
+        <UpdatePwd/>
       </el-tab-pane>
 
       <el-tab-pane label="支持/捐赠">
-        <Support />
+        <Support/>
+      </el-tab-pane>
+      <el-tab-pane label="导入">
+        <Import/>
+      </el-tab-pane>
+      <el-tab-pane label="数据同步">
+        <DataSync/>
       </el-tab-pane>
     </el-tabs>
   </el-dialog>

@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BasicSet: typeof import('./src/components/setview/BasicSet.vue')['default']
+    DataSync: typeof import('./src/components/setview/DataSync.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
@@ -33,6 +34,7 @@ declare module 'vue' {
     Enter: typeof import('./src/components/svg/Enter.vue')['default']
     Group: typeof import('./src/components/indexview/Group.vue')['default']
     Header: typeof import('./src/components/indexview/Header.vue')['default']
+    Import: typeof import('./src/components/setview/Import.vue')['default']
     Index: typeof import('./src/components/Index.vue')['default']
     InitSetPwd: typeof import('./src/components/setview/InitSetPwd.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']

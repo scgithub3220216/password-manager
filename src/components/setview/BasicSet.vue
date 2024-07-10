@@ -17,9 +17,9 @@ const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeC
       <el-input-number
           v-model="lockTime"
           :min="1"
-          :max="999"
+          :max="60"
           @change="lockTimeChange"
-          style="width: 130px"
+          style="width: 100px"
       />
       <el-select
           v-model="timeUnit"
