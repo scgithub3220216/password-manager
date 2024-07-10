@@ -9,6 +9,12 @@ export const insertPwdInfo = async (...params: any[]) => {
                                 VALUES (?, ?);`, ...params);
 }
 
+export const insertPwdInfoByImport = async (...params: any[]) => {
+    console.log(`insertPwdInfo params:${params}`)
+    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title, title, username, password, link, remark)
+                                VALUES (?, ?, ?, ?, ?, ?, ?);`, ...params);
+}
+
 export const delPwdInfo = async (id: number) => {
     console.log(`delPwdInfo id:${id}`)
     return await baseUpdateSql(`DELETE

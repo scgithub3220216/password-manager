@@ -1,5 +1,6 @@
 import {
     IPC_SQLITE_DELETE_GROUP_DATA,
+    IPC_SQLITE_GET_ID_GROUP_DATA,
     IPC_SQLITE_INSERT_GROUP_DATA,
     IPC_SQLITE_SELECT_GROUP_DATA,
     IPC_SQLITE_UPDATE_GROUP_DATA
@@ -29,6 +30,12 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_SELECT_GROUP_DATA);
     }
 
+    async function getIdByTitle(title: string): Promise<number> {
+        console.log(`useDBGroup.ts getIdByTitle`)
+        let group = await window.ipcRenderer.invoke(IPC_SQLITE_GET_ID_GROUP_DATA, title);
+        return group?.id;
+    }
 
-    return {insertGroup, delGroup, updateGroup, listGroup};
+
+    return {insertGroup, delGroup, updateGroup, listGroup, getIdByTitle};
 }

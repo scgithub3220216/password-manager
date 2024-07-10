@@ -31,6 +31,7 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     Enter: typeof import('./src/components/svg/Enter.vue')['default']
     Group: typeof import('./src/components/indexview/Group.vue')['default']
     Header: typeof import('./src/components/indexview/Header.vue')['default']

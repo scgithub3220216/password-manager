@@ -1,4 +1,4 @@
-import {baseInsertSql, baseListSql, baseUpdateSql} from "../components/baseSql.ts";
+import {baseGetSql, baseInsertSql, baseListSql, baseUpdateSql} from "../components/baseSql.ts";
 
 /**
  * 分组
@@ -29,4 +29,11 @@ export const listGroup = async () => {
     console.log(`listGroup`)
     return await baseListSql(`SELECT *
                               FROM "group";`);
+}
+
+export const getIdByTitle = async (title: string) => {
+    console.log(`listGroup`)
+    return await baseGetSql(`SELECT id
+                             FROM "group"
+                             WHERE title = ?;`, title);
 }

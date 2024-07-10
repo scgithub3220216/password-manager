@@ -5,6 +5,8 @@ import {ipcMain} from 'electron';
 import {
     IPC_SQLITE_DELETE_GROUP_DATA,
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
+    IPC_SQLITE_GET_ID_GROUP_DATA,
+    IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_GROUP_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_CONFIG_DATA,
@@ -20,8 +22,17 @@ import {
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
-import {delGroup, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
-import {countPwdInfo, delPwdInfo, getPwdInfo, insertPwdInfo, listPwdInfo, listPwdInfoBySearch, updatePwdInfo} from "./mapper/pwdInfo.ts";
+import {delGroup, getIdByTitle, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
+import {
+    countPwdInfo,
+    delPwdInfo,
+    getPwdInfo,
+    insertPwdInfo,
+    insertPwdInfoByImport,
+    listPwdInfo,
+    listPwdInfoBySearch,
+    updatePwdInfo
+} from "./mapper/pwdInfo.ts";
 import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
 
 
@@ -71,11 +82,21 @@ export const SQLiteIPC = () => {
         return await listGroup();
     });
 
+    ipcMain.handle(IPC_SQLITE_GET_ID_GROUP_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_GET_ID_GROUP_DATA  args : ${args}`);
+        return await getIdByTitle(args);
+    });
+
     // pwdInfo
     // ipc sqlite insert data
     ipcMain.handle(IPC_SQLITE_INSERT_PWD_INFO_DATA, async (_event, ...args) => {
         console.log(`IPC_SQLITE_INSERT_PWD_INFO_DATA  args : ${args}`);
         return await insertPwdInfo(...args);
+    });
+    // ipc sqlite insert IMPORT data
+    ipcMain.handle(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA  args : ${args}`);
+        return await insertPwdInfoByImport(...args);
     });
 
     // ipc sqlite delete data

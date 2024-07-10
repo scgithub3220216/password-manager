@@ -1,10 +1,13 @@
 import * as XLSX from 'xlsx';
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import {PwdInfo} from "../components/type.ts";
+import {ElMessage, UploadUserFile} from "element-plus";
+import useDBGroup from "./useDBGroup.ts";
 
 export default function () {
 
-    const {listPwdInfo} = useDBPwdInfo()
+    const {insertPwdInfoByImport, listPwdInfo} = useDBPwdInfo()
+    const {insertGroup, getIdByTitle} = useDBGroup();
     const exportExcel = async () => {
         console.log('exportExcel')
         // 创建工作表的数据
@@ -26,20 +29,44 @@ export default function () {
         XLSX.writeFile(workbook, '密码管理器数据.xlsx');
     };
 
-    const importExcel = (event: any) => {
-        const file = event.target.files[0];
-        if (!file) return;
+    const importExcel = (file: UploadUserFile) => {
+        console.log('importExcel:', file.raw)
+        if (!file || !file.raw) return;
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             const data = e.target?.result;
             const workbook = XLSX.read(data, {type: 'binary'});
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
-            const result = XLSX.utils.sheet_to_json(sheet);
-            console.log(result); // 打印导入的数据
+            const jsonArr = XLSX.utils.sheet_to_json(sheet);
+            console.log(jsonArr); // 打印导入的数据
+            for (const item of jsonArr) {
+                let pwdInfo: PwdInfo = {
+                    group_title: item['分组'],
+                    title: item['标题'],
+                    username: item['用户名'],
+                    password: item['密码'],
+                    link: item['链接'],
+                    remark: item['说明'],
+                }
+                // 根据 group_title 查询分组
+                let groupId = await getIdByTitle(pwdInfo.group_title);
+                if (!groupId) {
+                    console.log('分组不存在:', pwdInfo.group_title)
+                    // 如何没有就新建分组
+                    groupId = await insertGroup(pwdInfo.group_title, 0);
+                    console.log('创建分组成功: 分组id:', groupId)
+                }
+                pwdInfo.group_id = groupId;
+                console.log('pwdInfo:', pwdInfo)
+                // 插入
+                insertPwdInfoByImport(pwdInfo);
+            }
+            // 导入成功
+            ElMessage.success('导入成功');
         };
-        reader.readAsBinaryString(file);
+        reader.readAsBinaryString(file.raw);
     };
 
 

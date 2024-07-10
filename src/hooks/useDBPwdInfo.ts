@@ -1,5 +1,6 @@
 import {
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
+    IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
@@ -15,6 +16,11 @@ export default function () {
     async function insertPwdInfo(groupId: number, groupTitle: string): Promise<number> {
         console.log(`useDBPwdInfo.ts insertPwdInfo`)
         return await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_PWD_INFO_DATA, groupId, groupTitle);
+    }
+
+    async function insertPwdInfoByImport(pwdInfo: PwdInfo): Promise<number> {
+        console.log(`useDBPwdInfo.ts insertPwdInfoByImport`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, encryptData(pwdInfo.password), pwdInfo.link, pwdInfo.remark);
     }
 
     async function delPwdInfo(id: number) {
@@ -50,5 +56,5 @@ export default function () {
     }
 
 
-    return {insertPwdInfo, delPwdInfo, updatePwdInfo, listPwdInfo, listPwdInfoBySearch, countPwdInfo};
+    return {insertPwdInfo, insertPwdInfoByImport, delPwdInfo, updatePwdInfo, listPwdInfo, listPwdInfoBySearch, countPwdInfo};
 }
