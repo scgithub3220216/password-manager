@@ -38,10 +38,17 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         setCurPwdInfoPwd(pwd: string) {
             this.curPwdInfo.password = pwd;
         },
+        login() {
+            this.loginFlag = true;
+        },
+        logout() {
+            this.loginFlag = false;
+        },
 
     },
     // 状态
     state(): {
+        loginFlag: boolean,
         darkSwitch: boolean,
         lockTime: number,
         timeUnit: number,
@@ -52,6 +59,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         curPwdInfo: PwdInfo
     } {
         return {
+            loginFlag: false,
             darkSwitch: true,
             lockTime: 60,
             timeUnit: 1000,

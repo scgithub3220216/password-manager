@@ -3,6 +3,10 @@ import {Close, FullScreen, Minus} from "@element-plus/icons-vue";
 import {ref} from 'vue'
 import WinRestore from "../svg/WinRestore.vue";
 import TopMenu from "./TopMenu.vue";
+import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
+import {storeToRefs} from "pinia";
+
+const {loginFlag} = storeToRefs(useUserDataInfoStore())
 
 function minimize() {
   window.ipcRenderer.invoke('minimize');
@@ -28,7 +32,7 @@ const isMaximized = ref(false)
       <el-text class="mx-1 title">密码管理器</el-text>
     </div>
     <div class="right">
-      <TopMenu/>
+      <TopMenu v-if="loginFlag"/>
       <!--最小化-->
       <el-button class="btn" @click="minimize">
         <el-icon>
