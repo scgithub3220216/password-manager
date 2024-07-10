@@ -4,3 +4,6 @@ html.dark {
     background-color: #282c34;
     color: rgba(255, 255, 255, 0.87);
 }
+html.dark a{
+    color: #409eff;
+}
