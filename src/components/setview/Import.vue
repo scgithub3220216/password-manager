@@ -38,7 +38,7 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 </script>
 
 <template>
-  <el-dialog v-model="importDialogVisible" title="Shipping address" width="500">
+  <el-dialog v-model="importDialogVisible" title="" width="500" >
     <el-upload
         ref="upload"
         v-model:file-list="fileList"
