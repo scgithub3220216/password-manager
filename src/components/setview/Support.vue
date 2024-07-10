@@ -5,14 +5,10 @@ import {giteeCodeLink, giteeIssueLink, supportDesc} from "../../config/config.ts
 
 const {openBrowser} = useBrowser();
 
+const officialAccountDialogVisible = ref(false);
 const supportDialogVisible = ref(false);
 
 defineExpose({supportDialogVisible})
-
-function openVxImg() {
-
-}
-
 
 </script>
 
@@ -25,7 +21,7 @@ function openVxImg() {
         <li><a href="#" @click="openBrowser(giteeIssueLink)">报告错误</a></li>
         <li><a href="#" @click="openBrowser(giteeIssueLink)">告诉我你的想法</a></li>
         <li><a href="#" @click="openBrowser(giteeCodeLink)">提交拉取请求</a></li>
-        <li><a href="#" @click="openVxImg">关注公众号获取最新咨询</a></li>
+        <li><a href="#" @click="officialAccountDialogVisible=true">关注微信公众号获取最新咨询</a></li>
         <li>将此软件分享给好友</li>
         <li>如果您喜欢这个插件,请考虑给我捐赠,这将极大地激励我继续开发此项目:</li>
 
@@ -49,11 +45,20 @@ function openVxImg() {
         >
           <div v-html="supportDesc"></div>
           <template #reference>
-            <span>捐赠说明</span>
+            <a>捐赠说明</a>
           </template>
         </el-popover>
       </div>
     </div>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" >感谢您的支持!</el-button>
+      </div>
+    </template>
+  </el-dialog>
+  <el-dialog v-model="officialAccountDialogVisible" title="" width="400">
+    <span>关注下方微信公众号获取最新咨询</span>
+    <img src="/assets/officialAccount.jpg" alt="officialAccount">
   </el-dialog>
 </template>
 
@@ -71,6 +76,9 @@ function openVxImg() {
 .img-left {
   margin-right: 20px;
 }
+a{
+  font-size: 14px;
+}
 
 .img-left, .img-right {
   display: flex;
@@ -82,11 +90,8 @@ function openVxImg() {
   margin-top: 30px;
 }
 
-.bottom span {
-  color: rgb(139, 185, 100);
+.bottom a {
   cursor: pointer;
-  text-decoration: underline;
   font-weight: bold;
-  font-size: 15px;
 }
 </style>
