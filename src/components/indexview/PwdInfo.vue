@@ -7,16 +7,19 @@ import RandomPwdGenerate from "./RandomPwdGenerate.vue";
 import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Switch, UserFilled, View,} from "@element-plus/icons-vue";
 import {storeToRefs} from "pinia";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
+import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
-const {openBrowser} = useBrowser();
-const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
-const randomPwdGenerateRef = ref();
-
-defineExpose({keydown, pwdInfoTitleInput});
 const {curPwdInfo} = storeToRefs(userDataInfoStore)
+
+const {openBrowser} = useBrowser();
+const shortcutKeyStore = useShortcutKeyStore();
+const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
+
+const randomPwdGenerateRef = ref();
+defineExpose({keydown, pwdInfoTitleInput});
 const {updatePwdInfo} = useDBPwdInfo();
 
 function pwdInfoChange() {
@@ -154,7 +157,7 @@ function clickPwdImg() {
         <el-tooltip
             class="box-item"
             effect="dark"
-            :content="'复制链接,快捷键'+shortCutKeyCombs[3].desc"
+            :content="'复制链接,快捷键'+shortCutKeyCombs[4].desc"
             placement="top"
         >
           <el-icon @click="copyValue(curPwdInfo.link)" class="img-item">

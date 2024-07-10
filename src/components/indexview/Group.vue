@@ -11,16 +11,18 @@ import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
+import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const groupInputRef = ref();
-const {shortCutKeyCombs} = storeToRefs(userDataInfoStore)
+const {curGroup, darkSwitch} = storeToRefs(userDataInfoStore)
+const shortcutKeyStore = useShortcutKeyStore();
+const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 
+const groupInputRef = ref();
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
 const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
-const {curGroup, darkSwitch} = storeToRefs(userDataInfoStore)
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)

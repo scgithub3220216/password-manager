@@ -9,9 +9,12 @@ import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
+import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {darkSwitch, curGroup, changePwdInfoFlag, shortCutKeyCombs, curPwdInfo} = storeToRefs(userDataInfoStore)
+const {darkSwitch, curGroup, changePwdInfoFlag, curPwdInfo} = storeToRefs(userDataInfoStore)
+const shortcutKeyStore = useShortcutKeyStore();
+const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)

@@ -15,9 +15,12 @@ import useDBConfig from "../../hooks/useDBConfig.ts";
 import {darkSwitch} from "../../../electron/db/sqlite/components/configConstants.ts";
 import Moon from "../svg/Moon.vue";
 import Sunny from "../svg/Sunny.vue";
+import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const userInfoStore = useUserDataInfoStore();
-const {shortCutKeyCombs} = storeToRefs(userInfoStore)
+const shortcutKeyStore = useShortcutKeyStore();
+const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
+
 const searchResultStore = useSearchResultStore();
 const themeSwitch = ref(false)
 const {logout} = useLoginAction();
