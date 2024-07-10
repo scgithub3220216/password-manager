@@ -44,7 +44,7 @@ const {
 
 <template>
   <div>
-    <el-scrollbar style="width: 340px;height: 350px">
+    <el-scrollbar height="250px">
       <div class="setting-item">
         <span style="display: block">打开主面板:</span>
         <el-input
@@ -164,12 +164,11 @@ const {
 </template>
 
 <style scoped>
-.setting-item {
+.setting-item{
   margin-top: 10px;
 }
-
 .bttn {
-  margin: 20px 20px 20px 0;
+  margin: 20px 20px 20px 0 ;
   display: flex;
   justify-content: flex-end;
 }
@@ -179,7 +178,7 @@ const {
 }
 
 .ipt {
-  width: 100%;
+  width: 400px;
   margin-top: 5px;
 }
 </style>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import Support from "./setview/Support.vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
 import ShortcutKeys from "./setview/ShortcutKeys.vue";
@@ -22,15 +21,15 @@ defineExpose({
   <el-dialog
       v-model="settingDialogVisible"
       title=""
-      width="500"
+      width="450"
       style="height: 400px"
   >
-    <el-tabs tab-position="left" class="demo-tabs">
-      <el-tab-pane label="通&emsp;用&emsp;">
+    <el-tabs type="card" class="demo-tabs">
+      <el-tab-pane label="通用">
         <BasicSet/>
       </el-tab-pane>
 
-      <el-tab-pane label="快捷键&emsp;">
+      <el-tab-pane label="快捷键">
         <ShortcutKeys/>
       </el-tab-pane>
 
@@ -42,9 +41,6 @@ defineExpose({
         <DataSync/>
       </el-tab-pane>
 
-      <el-tab-pane label="支持/捐赠">
-        <Support/>
-      </el-tab-pane>
     </el-tabs>
   </el-dialog>
 </template>
