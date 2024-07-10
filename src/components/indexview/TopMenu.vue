@@ -6,6 +6,10 @@ import {ref} from "vue";
 import Import from "../setview/Import.vue";
 import {DEV_TOOLS} from "../../../electron/constant.ts";
 import Support from "../setview/Support.vue";
+import useBrowser from "../../hooks/useBrowser.ts";
+import {helpLink} from "../../config/config.ts";
+
+const {openBrowser} = useBrowser();
 
 const {exportExcel} = useExcel();
 const importRef = ref();
@@ -26,10 +30,11 @@ function openDevTools() {
         <Menu/>
       </el-icon>
     </el-button>
-    <template #dropdown>
 
+    <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>
+
+        <el-dropdown-item @click="openBrowser(helpLink)">
           <el-icon>
             <Help/>
           </el-icon>
