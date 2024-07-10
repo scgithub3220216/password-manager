@@ -32,7 +32,7 @@ const isMaximized = ref(false)
       <el-text class="mx-1 title">密码管理器</el-text>
     </div>
     <div class="right">
-      <TopMenu v-if="loginFlag"/>
+      <TopMenu v-if="loginFlag" />
       <!--最小化-->
       <el-button class="btn" @click="minimize">
         <el-icon>

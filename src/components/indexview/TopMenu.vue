@@ -1,17 +1,20 @@
 <script setup lang="ts">
 
-import {Download, Menu, Tools, Upload} from '@element-plus/icons-vue'
+import {CoffeeCup, Document, Download, Help, Menu, Tools, Upload} from '@element-plus/icons-vue'
 import useExcel from "../../hooks/useExcel.ts";
 import {ref} from "vue";
 import Import from "../setview/Import.vue";
 import {DEV_TOOLS} from "../../../electron/constant.ts";
+import Support from "../setview/Support.vue";
 
 const {exportExcel} = useExcel();
 const importRef = ref();
+const supportRrf = ref();
 
 function openDevTools() {
   window.ipcRenderer.invoke(DEV_TOOLS);
 }
+
 
 </script>
 
@@ -26,7 +29,12 @@ function openDevTools() {
     <template #dropdown>
 
       <el-dropdown-menu>
-        <el-dropdown-item>帮助</el-dropdown-item>
+        <el-dropdown-item>
+          <el-icon>
+            <Help/>
+          </el-icon>
+          帮助
+        </el-dropdown-item>
 
         <el-dropdown-item @click="importRef.importDialogVisible=true">
           <el-icon class="el-icon--left">
@@ -42,9 +50,19 @@ function openDevTools() {
           导出数据
         </el-dropdown-item>
 
-        <el-dropdown-item>关于</el-dropdown-item>
+        <el-dropdown-item @click="supportRrf.supportDialogVisible=true">
+          <el-icon>
+            <CoffeeCup/>
+          </el-icon>
+          支持/捐赠
+        </el-dropdown-item>
 
-        <el-dropdown-item>支持/捐赠</el-dropdown-item>
+        <el-dropdown-item>
+          <el-icon>
+            <Document/>
+          </el-icon>
+          关于
+        </el-dropdown-item>
 
         <el-dropdown-item @click="openDevTools">
           <el-icon>
@@ -57,12 +75,12 @@ function openDevTools() {
   </el-dropdown>
 
   <Import ref="importRef"/>
-
+  <Support ref="supportRrf"/>
 </template>
 
 <style scoped>
 .btn {
-  height: 100%;
+  height: calc(5vh - 3px);
   margin: 0;
   border: none;
   background: none;
