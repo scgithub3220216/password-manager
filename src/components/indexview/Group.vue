@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Delete, Download, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
@@ -14,7 +14,7 @@ import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
-const {curGroup, darkSwitch} = storeToRefs(userDataInfoStore)
+const {curGroup, darkSwitch, importFlag} = storeToRefs(userDataInfoStore)
 const shortcutKeyStore = useShortcutKeyStore();
 const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 
@@ -45,6 +45,16 @@ emitter.on(emitterInsertGroupTopic, (value) => {
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertGroupTopic)
+})
+
+watch((importFlag), async (newVal) => {
+  if (!newVal) return;
+  groupList.value = await listGroup();
+  if (!(groupList.value && groupList.value.length > 0)) {
+    return;
+  }
+  userDataInfoStore.setCurGroup(groupList.value[0]);
+  userDataInfoStore.importFlag =false;
 })
 
 async function initData() {
@@ -116,7 +126,6 @@ async function deleteGroup() {
   }
 
   delGroup(curGroup.value.id).then(async () => {
-    ElMessage.success("删除成功");
     groupList.value = await listGroup();
     cssSwitchStore.setGroupIndex(-1)
     userDataInfoStore.setCurGroup(null);

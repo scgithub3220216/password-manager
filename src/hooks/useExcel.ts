@@ -3,11 +3,13 @@ import useDBPwdInfo from "./useDBPwdInfo.ts";
 import {PwdInfo} from "../components/type.ts";
 import {ElMessage, UploadUserFile} from "element-plus";
 import useDBGroup from "./useDBGroup.ts";
+import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 
 export default function () {
 
     const {insertPwdInfoByImport, listPwdInfo} = useDBPwdInfo()
     const {insertGroup, getIdByTitle} = useDBGroup();
+    const userDataInfoStore = useUserDataInfoStore();
     const exportExcel = async () => {
         console.log('exportExcel')
         // 创建工作表的数据
@@ -65,6 +67,7 @@ export default function () {
             }
             // 导入成功
             ElMessage.success('导入成功');
+            userDataInfoStore.importFlag = true;
         };
         reader.readAsBinaryString(file.raw);
     };

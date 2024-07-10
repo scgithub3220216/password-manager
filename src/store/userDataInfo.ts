@@ -46,6 +46,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
         lockTime: number,
         timeUnit: number,
         changePwdInfoFlag: boolean,
+        importFlag: boolean,
         shortCutKeyCombs: ShortCutKeyComb[],
         curGroup: PwdGroup,
         curPwdInfo: PwdInfo
@@ -55,6 +56,7 @@ export const useUserDataInfoStore = defineStore('userDataInfo', {
             lockTime: 60,
             timeUnit: 1000,
             changePwdInfoFlag: false,
+            importFlag: false,
             // @ts-ignore
             curGroup: {},
             // @ts-ignore
