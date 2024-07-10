@@ -4,7 +4,6 @@ import Support from "./setview/Support.vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
 import ShortcutKeys from "./setview/ShortcutKeys.vue";
-import Import from "./setview/Import.vue";
 import DataSync from "./setview/DataSync.vue";
 
 const settingDialogVisible = ref(false);
@@ -37,10 +36,6 @@ defineExpose({
 
       <el-tab-pane label="修改密码">
         <UpdatePwd/>
-      </el-tab-pane>
-
-      <el-tab-pane label="导入文件">
-        <Import/>
       </el-tab-pane>
 
       <el-tab-pane label="多端数据同步">
