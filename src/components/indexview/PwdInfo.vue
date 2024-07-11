@@ -12,7 +12,7 @@ import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
-const {curPwdInfo} = storeToRefs(userDataInfoStore)
+const {curPwdInfo, curGroup} = storeToRefs(userDataInfoStore)
 
 const {openBrowser} = useBrowser();
 const shortcutKeyStore = useShortcutKeyStore();
@@ -21,9 +21,20 @@ const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const randomPwdGenerateRef = ref();
 defineExpose({keydown, pwdInfoTitleInput});
 const {updatePwdInfo} = useDBPwdInfo();
+const {insertPwdInfo} = useDBPwdInfo();
 
-function pwdInfoChange() {
+async function pwdInfoChange() {
   console.log("pwdInfoChange");
+  if (!curPwdInfo.value.group_id) {
+    // 新增
+    const id = await insertPwdInfo(curGroup.value.id, curGroup.value.title);
+    console.log('id:', id)
+    if (id) {
+      curPwdInfo.value.id = id;
+      curPwdInfo.value.group_id = curGroup.value.id;
+      curPwdInfo.value.group_title = curGroup.value.title;
+    }
+  }
   updatePwdInfo(curPwdInfo.value).then(() => userDataInfoStore.setChangePwdInfoFlag(true))
 }
 

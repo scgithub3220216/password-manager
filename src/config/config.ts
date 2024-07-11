@@ -1,4 +1,4 @@
-export const packageVersion = '1.1.2';
+export const packageVersion = '1.1.3';
 
 // emitter topic
 export const emitterInsertGroupTopic = 'insertGroupTopic';
