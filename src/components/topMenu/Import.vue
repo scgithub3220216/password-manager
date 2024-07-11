@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {UploadFilled} from '@element-plus/icons-vue'
 import useExcel from "../../hooks/useExcel.ts";
-import {defineExpose, ref} from 'vue'
+import {ref} from 'vue'
 
 import {ElMessage, genFileId, UploadInstance, UploadProps, UploadRawFile, UploadUserFile} from 'element-plus'
 

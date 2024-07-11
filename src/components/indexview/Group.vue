@@ -2,7 +2,6 @@
 import {Delete, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {onMounted, onUnmounted, ref, watch} from "vue";
-import useExcel from "../../hooks/useExcel.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
@@ -21,7 +20,6 @@ const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const groupInputRef = ref();
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
-const {exportExcel} = useExcel();
 const groupInput2Ref = ref(null);
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
