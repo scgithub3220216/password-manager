@@ -38,5 +38,10 @@ export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-k
 export const IPC_FIRST_LOGIN = 'ipc-first-login';
 export const IPC_DEV_TOOLS = 'ipc-dev-tools';
 export const IPC_SAVE_SHORTCUTS = 'ipc-save-shortcuts';
+export const IPC_AUTO_START = 'ipc-auto-start';
+export const IPC_OPEN_BROWSER = 'ipc-open-browser';
+export const IPC_MINIMIZE = 'ipc-minimize';
+export const IPC_MAXIMIZE = 'ipc-maximize';
+export const IPC_CLOSE_WIN = 'ipc-close-win';
 
 

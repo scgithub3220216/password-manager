@@ -5,8 +5,13 @@ import path from 'node:path'
 import {
     AUTO_HIDE_MENU_BAR,
     FRAME,
+    IPC_AUTO_START,
+    IPC_CLOSE_WIN,
     IPC_DEV_TOOLS,
     IPC_FIRST_LOGIN,
+    IPC_MAXIMIZE,
+    IPC_MINIMIZE,
+    IPC_OPEN_BROWSER,
     IPC_SAVE_SHORTCUTS,
     TRANSPARENT,
     WINDOW_INDEX_HEIGHT,
@@ -40,7 +45,6 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
-let initDataStr = '';
 let win: BrowserWindow | null
 
 
@@ -94,7 +98,6 @@ app.whenReady().then(async () => {
 })
 
 
-
 function quit() {
     app.quit()
     win = null
@@ -103,7 +106,6 @@ function quit() {
 app.on('before-quit', () => {
     console.log('before-quit')
 })
-
 
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -123,10 +125,7 @@ app.on('activate', () => {
         createWindow()
     }
 })
-ipcMain.handle('init-data', () => {
-    console.log(`Received message from renderer`);
-    return initDataStr;
-});
+
 
 ipcMain.handle(IPC_SAVE_SHORTCUTS, (_event, arg) => {
     console.log(`Received IPC_SAVE_SHORTCUTS: ${arg}`);
@@ -137,31 +136,31 @@ ipcMain.handle(IPC_FIRST_LOGIN, (_event, arg) => {
     setAutoStart(true);
 });
 
-ipcMain.handle('auto-start', (_event, arg) => {
+ipcMain.handle(IPC_AUTO_START, (_event, arg) => {
     console.log(`Received auto-start: ${arg}`);
     setAutoStart(arg);
 });
-ipcMain.handle('open-browser', (_event, arg) => {
-    console.log(`open-browser:${arg} `);
+ipcMain.handle(IPC_OPEN_BROWSER, (_event, arg) => {
+    console.log(`IPC_OPEN_BROWSER:${arg} `);
     shell.openExternal(arg);
 });
 
 ipcMain.handle(IPC_DEV_TOOLS, (_event, arg) => {
-    console.log(`DEV_TOOLS :${arg} `);
-    if(!win) return;
+    console.log(`IPC_DEV_TOOLS :${arg} `);
+    if (!win) return;
     openDevTools(win);
 });
 
 
 // 窗口 （最小化、最大化/还原、关闭）
 
-ipcMain.handle('minimize', () => {
-    console.log('minimize')
+ipcMain.handle(IPC_MINIMIZE, () => {
+    console.log(IPC_MINIMIZE)
     win?.minimize()
 })
 
-ipcMain.handle('maximize', () => {
-    console.log('maximize')
+ipcMain.handle(IPC_MAXIMIZE, () => {
+    console.log(IPC_MAXIMIZE)
     if (win?.isMaximized()) {
         win.unmaximize()
     } else {
@@ -169,8 +168,8 @@ ipcMain.handle('maximize', () => {
     }
 })
 
-ipcMain.handle('close-win', () => {
-    console.log('close-win')
+ipcMain.handle(IPC_CLOSE_WIN, () => {
+    console.log(IPC_CLOSE_WIN)
     // 最小化窗口到系统托盘
     win?.hide();
 })

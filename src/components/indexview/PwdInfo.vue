@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
@@ -64,27 +64,27 @@ function clickPwdImg() {
     <el-input
         ref="pwdInfoTitleInput"
         v-model="curPwdInfo.title"
-        @change="pwdInfoChange()"
-        class="input-pwd"
         :prefix-icon="EditPen"
+        class="input-pwd"
+        @change="pwdInfoChange()"
     />
 
     <span class="pwdInfo-item">用户名</span>
     <el-input
         v-model="curPwdInfo.username"
-        @change="pwdInfoChange()"
-        class="input-pwd"
         :prefix-icon="UserFilled"
+        class="input-pwd"
+        @change="pwdInfoChange()"
     >
       >
       <template #suffix>
         <el-tooltip
+            :content="'复制用户名'+(shortCutKeyCombs[2].desc?',快捷键'+shortCutKeyCombs[2].desc:'')"
             class="box-item"
             effect="dark"
-            :content="'复制用户名'+(shortCutKeyCombs[2].desc?',快捷键'+shortCutKeyCombs[2].desc:'')"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.username)" class="img-item"
+          <el-icon class="img-item" @click="copyValue(curPwdInfo.username)"
           >
             <CopyDocument/>
           </el-icon>
@@ -95,39 +95,39 @@ function clickPwdImg() {
     <span class="pwdInfo-item">密码</span>
     <el-input
         v-model="curPwdInfo.password"
-        @change="pwdInfoChange()"
+        :prefix-icon="Hide"
         :type="passwordVisible ? 'text' : 'password'"
         class="input-pwd"
-        :prefix-icon="Hide"
+        @change="pwdInfoChange()"
     >
       <template #suffix>
         <el-tooltip
             class="box-item"
-            effect="dark"
             content="明文展示"
+            effect="dark"
             placement="top"
         >
-          <el-icon @click="clickPwdImg" class="img-item">
+          <el-icon class="img-item" @click="clickPwdImg">
             <View/>
           </el-icon>
         </el-tooltip>
         <el-tooltip
             class="box-item"
-            effect="dark"
             content="生成随机密码"
+            effect="dark"
             placement="top"
         >
-          <el-icon @click="randomPwdGenerateRef.dialogVisible = true" class="img-item">
+          <el-icon class="img-item" @click="randomPwdGenerateRef.dialogVisible = true">
             <Switch/>
           </el-icon>
         </el-tooltip>
         <el-tooltip
+            :content="'复制密码'+(shortCutKeyCombs[3].desc?',快捷键'+shortCutKeyCombs[3].desc:'')"
             class="box-item"
             effect="dark"
-            :content="'复制密码'+(shortCutKeyCombs[3].desc?',快捷键'+shortCutKeyCombs[3].desc:'')"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.password)" class="img-item">
+          <el-icon class="img-item" @click="copyValue(curPwdInfo.password)">
             <CopyDocument/>
           </el-icon>
 
@@ -138,29 +138,29 @@ function clickPwdImg() {
     <span class="pwdInfo-item"> 链接</span>
     <el-input
         v-model="curPwdInfo.link"
-        @change="pwdInfoChange()"
-        class="input-pwd"
         :prefix-icon="Compass"
+        class="input-pwd"
+        @change="pwdInfoChange()"
     >
       <template #suffix>
         <el-tooltip
             class="box-item"
-            effect="dark"
             content="在浏览器中打开"
+            effect="dark"
             placement="top"
         >
-          <el-icon @click="openBrowser(curPwdInfo.link)" class="img-item">
+          <el-icon class="img-item" @click="openBrowser(curPwdInfo.link)">
             <ChromeFilled/>
           </el-icon>
         </el-tooltip>
 
         <el-tooltip
+            :content="'复制链接'+(shortCutKeyCombs[4].desc?',快捷键'+shortCutKeyCombs[4].desc:'')"
             class="box-item"
             effect="dark"
-            :content="'复制链接'+(shortCutKeyCombs[4].desc?',快捷键'+shortCutKeyCombs[4].desc:'')"
             placement="top"
         >
-          <el-icon @click="copyValue(curPwdInfo.link)" class="img-item">
+          <el-icon class="img-item" @click="copyValue(curPwdInfo.link)">
             <CopyDocument/>
           </el-icon>
         </el-tooltip>
@@ -171,11 +171,11 @@ function clickPwdImg() {
     <span class="pwdInfo-item"> 说明</span>
     <div>
       <el-input
-          class="item-textarea input-pwd"
           v-model="curPwdInfo.remark"
-          @change="pwdInfoChange()"
           :rows="9"
+          class="item-textarea input-pwd"
           type="textarea"
+          @change="pwdInfoChange()"
       />
     </div>
   </div>

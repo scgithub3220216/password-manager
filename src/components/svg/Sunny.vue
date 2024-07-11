@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 /*<rect
   x="x-coordinate"        <!-- 矩形左上角的 x 坐标 -->
   y="y-coordinate"        <!-- 矩形左上角的 y 坐标 -->
@@ -13,7 +13,7 @@
 */
 </script>
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="black">
+  <svg aria-hidden="true" fill="black" focusable="false" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path
         d="M12,18c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S15.3,18,12,18zM12,8c-2.2,0-4,1.8-4,4c0,2.2,1.8,4,4,4c2.2,0,4-1.8,4-4C16,9.8,14.2,8,12,8z"></path>
     <path d="M12,4c-0.6,0-1-0.4-1-1V1c0-0.6,0.4-1,1-1s1,0.4,1,1v2C13,3.6,12.6,4,12,4z"></path>

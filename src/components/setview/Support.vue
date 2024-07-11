@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {defineExpose, ref} from 'vue'
 import useBrowser from "../../hooks/useBrowser.ts";
 import {giteeCodeLink, giteeIssueLink, supportDesc} from "../../config/config.ts";
@@ -28,19 +28,19 @@ defineExpose({supportDialogVisible})
       </ol>
       <div class="img">
         <div class="img-left">
-          <img src="/assets/vx-money.png" alt="" style="height: 200px">
+          <img alt="" src="/assets/vx-money.png" style="height: 200px">
           <span>微信支付</span>
         </div>
         <div class="img-right">
-          <img src="/assets/zfb-money.png" alt="" style="height: 200px">
+          <img alt="" src="/assets/zfb-money.png" style="height: 200px">
           <span>支付宝</span>
         </div>
       </div>
       <div class="bottom">
         <el-popover
+            :width="400"
             placement="top-start"
             title=""
-            :width="400"
             trigger="click"
         >
           <div v-html="supportDesc"></div>
@@ -52,13 +52,13 @@ defineExpose({supportDialogVisible})
     </div>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" >感谢您的支持!</el-button>
+        <el-button type="primary">感谢您的支持!</el-button>
       </div>
     </template>
   </el-dialog>
   <el-dialog v-model="officialAccountDialogVisible" title="" width="400">
     <span>关注下方微信公众号获取最新咨询</span>
-    <img src="/assets/officialAccount.jpg" alt="officialAccount">
+    <img alt="officialAccount" src="/assets/officialAccount.jpg">
   </el-dialog>
 </template>
 
@@ -76,7 +76,8 @@ defineExpose({supportDialogVisible})
 .img-left {
   margin-right: 20px;
 }
-a{
+
+a {
   font-size: 14px;
 }
 

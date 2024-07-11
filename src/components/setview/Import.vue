@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {UploadFilled} from '@element-plus/icons-vue'
 import useExcel from "../../hooks/useExcel.ts";
 import {defineExpose, ref} from 'vue'
@@ -38,17 +38,17 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 </script>
 
 <template>
-  <el-dialog v-model="importDialogVisible" title="" width="500" >
+  <el-dialog v-model="importDialogVisible" title="" width="500">
     <el-upload
         ref="upload"
         v-model:file-list="fileList"
-        class="upload-demo"
-        accept=".xls,.xlsx"
-        :limit="1"
         :auto-upload="false"
-        drag
         :before-upload="beforeUpload"
+        :limit="1"
         :on-exceed="handleExceed"
+        accept=".xls,.xlsx"
+        class="upload-demo"
+        drag
     >
       <el-icon class="el-icon--upload">
         <upload-filled/>
@@ -65,7 +65,7 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
     </el-upload>
     <div>
       <el-button type="primary" @click="downExcelTemplate"><a :href="fileUrl" download="密码管理器导入模板.xlsx">下载导入模板</a></el-button>
-      <el-button type="primary" @click="importExcel(fileList[0])" :disabled="fileList.length<1">确定导入</el-button>
+      <el-button :disabled="fileList.length<1" type="primary" @click="importExcel(fileList[0])">确定导入</el-button>
     </div>
   </el-dialog>
 </template>

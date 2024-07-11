@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {onMounted, ref} from 'vue'
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
@@ -46,22 +46,22 @@ async function firstLogin() {
     <InitSetPwd ref="initSetPwdRef"/>
 
     <el-input
-        class="input-pwd"
         ref="pwdInputRef"
         v-model="password"
-        type="password"
-        placeholder="开门密码"
-        @keyup.enter="handleEnter"
         autofocus
+        class="input-pwd"
+        placeholder="开门密码"
+        type="password"
+        @keyup.enter="handleEnter"
     >
       <template #suffix>
         <el-tooltip
             class="box-item"
-            effect="dark"
             content="登录"
+            effect="dark"
             placement="top"
         >
-          <Enter @click="handleEnter" class="enter"/>
+          <Enter class="enter" @click="handleEnter"/>
         </el-tooltip>
       </template>
     </el-input>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {Delete, Edit, Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {onMounted, onUnmounted, ref, watch} from "vue";
@@ -142,50 +142,50 @@ async function deleteGroup() {
           <li
               v-for="(group,index) in groupList"
               :key="index"
-              @click="clickGroup(group,index)"
               :class="{
                   'selected-dark-group': curGroupIndex === index && darkSwitch,
                   'selected-light-group': curGroupIndex === index && !darkSwitch,
                   'hover-effect-dark-group': isHover && darkSwitch,
                   'hover-effect-light-group': isHover && !darkSwitch
               }"
-              @mouseover="isHover = true" @mouseout="isHover = false"
+              @click="clickGroup(group,index)"
+              @mouseout="isHover = false" @mouseover="isHover = true"
           >
             <span v-show="index !== curEditGroupIndex"> {{ group.title }}</span>
             <el-input
                 v-show="index === curEditGroupIndex"
                 ref="groupInput2Ref"
                 v-model="group.title"
-                @change="editGroups()"
                 @blur="editGroups()"
+                @change="editGroups()"
             ></el-input>
           </li>
         </ul>
         <el-input
+            v-show="groupInputShowFlag"
             ref="groupInputRef"
             v-model="groupInputValue"
-            v-show="groupInputShowFlag"
-            @change="groupInputChange()"
             @blur="groupInputChange()"
+            @change="groupInputChange()"
         />
       </el-scrollbar>
     </div>
 
     <div class="group-tools">
-      <el-tooltip class="box-item" effect="dark" :content="'新增'+(shortCutKeyCombs[5].desc?',快捷键'+shortCutKeyCombs[5].desc:'')" placement="top">
+      <el-tooltip :content="'新增'+(shortCutKeyCombs[5].desc?',快捷键'+shortCutKeyCombs[5].desc:'')" class="box-item" effect="dark" placement="top">
         <span class="tool" @click="triggerGroupsInsert()">
           <Plus style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
-      <el-tooltip class="box-item" effect="dark" content="修改" placement="top">
+      <el-tooltip class="box-item" content="修改" effect="dark" placement="top">
         <span class="tool" @click="triggerGroupEdit()">
           <Edit style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
 
-      <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
+      <el-tooltip class="box-item" content="删除" effect="dark" placement="top">
         <!--        <el-button style="border: 0;background: none;color: initial;" :disabled="deleteFlag" class="tool" @click="deleteGroup()">-->
-        <el-button style="border: 0;background: none;color: initial;" class="tool" @click="deleteGroup()">
+        <el-button class="tool" style="border: 0;background: none;color: initial;" @click="deleteGroup()">
           <Delete style="width: 20px; height: 20px"/>
         </el-button>
       </el-tooltip>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdInfo} from "../type.ts";
 import {useSearchResultStore} from "../../store/searchResult.ts";
@@ -21,10 +21,10 @@ function searchTableClick(row: PwdInfo, column: any, event: Event) {
 
 <template>
   <div class="search-result">
-    <el-table :data="searchResultList" @row-click="searchTableClick" style="width: 100%;height: calc(100vh - 50px)">
-      <el-table-column prop="group_title" label="分组" :min-width="100"/>
-      <el-table-column prop="title" label="标题" show-overflow-tooltip :min-width="100"/>
-      <el-table-column prop="username" label="用户名" show-overflow-tooltip :min-width="100"/>
+    <el-table :data="searchResultList" style="width: 100%;height: calc(100vh - 50px)" @row-click="searchTableClick">
+      <el-table-column :min-width="100" label="分组" prop="group_title"/>
+      <el-table-column :min-width="100" label="标题" prop="title" show-overflow-tooltip/>
+      <el-table-column :min-width="100" label="用户名" prop="username" show-overflow-tooltip/>
     </el-table>
   </div>
 </template>

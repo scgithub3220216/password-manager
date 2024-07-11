@@ -3,6 +3,7 @@ import useDBConfig from "./useDBConfig.ts";
 import {autoLockTime, autoLockTimeUnit, autoStart} from "../../electron/db/sqlite/components/configConstants.ts";
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
+import {IPC_AUTO_START} from "../../electron/constant.ts";
 
 export default function () {
     const userInfoStore = useUserDataInfoStore();
@@ -54,7 +55,7 @@ export default function () {
     function autoStartChange() {
         console.log(`autoStartChange:${autoStartValue.value}`);
         // 调用方法 通知主进程
-        window.ipcRenderer.invoke("auto-start", autoStartValue.value);
+        window.ipcRenderer.invoke(IPC_AUTO_START, autoStartValue.value);
         // 修改 数据
         setConfigValue(autoStartValue.value ? '1' : '0', autoStart)
     }

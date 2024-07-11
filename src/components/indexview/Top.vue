@@ -1,24 +1,25 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {Close, FullScreen, Minus} from "@element-plus/icons-vue";
 import {ref} from 'vue'
 import WinRestore from "../svg/WinRestore.vue";
 import TopMenu from "./TopMenu.vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
+import {IPC_CLOSE_WIN, IPC_MAXIMIZE, IPC_MINIMIZE} from "../../../electron/constant.ts";
 
 const {loginFlag} = storeToRefs(useUserDataInfoStore())
 
 function minimize() {
-  window.ipcRenderer.invoke('minimize');
+  window.ipcRenderer.invoke(IPC_MINIMIZE);
 }
 
 function maximize() {
-  window.ipcRenderer.invoke('maximize');
+  window.ipcRenderer.invoke(IPC_MAXIMIZE);
   isMaximized.value = !isMaximized.value
 }
 
 function close() {
-  window.ipcRenderer.invoke('close-win');
+  window.ipcRenderer.invoke(IPC_CLOSE_WIN);
 }
 
 const isMaximized = ref(false)
@@ -28,11 +29,11 @@ const isMaximized = ref(false)
 
   <div class="top title-bar">
     <div class="left">
-      <img class="logo" src="/assets/icon-top.ico" alt="logo"/>
+      <img alt="logo" class="logo" src="/assets/icon-top.ico"/>
       <el-text class="mx-1 title">密码管理器</el-text>
     </div>
     <div class="right">
-      <TopMenu v-if="loginFlag" />
+      <TopMenu v-if="loginFlag"/>
       <!--最小化-->
       <el-button class="btn" @click="minimize">
         <el-icon>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import useBasicSet from "../../hooks/useBasicSet.ts";
 
 const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
@@ -16,10 +16,10 @@ const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeC
     <el-form-item label="自动退出登录时间" prop="delivery">
       <el-input-number
           v-model="lockTime"
-          :min="1"
           :max="100"
-          @change="lockTimeChange"
+          :min="1"
           style="width: 130px"
+          @change="lockTimeChange"
       />
       <el-select
           v-model="timeUnit"

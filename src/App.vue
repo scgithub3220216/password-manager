@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import useApp from "./hooks/useApp.ts";
 import Top from "./components/indexview/Top.vue";
 

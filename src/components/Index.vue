@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 // 把数据放到 pinia 中
 import {ref} from "vue";

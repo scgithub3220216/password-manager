@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import {Search} from "@element-plus/icons-vue";
 import {toggleDark} from "../../styles/dark/dark.ts";
@@ -90,45 +90,45 @@ function clickLock() {
     <div>
       <el-tooltip
           class="box-item"
-          effect="dark"
           content="切换主题"
+          effect="dark"
           placement="right"
       >
         <el-switch
-            @click="clickDarkSwitch()"
             v-model="themeSwitch"
-            class="ml-2"
             :active-action-icon="Moon"
             :inactive-action-icon="Sunny"
+            class="ml-2"
             style="--el-switch-on-color: rgba(0,0,0,0.06); --el-switch-off-color: rgb(220,209,209); margin-left: 10px"
+            @click="clickDarkSwitch()"
         />
       </el-tooltip>
     </div>
     <el-input
         ref="searchInputRef"
         v-model="search"
-        style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
-        placeholder="标题/用户名搜索"
         :prefix-icon="Search"
+        placeholder="标题/用户名搜索"
+        style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
         type="search"
         @search="searchAction()"
     />
     <div>
       <el-tooltip
+          :content="'退出登录'+(shortCutKeyCombs[1].desc?',快捷键'+shortCutKeyCombs[1].desc:'')"
           class="box-item"
           effect="dark"
-          :content="'退出登录'+(shortCutKeyCombs[1].desc?',快捷键'+shortCutKeyCombs[1].desc:'')"
           placement="top"
       >
-        <img src="/assets/lock.svg" alt="switch" @click="clickLock" class="search-image">
+        <img alt="switch" class="search-image" src="/assets/lock.svg" @click="clickLock">
       </el-tooltip>
       <el-tooltip
           class="box-item"
-          effect="dark"
           content="设置"
+          effect="dark"
           placement="top"
       >
-        <img src="/assets/setting.svg" alt="setting" @click="openSettingDialog" class="search-image">
+        <img alt="setting" class="search-image" src="/assets/setting.svg" @click="openSettingDialog">
       </el-tooltip>
     </div>
   </div>

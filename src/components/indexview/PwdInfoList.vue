@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {ElMessageBox} from "element-plus";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
@@ -131,14 +131,14 @@ function deletePwdInfo() {
           <li
               v-for="(pwdInfo,index) in pwdInfoList"
               :key="index"
-              @click="clickPwdInfo(pwdInfo,index)"
               :class="{
                   'selected-dark-pwdList': curPwdListIndex === index && darkSwitch,
                   'selected-light-pwdList': curPwdListIndex === index && !darkSwitch,
                   'hover-effect-dark-pwdList': isHover && darkSwitch,
                   'hover-effect-light-pwdList': isHover && !darkSwitch
               }"
-              @mouseover="isHover = true" @mouseout="isHover = false"
+              @click="clickPwdInfo(pwdInfo,index)"
+              @mouseout="isHover = false" @mouseover="isHover = true"
           >
             {{ pwdInfo.title }}
           </li>
@@ -146,13 +146,13 @@ function deletePwdInfo() {
       </el-scrollbar>
     </div>
     <div class="pwd-tools">
-      <el-tooltip class="box-item" effect="dark" :content="'新增'+( shortCutKeyCombs[6].desc?',快捷键'+shortCutKeyCombs[6].desc:'')" placement="top">
+      <el-tooltip :content="'新增'+( shortCutKeyCombs[6].desc?',快捷键'+shortCutKeyCombs[6].desc:'')" class="box-item" effect="dark" placement="top">
         <span class="tool" @click="addPwdInfo">
           <Plus style="width: 20px; height: 20px"/>
         </span>
       </el-tooltip>
-      <el-tooltip class="box-item" effect="dark" content="删除" placement="top">
-        <el-button style="border: 0;background: none;color: initial;" :disabled="!curPwdInfo || !curPwdInfo.id" class="tool" @click="clickDelete">
+      <el-tooltip class="box-item" content="删除" effect="dark" placement="top">
+        <el-button :disabled="!curPwdInfo || !curPwdInfo.id" class="tool" style="border: 0;background: none;color: initial;" @click="clickDelete">
           <Delete style="width: 20px; height: 20px"/>
         </el-button>
       </el-tooltip>

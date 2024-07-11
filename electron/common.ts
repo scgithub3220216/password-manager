@@ -17,7 +17,7 @@ export const showWindows = (win: BrowserWindow | null) => {
 export const registerGlobalShortcut = (openMainWindows: string, win: BrowserWindow | null) => {
     console.log('openMainWindows:', openMainWindows)
 
-    if(!openMainWindows)  {
+    if (!openMainWindows) {
         globalShortcut.unregisterAll()
         return;
     }

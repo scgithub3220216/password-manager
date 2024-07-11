@@ -64,7 +64,8 @@ export default function () {
         });
         return decrypt.toString(CryptoJS.enc.Utf8);
     }
-    function decryptList(pwdInfoList: PwdInfo[]){
+
+    function decryptList(pwdInfoList: PwdInfo[]) {
         if (!pwdInfoList) return pwdInfoList;
         pwdInfoList.forEach(pwdInfo => {
             pwdInfo.password = decryptData(pwdInfo.password)
@@ -72,5 +73,5 @@ export default function () {
         return pwdInfoList;
     }
 
-    return {encryptData, decryptData, md5HexHash, sha512HexHash,decryptList};
+    return {encryptData, decryptData, md5HexHash, sha512HexHash, decryptList};
 }

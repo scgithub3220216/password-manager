@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {ref} from "vue";
 import BasicSet from "./setview/BasicSet.vue";
 import UpdatePwd from "./setview/UpdatePwd.vue";
@@ -20,11 +20,11 @@ defineExpose({
 <template>
   <el-dialog
       v-model="settingDialogVisible"
+      style="height: 400px"
       title=""
       width="450"
-      style="height: 400px"
   >
-    <el-tabs type="card" class="demo-tabs">
+    <el-tabs class="demo-tabs" type="card">
       <el-tab-pane label="通用">
         <BasicSet/>
       </el-tab-pane>

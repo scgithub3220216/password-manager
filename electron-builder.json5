@@ -19,7 +19,8 @@
     "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
   },
   "win": {
-    icon: "public/assets/icon.ico", //图标路径
+    icon: "public/assets/icon.ico",
+    //图标路径
     "target": [
       {
         "target": "nsis",

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import {CoffeeCup, Document, Download, Help, Menu, Tools, Upload} from '@element-plus/icons-vue'
 import useExcel from "../../hooks/useExcel.ts";

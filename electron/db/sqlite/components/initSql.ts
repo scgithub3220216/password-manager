@@ -147,6 +147,7 @@ function insertPwdInfoData() {
     // pwdInfo
     const pwdInfoInsertSq = `INSERT INTO "pwd_info"
                                  ("id", "group_id", "group_title", "title", "username", "password", "link", "remark")
-                             VALUES (1, 1, '默认分组', '默认百度账号标题', 'admin', 'pRJdfNVvRY39WLCxte2Auw==', 'https://www.baidu.com', '默认备注');`;
+                             VALUES (1, 1, '默认分组', '默认百度账号标题', 'admin', 'pRJdfNVvRY39WLCxte2Auw==', 'https://www.baidu.com',
+                                     '默认备注');`;
     db.exec(pwdInfoInsertSq);
 }

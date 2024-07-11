@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {Promotion, RefreshLeft} from "@element-plus/icons-vue";
@@ -53,7 +53,7 @@ function refreshPsd() {
 
 <template>
   <el-dialog v-model="dialogVisible" title="" width="70%">
-    <el-form label-position="top" :model="form">
+    <el-form :model="form" label-position="top">
       <el-form-item label="包含字符">
         <el-checkbox-group v-model="selectedTypes">
           <el-row :gutter="20">
@@ -86,11 +86,11 @@ function refreshPsd() {
       </el-form-item>
       <el-form-item label="密码长度">
         <el-slider
-            @change="generatePassword"
             v-model="length"
-            :min="4"
             :max="32"
+            :min="4"
             show-input
+            @change="generatePassword"
         ></el-slider>
       </el-form-item>
       <el-form-item label="生成的随机密码">
@@ -98,8 +98,8 @@ function refreshPsd() {
           <template v-slot:append>
             <el-tooltip
                 class="box-item"
-                effect="dark"
                 content="刷新密码"
+                effect="dark"
                 placement="top"
             >
               <el-icon @click="refreshPsd">
@@ -111,7 +111,7 @@ function refreshPsd() {
       </el-form-item>
     </el-form>
     <div class="bttn">
-      <el-button type="primary" @click="updatePwd" class="btn">
+      <el-button class="btn" type="primary" @click="updatePwd">
         <span class="spa" style=""> 使用该密码 </span>
         <el-icon style="vertical-align: middle">
           <Promotion/>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import useSetShortcutKey from "../../hooks/useSetShortcutKey.ts";
 
 const {
@@ -48,12 +48,12 @@ const {
       <div class="setting-item">
         <span style="display: block">打开主面板:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="mainShortcuts"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="mainShortcuts"
+            type="text"
             @keydown="handleOpenMainKeydown"
             @keyup="handleOpenMainKeyup"
             @keydown.delete="clearOpenMainKeys"
@@ -63,12 +63,12 @@ const {
       <div class="setting-item">
         <span style="display: block">退出登录:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="logouts"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="logouts"
+            type="text"
             @keydown="handleLogoutKeydown"
             @keyup="handleLogoutKeyup"
             @keydown.delete="clearLogoutKeys"
@@ -78,12 +78,12 @@ const {
       <div class="setting-item">
         <span style="display: block">复制账号:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="cpUsernames"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="cpUsernames"
+            type="text"
             @keydown="handleCpUNameKeydown"
             @keyup="handleCpUNameKeyup"
             @keydown.delete="clearCpUNameKeys"
@@ -93,12 +93,12 @@ const {
       <div class="setting-item">
         <span style="display: block">复制密码:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="cpPwds"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="cpPwds"
+            type="text"
             @keydown="handleCpPwdsKeydown"
             @keyup="handleCpPwdsKeyup"
             @keydown.delete="clearCpPwdsKeys"
@@ -108,12 +108,12 @@ const {
       <div class="setting-item">
         <span style="display: block">复制链接:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="cpLinks"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="cpLinks"
+            type="text"
             @keydown="handleCpLinksKeydown"
             @keyup="handleCpLinksKeyup"
             @keydown.delete="clearCpLinksKeys"
@@ -123,12 +123,12 @@ const {
       <div class="setting-item">
         <span style="display: block">新增分组:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="insertGroups"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="insertGroups"
+            type="text"
             @keydown="handleInsertGroupsKeydown"
             @keyup="handleInsertGroupsKeyup"
             @keydown.delete="clearInsertGroupsKeys"
@@ -138,12 +138,12 @@ const {
       <div class="setting-item">
         <span style="display: block;">新增密码:</span>
         <el-input
-            type="text"
             id="shortcuts"
+            v-model="insertPwdInfos"
             class="ipt"
             clearable
             placeholder="无"
-            v-model="insertPwdInfos"
+            type="text"
             @keydown="handleInsertPwdInfosKeydown"
             @keyup="handleInsertPwdInfosKeyup"
             @keydown.delete="clearInsertPwdInfosKeys"
@@ -164,11 +164,12 @@ const {
 </template>
 
 <style scoped>
-.setting-item{
+.setting-item {
   margin-top: 10px;
 }
+
 .bttn {
-  margin: 20px 20px 20px 0 ;
+  margin: 20px 20px 20px 0;
   display: flex;
   justify-content: flex-end;
 }
