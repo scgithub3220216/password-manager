@@ -171,13 +171,17 @@ function deletePwdInfo() {
   justify-content: space-between;
 }
 
+ul {
+  overflow-x: hidden;
+  white-space: nowrap; /* 不换行 */
+}
+
 #pwd-ul li {
   height: 27px;
 }
 
 .pwd-item {
   overflow-y: auto;
-  overflow-x: hidden;
   margin-top: 32px;
 }
 

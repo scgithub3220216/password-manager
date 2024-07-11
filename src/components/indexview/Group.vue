@@ -216,6 +216,9 @@ ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  overflow-x: hidden;
+  white-space: nowrap; /* 不换行 */
+
 }
 
 li {
