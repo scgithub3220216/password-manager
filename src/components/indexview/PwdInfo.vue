@@ -81,7 +81,7 @@ function clickPwdImg() {
         <el-tooltip
             class="box-item"
             effect="dark"
-            :content="'复制用户名,快捷键'+shortCutKeyCombs[2].desc"
+            :content="'复制用户名'+(shortCutKeyCombs[2].desc?',快捷键'+shortCutKeyCombs[2].desc:'')"
             placement="top"
         >
           <el-icon @click="copyValue(curPwdInfo.username)" class="img-item"
@@ -124,7 +124,7 @@ function clickPwdImg() {
         <el-tooltip
             class="box-item"
             effect="dark"
-            :content="'复制密码,快捷键'+shortCutKeyCombs[3].desc"
+            :content="'复制密码'+(shortCutKeyCombs[3].desc?',快捷键'+shortCutKeyCombs[3].desc:'')"
             placement="top"
         >
           <el-icon @click="copyValue(curPwdInfo.password)" class="img-item">
@@ -157,7 +157,7 @@ function clickPwdImg() {
         <el-tooltip
             class="box-item"
             effect="dark"
-            :content="'复制链接,快捷键'+shortCutKeyCombs[4].desc"
+            :content="'复制链接'+(shortCutKeyCombs[4].desc?',快捷键'+shortCutKeyCombs[4].desc:'')"
             placement="top"
         >
           <el-icon @click="copyValue(curPwdInfo.link)" class="img-item">

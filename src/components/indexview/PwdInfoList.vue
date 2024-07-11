@@ -146,7 +146,7 @@ function deletePwdInfo() {
       </el-scrollbar>
     </div>
     <div class="pwd-tools">
-      <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[6].desc" placement="top">
+      <el-tooltip class="box-item" effect="dark" :content="'新增'+( shortCutKeyCombs[6].desc?',快捷键'+shortCutKeyCombs[6].desc:'')" placement="top">
         <span class="tool" @click="addPwdInfo">
           <Plus style="width: 20px; height: 20px"/>
         </span>

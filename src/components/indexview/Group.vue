@@ -54,7 +54,7 @@ watch((importFlag), async (newVal) => {
     return;
   }
   userDataInfoStore.setCurGroup(groupList.value[0]);
-  userDataInfoStore.importFlag =false;
+  userDataInfoStore.importFlag = false;
 })
 
 async function initData() {
@@ -172,7 +172,7 @@ async function deleteGroup() {
     </div>
 
     <div class="group-tools">
-      <el-tooltip class="box-item" effect="dark" :content="'新增,快捷键'+shortCutKeyCombs[5].desc" placement="top">
+      <el-tooltip class="box-item" effect="dark" :content="'新增'+(shortCutKeyCombs[5].desc?',快捷键'+shortCutKeyCombs[5].desc:'')" placement="top">
         <span class="tool" @click="triggerGroupsInsert()">
           <Plus style="width: 20px; height: 20px"/>
         </span>
