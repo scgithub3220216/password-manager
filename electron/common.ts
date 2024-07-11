@@ -1,5 +1,4 @@
 import {app, BrowserWindow, globalShortcut} from "electron";
-import {defaultOpenMainWinShortcutKey} from "../src/config/config.ts";
 
 //  打开窗口 ,如果已经打开了, 则缩小
 export const showWindows = (win: BrowserWindow | null) => {
@@ -17,11 +16,15 @@ export const showWindows = (win: BrowserWindow | null) => {
 // 设置 全局快捷键
 export const registerGlobalShortcut = (openMainWindows: string, win: BrowserWindow | null) => {
     console.log('openMainWindows:', openMainWindows)
+
+    if(!openMainWindows)  {
+        globalShortcut.unregisterAll()
+        return;
+    }
+
     let replaceValue = 'CommandOrControl';
     // userInfo.shortcutKey.openMainWindows 如果有 Ctrl 则更换成 CommandOrControl
-    let openMainWindows1 = openMainWindows ? openMainWindows : defaultOpenMainWinShortcutKey;
-    let openMainWindows2 = openMainWindows1.replace('Ctrl', replaceValue)
-    // .replace('Control', replaceValue)
+    let openMainWindows2 = openMainWindows.replace('Ctrl', replaceValue)
     console.log('openMainWindows2:', openMainWindows2)
     // 清除快捷键
     globalShortcut.unregisterAll()

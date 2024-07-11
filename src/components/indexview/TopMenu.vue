@@ -4,7 +4,7 @@ import {CoffeeCup, Document, Download, Help, Menu, Tools, Upload} from '@element
 import useExcel from "../../hooks/useExcel.ts";
 import {ref} from "vue";
 import Import from "../setview/Import.vue";
-import {DEV_TOOLS} from "../../../electron/constant.ts";
+import {IPC_DEV_TOOLS} from "../../../electron/constant.ts";
 import Support from "../setview/Support.vue";
 import useBrowser from "../../hooks/useBrowser.ts";
 import {helpLink} from "../../config/config.ts";
@@ -16,7 +16,7 @@ const importRef = ref();
 const supportRrf = ref();
 
 function openDevTools() {
-  window.ipcRenderer.invoke(DEV_TOOLS);
+  window.ipcRenderer.invoke(IPC_DEV_TOOLS);
 }
 
 

@@ -21,6 +21,7 @@ import {
 } from "../../electron/db/sqlite/components/configConstants.ts";
 import {useShortcutKeyStore} from "../store/shortcutKey.ts";
 import {ElMessage} from "element-plus";
+import {IPC_SAVE_SHORTCUTS} from "../../electron/constant.ts";
 
 export default function () {
 
@@ -91,7 +92,7 @@ export default function () {
     function saveOpenMainShortcuts() {
         console.log("saveOpenMainShortcuts", mainShortcuts.value);
         // 发送事件给主进程
-        window.ipcRenderer.invoke("save-shortcuts", mainShortcuts.value);
+        window.ipcRenderer.invoke(IPC_SAVE_SHORTCUTS, mainShortcuts.value);
 
         shortcutKeyStore.setShortCutKeyComb(0, mainShortcuts.value);
         updateShortCutKey(openMainWindows, mainShortcuts.value)

@@ -35,7 +35,8 @@ export const IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA = 'ipc-sqlite-select-count-pw
 export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-key-data';
 export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-key-data';
 
-export const IPC_FIRST_LOGIN = 'first-login';
-export const DEV_TOOLS = 'dev-tools';
+export const IPC_FIRST_LOGIN = 'ipc-first-login';
+export const IPC_DEV_TOOLS = 'ipc-dev-tools';
+export const IPC_SAVE_SHORTCUTS = 'ipc-save-shortcuts';
 
 

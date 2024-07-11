@@ -2,7 +2,16 @@ import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
-import {AUTO_HIDE_MENU_BAR, DEV_TOOLS, FRAME, IPC_FIRST_LOGIN, TRANSPARENT, WINDOW_INDEX_HEIGHT, WINDOW_INDEX_WIDTH} from "./constant.ts";
+import {
+    AUTO_HIDE_MENU_BAR,
+    FRAME,
+    IPC_DEV_TOOLS,
+    IPC_FIRST_LOGIN,
+    IPC_SAVE_SHORTCUTS,
+    TRANSPARENT,
+    WINDOW_INDEX_HEIGHT,
+    WINDOW_INDEX_WIDTH
+} from "./constant.ts";
 import {createTrayMenu} from "./tray-menu.ts";
 import {openDevTools, registerGlobalShortcut, setAutoStart} from "./common.ts";
 import {initTable} from "./db/sqlite/components/initSql.ts";
@@ -119,8 +128,8 @@ ipcMain.handle('init-data', () => {
     return initDataStr;
 });
 
-ipcMain.handle('save-shortcuts', (_event, arg) => {
-    console.log(`Received auto-start: ${arg}`);
+ipcMain.handle(IPC_SAVE_SHORTCUTS, (_event, arg) => {
+    console.log(`Received IPC_SAVE_SHORTCUTS: ${arg}`);
     registerGlobalShortcut(arg, win);
 });
 ipcMain.handle(IPC_FIRST_LOGIN, (_event, arg) => {
@@ -137,7 +146,7 @@ ipcMain.handle('open-browser', (_event, arg) => {
     shell.openExternal(arg);
 });
 
-ipcMain.handle(DEV_TOOLS, (_event, arg) => {
+ipcMain.handle(IPC_DEV_TOOLS, (_event, arg) => {
     console.log(`DEV_TOOLS :${arg} `);
     if(!win) return;
     openDevTools(win);
