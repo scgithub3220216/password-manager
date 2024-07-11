@@ -29,9 +29,6 @@ const beforeUpload = (file: any) => {
   return true; // 允许上传
 };
 
-function downExcelTemplate() {
-  console.log('downExcelTemplate')
-}
 
 const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里使用的是文件的公共URL路径，不需要带public
 
@@ -64,7 +61,9 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 
     </el-upload>
     <div>
-      <el-button type="primary" @click="downExcelTemplate"><a :href="fileUrl" download="密码管理器导入模板.xlsx">下载导入模板</a></el-button>
+      <a :href="fileUrl" download="密码管理器导入模板.xlsx">
+        <el-button type="primary">下载导入模板</el-button>
+      </a>
       <el-button :disabled="fileList.length<1" type="primary" @click="importExcel(fileList[0])">确定导入</el-button>
     </div>
   </el-dialog>
@@ -72,8 +71,7 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 
 <style scoped>
 a {
-  color: inherit;
-  font-size: inherit;
+margin-right: 10px;
 }
 
 </style>
