@@ -56,7 +56,7 @@ export const supportDesc = '<!DOCTYPE html>\n' +
     '\n' +
     '    <div> 邮箱地址：17786925624@163.com </div>\n' +
     '    <div> 您提供的名字、网站和捐赠总额将会被添加到 <a href="#" onclick="function openBr() {\n' +
-    '        window.ipcRenderer.invoke(\'open-browser\', \'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》\');\n' +
+    '        window.ipcRenderer.invoke(\'ipc-open-browser\', \'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》\');\n' +
     '    }\n' +
     '    openBr()"> 捐赠者</a>列表中。</div>\n' +
     '    <div> 感谢您的慷慨捐赠！</div>\n' +
