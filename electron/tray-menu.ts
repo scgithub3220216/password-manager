@@ -20,7 +20,7 @@ export const createTrayMenu = (win: BrowserWindow | null) => {
             }
         },
         {
-            label: '帮助', click() {
+            label: '帮助文档', click() {
                 shell.openExternal(helpLink);
             }
         },
