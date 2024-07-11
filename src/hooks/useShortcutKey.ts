@@ -50,7 +50,7 @@ export default function () {
         // console.log('checkCombinations shortCutKeyCombs:', shortCutKeyCombs.value)
         for (const combination of shortCutKeyCombs.value) {
             const {keys, action, desc} = combination;
-
+            if (!keys || !keys.length || !desc) continue;
             if (keys.every(key => pressedKeys.has(key?.trim().toLowerCase()))) {
                 console.log(`pressed desc: ${desc} ,keys: ${keys}, pressedKeys: ${pressedKeys}`)
                 // 执行对应操作
