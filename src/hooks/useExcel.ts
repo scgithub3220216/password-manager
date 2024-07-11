@@ -4,6 +4,7 @@ import {PwdInfo} from "../components/type.ts";
 import {ElMessage, UploadUserFile} from "element-plus";
 import useDBGroup from "./useDBGroup.ts";
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
+import {ref} from "vue";
 
 export default function () {
 
@@ -82,6 +83,27 @@ export default function () {
         reader.readAsBinaryString(file.raw);
     };
 
+    const fileUrl = ref(`${import.meta.env.BASE_URL}excel/template/excelImportTemplate.xlsx`); // 动态获取基本路径
 
-    return {importExcel, exportExcel};
+    async function downloadTemplateExcel() {
+        console.log('downloadExcel fileUrl:', fileUrl.value)
+        try {
+            const response = await fetch(fileUrl.value);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = '密码管理器导入模板.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(link);
+            }, 0);
+        } catch (error) {
+            console.error('下载失败:', error);
+        }
+    }
+
+    return {importExcel, exportExcel,downloadTemplateExcel};
 }

@@ -5,7 +5,7 @@ import {defineExpose, ref} from 'vue'
 
 import {ElMessage, genFileId, UploadInstance, UploadProps, UploadRawFile, UploadUserFile} from 'element-plus'
 
-const {importExcel} = useExcel()
+const {importExcel, downloadTemplateExcel} = useExcel()
 const fileList = ref<UploadUserFile[]>([])
 
 const importDialogVisible = ref(false)
@@ -29,8 +29,6 @@ const beforeUpload = (file: any) => {
   return true; // 允许上传
 };
 
-
-const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里使用的是文件的公共URL路径，不需要带public
 
 </script>
 
@@ -61,9 +59,7 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 
     </el-upload>
     <div>
-      <a :href="fileUrl" download="密码管理器导入模板.xlsx">
-        <el-button type="primary">下载导入模板</el-button>
-      </a>
+      <el-button type="primary" @click="downloadTemplateExcel">下载导入模板</el-button>
       <el-button :disabled="fileList.length<1" type="primary" @click="importExcel(fileList[0])">确定导入</el-button>
     </div>
   </el-dialog>
@@ -71,7 +67,7 @@ const fileUrl = ref('/excel/template/excelImportTemplate.xlsx'); // 注意这里
 
 <style scoped>
 a {
-margin-right: 10px;
+  margin-right: 10px;
 }
 
 </style>

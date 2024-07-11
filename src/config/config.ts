@@ -1,5 +1,6 @@
-// emitter topic
+export const packageVersion = '1.1.2';
 
+// emitter topic
 export const emitterInsertGroupTopic = 'insertGroupTopic';
 export const emitterLockTopic = 'lockTopic';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
