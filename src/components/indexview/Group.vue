@@ -20,7 +20,7 @@ const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const groupInputRef = ref();
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
-const groupInput2Ref = ref(null);
+const groupEditInputRef = ref();
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
@@ -106,6 +106,7 @@ function groupInputChange() {
 function triggerGroupEdit() {
   console.log("triggerGroupEdit1");
   curEditGroupIndex.value = curGroupIndex.value;
+  groupEditInputRef.value.focus();
 }
 
 function editGroups(title: string) {
@@ -152,7 +153,7 @@ async function deleteGroup() {
             <span v-show="index !== curEditGroupIndex"> {{ group.title }}</span>
             <el-input
                 v-show="index === curEditGroupIndex"
-                ref="groupInput2Ref"
+                ref="groupEditInputRef"
                 v-model="group.title"
                 @blur="editGroups(group.title)"
                 @change="editGroups(group.title)"
