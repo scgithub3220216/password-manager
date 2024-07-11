@@ -8,12 +8,14 @@ import {IPC_DEV_TOOLS} from "../../../electron/constant.ts";
 import Support from "../topMenu/Support.vue";
 import useBrowser from "../../hooks/useBrowser.ts";
 import {helpLink} from "../../config/config.ts";
+import About from "../topMenu/About.vue";
 
 const {openBrowser} = useBrowser();
 
 const {exportExcel} = useExcel();
 const importRef = ref();
 const supportRrf = ref();
+const aboutRrf = ref();
 
 function openDevTools() {
   window.ipcRenderer.invoke(IPC_DEV_TOOLS);
@@ -61,7 +63,7 @@ function openDevTools() {
           支持/捐赠
         </el-dropdown-item>
 
-        <el-dropdown-item>
+        <el-dropdown-item @click="aboutRrf.aboutDialogVisible=true">
           <el-icon>
             <Document/>
           </el-icon>
@@ -80,6 +82,7 @@ function openDevTools() {
 
   <Import ref="importRef"/>
   <Support ref="supportRrf"/>
+  <About ref="aboutRrf"/>
 </template>
 
 <style scoped>
