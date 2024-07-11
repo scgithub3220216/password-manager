@@ -39,7 +39,7 @@ function openDevTools() {
           <el-icon>
             <Help/>
           </el-icon>
-          帮助
+          帮助文档
         </el-dropdown-item>
 
         <el-dropdown-item @click="importRef.importDialogVisible=true">
