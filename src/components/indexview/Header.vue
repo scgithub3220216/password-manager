@@ -111,7 +111,7 @@ function clickLock() {
         placeholder="标题/用户名搜索"
         style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
         type="search"
-        @search="searchAction()"
+        @input="searchAction()"
     />
     <div>
       <el-tooltip
