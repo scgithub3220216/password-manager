@@ -110,10 +110,10 @@ function triggerGroupEdit() {
   curEditGroupIndex.value = curGroupIndex.value;
 }
 
-function editGroups() {
+function editGroups(title: string) {
   console.log("editGroups");
   curEditGroupIndex.value = -1;
-  updateGroup(curGroup.value.title, curGroup.value.id);
+  updateGroup(title, curGroup.value.id);
 }
 
 async function deleteGroup() {
@@ -156,8 +156,8 @@ async function deleteGroup() {
                 v-show="index === curEditGroupIndex"
                 ref="groupInput2Ref"
                 v-model="group.title"
-                @blur="editGroups()"
-                @change="editGroups()"
+                @blur="editGroups(group.title)"
+                @change="editGroups(group.title)"
             ></el-input>
           </li>
         </ul>
