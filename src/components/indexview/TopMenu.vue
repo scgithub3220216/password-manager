@@ -67,7 +67,7 @@ function openDevTools() {
           <el-icon>
             <Document/>
           </el-icon>
-          关于
+          关于软件
         </el-dropdown-item>
 
         <el-dropdown-item @click="openDevTools">
