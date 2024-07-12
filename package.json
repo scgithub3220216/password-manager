@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ali-oss": "^6.20.0",
     "better-sqlite3": "^11.1.2",
     "crypto-js": "^4.2.0",
     "element-plus": "^2.7.6",

@@ -22,6 +22,8 @@
 
  Electron + Vue3 + Ts + Vite5 + ElementPlus
 
+Node版本 20.15.0
+
 # 免责声明
 
 

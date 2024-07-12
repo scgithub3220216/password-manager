@@ -1,4 +1,6 @@
 export const packageVersion = '1.1.6';
+// oss
+export const ossTypeAliYun = 'oss';
 
 // emitter topic
 export const emitterInsertGroupTopic = 'insertGroupTopic';
@@ -25,7 +27,7 @@ export const defaultCopyLinkShortcutKey = 'Ctrl + L';
 export const defaultInsertGroupShortcutKey = 'Ctrl + G';
 export const defaultInsertPwdInfoShortcutKey = 'Ctrl + N';
 
-export const supportLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/gvxig7bdxvkko2dr?singleDoc# 《捐赠清单》';
+export const ossHelpLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/zdv235flfkshlpv7?singleDoc# 《阿里云账号操作指引》'
 
 export const helpLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/nwnlnh2yg81h1n0q?singleDoc# 《帮助手册-Pc端》';
 

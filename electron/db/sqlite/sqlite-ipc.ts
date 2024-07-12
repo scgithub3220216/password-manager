@@ -14,10 +14,12 @@ import {
     IPC_SQLITE_SELECT_GET_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_GROUP_DATA,
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
+    IPC_SQLITE_SELECT_OSS_DATA,
     IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA,
     IPC_SQLITE_UPDATE_CONFIG_DATA,
     IPC_SQLITE_UPDATE_GROUP_DATA,
+    IPC_SQLITE_UPDATE_OSS_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
 } from '../../constant.ts';
@@ -34,6 +36,7 @@ import {
     updatePwdInfo
 } from "./mapper/pwdInfo.ts";
 import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
+import {getOss, updateOss} from "./mapper/oss.ts";
 
 
 // sqlite
@@ -42,6 +45,19 @@ import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
  * SQLiteIPC
  */
 export const SQLiteIPC = () => {
+    // config
+    // ipc sqlite update data
+    ipcMain.handle(IPC_SQLITE_UPDATE_OSS_DATA, (_event, ...args) => {
+        console.log(`IPC_SQLITE_UPDATE_OSS_DATA  args : ${args}`);
+        updateOss(...args);
+    });
+
+    // ipc sqlite select data
+    ipcMain.handle(IPC_SQLITE_SELECT_OSS_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_OSS_DATA  args : ${args}`);
+        return await getOss(args);
+    });
+
     // config
     // ipc sqlite update data
     ipcMain.handle(IPC_SQLITE_UPDATE_CONFIG_DATA, (_event, ...args) => {

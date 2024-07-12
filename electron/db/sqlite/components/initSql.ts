@@ -79,6 +79,17 @@ function createTable() {
             "desc"        TEXT
         );
     `);
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS "oss"
+        (
+            "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "type"       TEXT NOT NULL,
+            "region"     TEXT,
+            "keyId"      TEXT,
+            "key_secret" TEXT,
+            "bucket"     TEXT
+        );
+    `);
 
     console.log('表创建成功');
 
@@ -91,12 +102,22 @@ function insertData() {
         insertShortcutKeyData()
         insertGroupData()
         insertPwdInfoData()
+        insertOssData();
         console.log('批量插入成功');
     } catch (err) {
         console.error('批量插入时出错:', err);
     }
 }
 
+function insertOssData() {
+    const ossArr: string[] = [
+        `INSERT INTO "oss" ("id", "type", "region", "keyId", "key_secret", "bucket")
+         VALUES (1, 'oss', NULL, NULL, NULL, NULL);`,
+        `INSERT INTO "oss" ("id", "type", "region", "keyId", "key_secret", "bucket")
+         VALUES (2, 'cos', NULL, NULL, NULL, NULL);`
+    ]
+    ossArr.forEach(oss => db.exec(oss));
+}
 
 function insertConfigData() {
     // config

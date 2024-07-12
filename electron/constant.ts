@@ -11,6 +11,10 @@ export const WINDOW_INDEX_COLOR = '#fff';
 
 // IPC SQLITE
 
+// oss
+export const IPC_SQLITE_UPDATE_OSS_DATA = 'ipc-sqlite-update-oss-data';
+export const IPC_SQLITE_SELECT_OSS_DATA = 'ipc-sqlite-select-oss-data';
+
 // config
 export const IPC_SQLITE_UPDATE_CONFIG_DATA = 'ipc-sqlite-update-config-data';
 export const IPC_SQLITE_SELECT_CONFIG_DATA = 'ipc-sqlite-select-config-data';
