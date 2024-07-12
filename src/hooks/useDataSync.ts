@@ -25,6 +25,13 @@ export default function () {
 
     // 把数据库的数据同步到 oss
     async function syncToOss() {
+        // 1. 读取配置文件
+
+        // 1. 修改操作就上传
+        // 2. 定时上传
+        //      判断 lastUpdateTime 和 lastUploadTime 相差是否超过 5s以内
+        //          在: 跳过
+        //          不在:上传
         const groupList = await listGroup();
         const pwdInfoList: PwdInfo[] = [];
         if (!groupList) return;
