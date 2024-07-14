@@ -7,6 +7,8 @@ import {useDark} from "@vueuse/core";
 import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
 import useDBConfig from "./useDBConfig.ts";
 import {toggleDark} from "../styles/dark/dark.ts";
+import useDataSync from "./useDataSync.ts";
+import useDBOss from "./useDBOss.ts";
 
 export default function () {
 
@@ -14,12 +16,17 @@ export default function () {
     const {logout} = useLoginAction();
     const {getLockTime} = useBasicSet()
     const {getConfigValue} = useDBConfig()
+    const {syncToLocal} = useDataSync()
+    const {getOss} = useDBOss()
+
 
     onMounted(() => {
         console.log(`App onMounted `)
         setDarkTheme()
         setAutoLogout()
+        syncToLocal()
     });
+
 
     async function setDarkTheme() {
         // 设置主题

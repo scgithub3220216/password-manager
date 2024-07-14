@@ -1,19 +1,23 @@
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import {autoLockTime, autoLockTimeUnit, autoStart} from "../../electron/db/sqlite/components/configConstants.ts";
+import {autoLockTime, autoLockTimeUnit, autoStart, ossSyncSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
 import {IPC_AUTO_START} from "../../electron/constant.ts";
+import useDataSync from "./useDataSync.ts";
 
 export default function () {
     const userInfoStore = useUserDataInfoStore();
     const {lockTime, timeUnit} = storeToRefs(userInfoStore)
     const {getConfigValue, setConfigValue} = useDBConfig()
     const autoStartValue = ref(false);
+    const ossSwitchValue = ref(false);
+    const{syncToOss} = useDataSync()
 
     onMounted(async () => {
         console.log("BasicSet 挂载完毕");
         autoStartValue.value = await getConfigValue(autoStart) === '1';
+        ossSwitchValue.value = await getConfigValue(ossSyncSwitch) === '1';
         // userInfoStore.lockTime = +await getConfigValue(autoLockTime)
         // userInfoStore.timeUnit = +await getConfigValue(autoLockTimeUnit)
         userInfoStore.setLockTime(+await getConfigValue(autoLockTime), +await getConfigValue(autoLockTimeUnit))
@@ -60,5 +64,26 @@ export default function () {
         setConfigValue(autoStartValue.value ? '1' : '0', autoStart)
     }
 
-    return {getLockTime, setLockTime, autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange};
+    function ossSwitchChange() {
+        console.log(`ossSwitchChange:${ossSwitchValue.value}`);
+        // 修改 数据
+        setConfigValue(ossSwitchValue.value ? '1' : '0', ossSyncSwitch)
+        // 如果为true , 就上传
+        if (ossSwitchValue.value) {
+            syncToOss();
+        }
+    }
+
+    return {
+        getLockTime,
+        setLockTime,
+        autoStartChange,
+        ossSwitchChange,
+        ossSwitchValue,
+        autoStartValue,
+        lockTime,
+        timeUnit,
+        timeUnits,
+        lockTimeChange
+    };
 }

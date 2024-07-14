@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {defineExpose, ref} from 'vue'
+import {ref} from 'vue'
 import useBrowser from "../../hooks/useBrowser.ts";
 import {giteeCodeLink, giteeIssueLink, supportDesc} from "../../config/config.ts";
 

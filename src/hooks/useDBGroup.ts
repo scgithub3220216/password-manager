@@ -20,9 +20,9 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_GROUP_DATA, id);
     }
 
-    function updateGroup(title: string, id: number) {
+    async function updateGroup(title: string, id: number) {
         console.log(`useDBGroup.ts updateGroup title:${group},id:${id}`)
-        window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_GROUP_DATA, title, id);
+        return await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_GROUP_DATA, title, id);
     }
 
     async function listGroup(): Promise<PwdGroup[]> {

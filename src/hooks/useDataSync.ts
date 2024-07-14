@@ -1,52 +1,130 @@
 import useDBOss from "./useDBOss.ts";
 import {onMounted, reactive, ref} from "vue";
-import {Oss, OssSyncObj, PwdInfo} from "../components/type.ts";
+import {OssForm, OssSyncObj, PwdInfo} from "../components/type.ts";
 import {ElMessage, ElNotification} from "element-plus";
-import {login, putFile} from "../oss";
 import {ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
+import useDBConfig from "./useDBConfig.ts";
+import {ossSyncSwitch, ossVersion} from "../../electron/db/sqlite/components/configConstants.ts";
+import {useOssStore} from "../store/oss.ts";
+import useOss from "./useOss.ts";
 
 export default function () {
-    const key = "password"
+    const pwdListKey = "password"
+    const ossVersionKey = "ossVersion";
+    const ossStore = useOssStore()
 
     // database 配置
-    const databaseForm = reactive<Oss>({})
+    const databaseForm = reactive<OssForm>({})
     const {updateOss, getOss} = useDBOss()
     const {listGroup} = useDBGroup()
     const {listPwdInfo} = useDBPwdInfo()
+    const {getConfigValue, setConfigValue} = useDBConfig()
+    const {login, getFile, putFile} = useOss()
 
     onMounted(async () => {
-        // todo 获取到配置 用哪个
         const ossAliYun = await getOss(ossTypeAliYun);
         Object.assign(databaseForm, ossAliYun);
         console.log('useDataSync.ts 挂载完毕')
     })
 
+    async function getSyncSwitch() {
+        let ossSyncSwitchValue = await getConfigValue(ossSyncSwitch);
+        if (!parseInt(ossSyncSwitchValue)) {
+            console.log('同步开关 关闭,退出')
+            return true;
+        }
+        return false
+    }
+
+    async function judgeOssLoginFlag() {
+        let client = ossStore.getClient()
+        if (client) return true;
+
+        const ossFrom: OssForm = await getOss(ossTypeAliYun)
+        if (!ossFrom || !ossFrom.key_secret) return false;
+
+        return await login(ossFrom).then((client) => {
+            console.log('登录成功！');
+            return true;
+            // 这里可以使用client进行后续操作
+        }).catch((error) => {
+            console.error('登录失败:', error);
+            return false;
+        });
+    }
+
+    async function syncToLocal() {
+        console.log('syncToLocal')
+        if (await getSyncSwitch()) return;
+        if (!await judgeOssLoginFlag()) return;
+
+        //  先获取 oss 的 version , 查看和本地是否一致
+        if (!await syncToLocalJudge()) {
+            console.log('syncToLocal 版本一致, 无序更新 ')
+            return;
+        }
+
+        // 不一致, 获取 oss 数据
+        getFile(pwdListKey).then((json) => {
+            console.log('syncToLocal json', json)
+            // todo 如果没值, 忽略
+            if (!json) {
+                return;
+            }
+
+        })
+    }
+
     // 把数据库的数据同步到 oss
     async function syncToOss() {
-        // 1. 读取配置文件
+        let localVersion = await getConfigValue(ossVersion);
+        await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
 
-        // 1. 修改操作就上传
-        // 2. 定时上传
-        //      判断 lastUpdateTime 和 lastUploadTime 相差是否超过 5s以内
-        //          在: 跳过
-        //          不在:上传
+        if (!await judgeOssLoginFlag()) return;
+
+        if (await getSyncSwitch()) return;
+
+        upload()
+    }
+
+    async function syncToLocalJudge() {
+        let remoteVersion = await getFile(ossVersionKey);
+        let localVersion = await getConfigValue(String(ossVersion));
+        console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
+        if (remoteVersion && parseInt(localVersion) < parseInt(remoteVersion)) {
+            console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} :需同步`)
+            return true;
+        }
+        return false;
+    }
+
+    async function upload() {
+        console.log('useDataSync.ts  upload')
         const groupList = await listGroup();
-        const pwdInfoList: PwdInfo[] = [];
+        let pwdInfoList: PwdInfo[] = [];
         if (!groupList) return;
         for (const group of groupList) {
-            pwdInfoList.concat(await listPwdInfo(group.id));
+            let items = await listPwdInfo(group.id);
+            pwdInfoList = pwdInfoList.concat(items);
         }
         let syncOjb: OssSyncObj = {
             groupList: groupList,
             pwdInfoList: pwdInfoList,
         }
-        putFile(key, JSON.stringify(syncOjb)).then(() => {
-            ElMessage.success('同步成功')
+        putFile(pwdListKey, JSON.stringify(syncOjb)).then(async () => {
+            // ElMessage.success('同步成功')
+            let localVersion = await getConfigValue(ossVersion);
+            putFile(ossVersionKey, localVersion)
+                .then()
+                .catch((err: any) => {
+                    ElMessage.error('上传失败')
+                    console.error('上传版本号失败:', err)
+                })
         }).catch((err: any) => {
-            ElMessage.error('同步失败')
-            console.error(err)
+            ElMessage.error('上传失败')
+            console.error('上传数据失败:', err)
         })
     }
 
@@ -120,5 +198,5 @@ export default function () {
     }
 
 
-    return {ruleFormRef, formRules, databaseForm, syncToOss,save, testCli};
+    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, syncToLocal, save, testCli};
 }

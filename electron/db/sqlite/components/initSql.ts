@@ -13,6 +13,8 @@ import {
     defaultPwdValue,
     firstLoginFlag,
     firstLoginFlagValue,
+    ossSyncSwitch,
+    ossVersion,
     pwd
 } from "./configConstants.ts";
 
@@ -83,7 +85,7 @@ function createTable() {
         CREATE TABLE IF NOT EXISTS "oss"
         (
             "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            "type"       TEXT NOT NULL,
+            "type"       TEXT    NOT NULL,
             "region"     TEXT,
             "keyId"      TEXT,
             "key_secret" TEXT,
@@ -128,6 +130,8 @@ function insertConfigData() {
         {code: darkSwitch, value: darkSwitchValue},
         {code: autoLockTime, value: autoLockTimeValue},
         {code: autoLockTimeUnit, value: autoLockTimeUnitValue},
+        {code: ossVersion, value: 1},
+        {code: ossSyncSwitch, value: 0},
     ];
 
     const configValues = configInserts.map(({code, value}) => `('${code}', '${value}')`).join(',');

@@ -8,6 +8,7 @@ import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Switch, UserFilled, 
 import {storeToRefs} from "pinia";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
+import useDataSync from "../../hooks/useDataSync.ts";
 
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
@@ -22,6 +23,7 @@ const randomPwdGenerateRef = ref();
 defineExpose({keydown, pwdInfoTitleInput});
 const {updatePwdInfo} = useDBPwdInfo();
 const {insertPwdInfo} = useDBPwdInfo();
+const {syncToOss} = useDataSync()
 
 async function pwdInfoChange() {
   console.log("pwdInfoChange");
@@ -35,7 +37,11 @@ async function pwdInfoChange() {
       curPwdInfo.value.group_title = curGroup.value.title;
     }
   }
-  updatePwdInfo(curPwdInfo.value).then(() => userDataInfoStore.setChangePwdInfoFlag(true))
+  updatePwdInfo(curPwdInfo.value)
+      .then(() => {
+        userDataInfoStore.setChangePwdInfoFlag(true)
+        syncToOss()
+      })
 }
 
 

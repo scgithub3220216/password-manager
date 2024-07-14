@@ -6,7 +6,7 @@ export interface OssSyncObj {
     groupList: PwdGroup[];
 }
 
-export interface Oss {
+export interface OssForm {
 
     id: number;
     type: string; // 1 阿里云 2 腾讯云

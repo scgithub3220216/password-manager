@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import useBasicSet from "../../hooks/useBasicSet.ts";
 
-const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
+const {autoStartChange,ossSwitchChange,ossSwitchValue, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
 
 
 </script>
@@ -34,6 +34,12 @@ const {autoStartChange, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeC
             :value="item.value"
         />
       </el-select>
+    </el-form-item>
+  </div>
+
+  <div class="setting-item">
+    <el-form-item label="Oss同步" >
+      <el-switch v-model="ossSwitchValue" @change="ossSwitchChange"/>
     </el-form-item>
   </div>
 </template>

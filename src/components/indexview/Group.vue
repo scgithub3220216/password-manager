@@ -11,6 +11,7 @@ import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
+import useDataSync from "../../hooks/useDataSync.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
 const {curGroup, darkSwitch, importFlag} = storeToRefs(userDataInfoStore)
@@ -20,7 +21,6 @@ const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const groupInputRef = ref();
 const groupInputShowFlag = ref(false);
 const groupInputValue = ref("");
-const groupEditInputRef = ref();
 const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
@@ -28,6 +28,7 @@ const curEditGroupIndex = ref(-1)
 const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
 const {countPwdInfo} = useDBPwdInfo()
 const groupList = ref<PwdGroup[]>()
+const {syncToOss} = useDataSync()
 
 onMounted(() => {
   console.log("Index onMounted");
@@ -98,6 +99,7 @@ function groupInputChange() {
         groupList.value = await listGroup();
         userDataInfoStore.setCurGroup(groupList.value[groupList.value?.length - 1]);
         cssSwitchStore.setGroupIndex(groupList.value?.length - 1)
+        syncToOss()
       })
 
 }
@@ -106,13 +108,13 @@ function groupInputChange() {
 function triggerGroupEdit() {
   console.log("triggerGroupEdit1");
   curEditGroupIndex.value = curGroupIndex.value;
-  groupEditInputRef.value.focus();
 }
 
 function editGroups(title: string) {
   console.log("editGroups");
   curEditGroupIndex.value = -1;
-  updateGroup(title, curGroup.value.id);
+  updateGroup(title, curGroup.value.id)
+      .then(() => syncToOss())
 }
 
 async function deleteGroup() {
@@ -153,7 +155,6 @@ async function deleteGroup() {
             <span v-show="index !== curEditGroupIndex"> {{ group.title }}</span>
             <el-input
                 v-show="index === curEditGroupIndex"
-                ref="groupEditInputRef"
                 v-model="group.title"
                 @blur="editGroups(group.title)"
                 @change="editGroups(group.title)"

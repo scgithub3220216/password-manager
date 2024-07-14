@@ -12,9 +12,9 @@ export default function () {
         return config?.value;
     }
 
-    function setConfigValue(value: string, code: string) {
+    async function setConfigValue(value: string, code: string) {
         console.log(`setConfigValue value:${value} code:${code}`)
-        window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_CONFIG_DATA, value, code);
+        await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_CONFIG_DATA, value, code);
     }
 
     return {getConfigValue, setConfigValue};

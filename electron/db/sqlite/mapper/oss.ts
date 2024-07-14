@@ -1,5 +1,5 @@
 import {baseGetSql, baseUpdateSql} from "../components/baseSql.ts";
-import {Oss} from "../../../../src/components/type.ts";
+import {OssForm} from "../../../../src/components/type.ts";
 
 
 /**
@@ -15,7 +15,7 @@ export const updateOss = (...params: any[]) => {
                    WHERE type = ?;`, ...params);
 }
 
-export const getOss = async (type: string): Promise<Oss> => {
+export const getOss = async (type: string): Promise<OssForm> => {
     console.log(`getOss type:${type}`)
     return await baseGetSql(`SELECT *
                              FROM "oss"
