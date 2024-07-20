@@ -59,11 +59,6 @@ export default function () {
 
 
     async function syncToLocal() {
-        console.log('syncToLocal')
-        if (await getSyncSwitch()) {
-            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
-            return;
-        }
 
         getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
             if (value && value === '1') {
@@ -127,7 +122,6 @@ export default function () {
         await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
 
         if (await getSyncSwitch()) {
-            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
             return;
         }
 

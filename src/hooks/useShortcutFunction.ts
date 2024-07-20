@@ -7,11 +7,12 @@ import emitter from "../utils/emitter.ts";
 import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic, emitterLockTopic} from "../config/config.ts";
 import {ShortCutKeyComb} from "../components/type.ts";
 import useDataSync from "./useDataSync.ts";
+import {ElMessage} from "element-plus";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
     const {curPwdInfo} = storeToRefs(userDataInfoStore);
-    const {syncToLocal, syncToOss} = useDataSync()
+    const {syncToLocal, syncToOss, getSyncSwitch} = useDataSync()
     //设置秘钥和秘钥偏移量
     const functionMap: { [key: string]: () => void } = {
         // 'openMainWin': openMainWin,
@@ -80,13 +81,21 @@ export default function () {
         emitter.emit(emitterInsertPwdInfoTopic, '')
     }
 
-    function syncLocalToOss() {
+    async function syncLocalToOss() {
         console.log('syncLocalToOss')
+        if (await getSyncSwitch()) {
+            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+            return;
+        }
         syncToOss()
     }
 
-    function syncOssToLocal() {
+    async function syncOssToLocal() {
         console.log('syncOssToLocal')
+        if (await getSyncSwitch()) {
+            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+            return;
+        }
         syncToLocal()
     }
 
