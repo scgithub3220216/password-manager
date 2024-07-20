@@ -15,20 +15,15 @@ export default function () {
     const {logout} = useLoginAction();
     const {getLockTime} = useBasicSet()
     const {getConfigValue} = useDBConfig()
-    const {syncToLocal, getSyncSwitch} = useDataSync()
-    // const {getOss} = useDBOss()
-
+    const {syncToLocal} = useDataSync()
 
     onMounted(() => {
-        console.log(`App onMounted `)
-        setDarkTheme()
-        setAutoLogout()
-        getSyncSwitch().then((flag) => {
-            if (!flag) {
-                syncToLocal()
-            }
-        });
-    });
+            console.log(`App onMounted `)
+            setDarkTheme()
+            setAutoLogout()
+            syncToLocal()
+        }
+    )
 
 
     async function setDarkTheme() {
@@ -58,7 +53,7 @@ export default function () {
 
     }
 
-    // 规定时间中不操作, 默认退出 (自动回登录页面)
+// 规定时间中不操作, 默认退出 (自动回登录页面)
     let timeoutId: NodeJS.Timeout;
 
     function resetTimer() {
@@ -75,7 +70,7 @@ export default function () {
     }
 
 
-    // 监听路由哈希
+// 监听路由哈希
     const routes = {
         '/login': Login,
         '/index': Index,

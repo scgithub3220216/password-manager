@@ -59,7 +59,9 @@ export default function () {
 
 
     async function syncToLocal() {
-
+        if (await getSyncSwitch()) {
+            return;
+        }
         getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
             if (value && value === '1') {
                 await downLoadOss().then(() => {
@@ -67,8 +69,18 @@ export default function () {
                 });
             }
         })
-
     }
+
+    async function manualSyncToLocal() {
+        if (await getSyncSwitch()) {
+            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+            return;
+        }
+        await downLoadOss().then(() => {
+            ElMessage.success('数据拉取成功');
+        });
+    }
+
 
     async function downLoadOss() {
         if (!await judgeOssLoginFlag()) return;
@@ -118,20 +130,40 @@ export default function () {
 
     // 把数据库的数据同步到 oss
     async function syncToOss() {
+        updateLocalVersion()
+            .then(async () => {
+                if (await getSyncSwitch()) {
+                    return;
+                }
+                getConfigValue(ossSyncAutoUploadSwitch)
+                    .then(async (value) => {
+                        if (value && value === '1') {
+                            await upload().then(() => {
+                                ElMessage.success('数据同步成功');
+                            });
+                        }
+                    })
+            })
+
+    }
+
+    async function manualSyncToOss() {
+
+        updateLocalVersion().then(async () => {
+            if (await getSyncSwitch()) {
+                ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+                return;
+            }
+            await upload().then(() => {
+                ElMessage.success('数据同步成功');
+            });
+        })
+
+    }
+
+    async function updateLocalVersion() {
         let localVersion = await getConfigValue(ossVersion);
         await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
-
-        if (await getSyncSwitch()) {
-            return;
-        }
-
-        getConfigValue(ossSyncAutoUploadSwitch).then(async (value) => {
-            if (value && value === '1') {
-                await upload().then(() => {
-                    ElMessage.success('数据同步成功');
-                });
-            }
-        })
     }
 
     async function upload() {
@@ -235,5 +267,5 @@ export default function () {
     }
 
 
-    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, syncToLocal, getSyncSwitch, save, testCli};
+    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, manualSyncToOss, syncToLocal,manualSyncToLocal, getSyncSwitch, save, testCli};
 }

@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import useBasicSet from "../../hooks/useBasicSet.ts";
 
-const {autoStartChange,ossSwitchChange,ossSwitchValue, autoStartValue, lockTime, timeUnit, timeUnits, lockTimeChange} = useBasicSet();
+const {
+  autoStartChange, ossSwitchChange, ossSwitchValue, autoStartValue, lockTime, timeUnit, timeUnits,
+  ossAutoUploadSwitchValue,
+  ossAutoDownloadSwitchValue,
+  ossAutoUploadSwitchValueChange,
+  ossAutoDownloadSwitchValueChange,
+  lockTimeChange
+} = useBasicSet();
 
 
 </script>
@@ -38,11 +45,14 @@ const {autoStartChange,ossSwitchChange,ossSwitchValue, autoStartValue, lockTime,
   </div>
 
   <div class="setting-item">
-    <el-form-item label="Oss同步" >
+    <el-form-item label="Oss同步">
       <el-switch v-model="ossSwitchValue" @change="ossSwitchChange"/>
-    <!--  上传  修改上传 / 手动上传     -->
-
-    <!--  下载  手动下载 / 自动下载     -->
+    </el-form-item>
+    <el-form-item label="自动上传" v-if="ossSwitchValue">
+      <el-switch v-model="ossAutoUploadSwitchValue" @change="ossAutoUploadSwitchValueChange"/>
+    </el-form-item>
+    <el-form-item label="自动下载" v-if="ossSwitchValue">
+      <el-switch v-model="ossAutoDownloadSwitchValue" @change="ossAutoDownloadSwitchValueChange"/>
     </el-form-item>
   </div>
 </template>

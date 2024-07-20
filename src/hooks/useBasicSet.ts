@@ -1,6 +1,13 @@
 import {useUserDataInfoStore} from "../store/userDataInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import {autoLockTime, autoLockTimeUnit, autoStart, ossSyncSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
+import {
+    autoLockTime,
+    autoLockTimeUnit,
+    autoStart,
+    ossSyncAutoDownloadSwitch,
+    ossSyncAutoUploadSwitch,
+    ossSyncSwitch
+} from "../../electron/db/sqlite/components/configConstants.ts";
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
 import {IPC_AUTO_START} from "../../electron/constant.ts";
@@ -12,16 +19,26 @@ export default function () {
     const {getConfigValue, setConfigValue} = useDBConfig()
     const autoStartValue = ref(false);
     const ossSwitchValue = ref(false);
-    const{syncToOss} = useDataSync()
+    const ossAutoUploadSwitchValue = ref(true);
+    const ossAutoDownloadSwitchValue = ref(true);
+    const {syncToOss} = useDataSync()
 
     onMounted(async () => {
         console.log("BasicSet 挂载完毕");
         autoStartValue.value = await getConfigValue(autoStart) === '1';
         ossSwitchValue.value = await getConfigValue(ossSyncSwitch) === '1';
-        // userInfoStore.lockTime = +await getConfigValue(autoLockTime)
-        // userInfoStore.timeUnit = +await getConfigValue(autoLockTimeUnit)
+        ossAutoUploadSwitchValue.value = await getConfigValue(ossSyncAutoUploadSwitch) === '1';
+        ossAutoDownloadSwitchValue.value = await getConfigValue(ossSyncAutoDownloadSwitch) === '1';
         userInfoStore.setLockTime(+await getConfigValue(autoLockTime), +await getConfigValue(autoLockTimeUnit))
     });
+
+
+    function ossAutoUploadSwitchValueChange(){
+        setConfigValue(ossAutoUploadSwitchValue.value ? '1' : '0', ossSyncAutoUploadSwitch)
+    }
+    function ossAutoDownloadSwitchValueChange(){
+        setConfigValue(ossAutoDownloadSwitchValue.value ? '1' : '0', ossSyncAutoDownloadSwitch)
+    }
 
     const timeUnits = [
         {
@@ -84,6 +101,10 @@ export default function () {
         lockTime,
         timeUnit,
         timeUnits,
+        ossAutoUploadSwitchValue,
+        ossAutoDownloadSwitchValue,
+        ossAutoUploadSwitchValueChange,
+        ossAutoDownloadSwitchValueChange,
         lockTimeChange
     };
 }
