@@ -12,12 +12,9 @@ const {openBrowser} = useBrowser()
 <template>
   <div class="content-input">
     <el-form ref="ruleFormRef" :model="databaseForm" :rules="formRules">
-      <el-form-item prop="type">
-        <el-radio-group v-model="databaseForm.type" style="margin: 0 auto">
-          <el-radio-button label="oss">阿里OSS</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item prop="region">
+      <div class="oss-register-doc">
+      </div>
+      <el-form-item prop="region" style="margin-top: 10px">
         <el-input v-model="databaseForm.region" clearable placeholder="region"></el-input>
       </el-form-item>
       <el-form-item prop="keyId">
@@ -32,12 +29,15 @@ const {openBrowser} = useBrowser()
     </el-form>
 
     <div class="content-button">
-      <el-button type="primary" @click="testCli(ruleFormRef)">测试连接</el-button>
-      <el-button type="primary" @click="save">保存</el-button>
+      <div>
+        <el-link type="primary" @click="openBrowser(ossHelpLink)">阿里云OSS注册指引</el-link>
+      </div>
+      <div>
+        <el-button type="primary" @click="testCli(ruleFormRef)">测试连接</el-button>
+        <el-button type="primary" @click="save">保存</el-button>
+      </div>
     </div>
-    <div class="oss-register-doc">
-      <el-link type="primary" @click="openBrowser(ossHelpLink)">阿里云OSS注册指引</el-link>
-    </div>
+
   </div>
 </template>
 
@@ -45,7 +45,9 @@ const {openBrowser} = useBrowser()
 
 
 .content-button {
-  margin-top: 10px;
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
 }
 
 
