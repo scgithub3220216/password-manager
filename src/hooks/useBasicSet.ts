@@ -11,7 +11,6 @@ import {
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
 import {IPC_AUTO_START} from "../../electron/constant.ts";
-import useDataSync from "./useDataSync.ts";
 
 export default function () {
     const userInfoStore = useUserDataInfoStore();
@@ -21,7 +20,6 @@ export default function () {
     const ossSwitchValue = ref(false);
     const ossAutoUploadSwitchValue = ref(true);
     const ossAutoDownloadSwitchValue = ref(true);
-    const {syncToOss} = useDataSync()
 
     onMounted(async () => {
         console.log("BasicSet 挂载完毕");
@@ -85,10 +83,6 @@ export default function () {
         console.log(`ossSwitchChange:${ossSwitchValue.value}`);
         // 修改 数据
         setConfigValue(ossSwitchValue.value ? '1' : '0', ossSyncSwitch)
-        // 如果为true , 就上传
-        if (ossSwitchValue.value) {
-            syncToOss();
-        }
     }
 
     return {

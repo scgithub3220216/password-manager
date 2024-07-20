@@ -64,9 +64,7 @@ export default function () {
         }
         getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
             if (value && value === '1') {
-                await downLoadOss().then(() => {
-                    ElMessage.success('数据拉取成功');
-                });
+                await downLoadOss()
             }
         })
     }
@@ -86,10 +84,10 @@ export default function () {
         if (!await judgeOssLoginFlag()) return;
 
         //  先获取 oss 的 version , 查看和本地是否一致
-        let remoteVersion = await getFile(ossVersionKey);
+        let remoteVersion = await getRemoteVersion();
         let localVersion = await getConfigValue(String(ossVersion));
         console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
-        if (!(remoteVersion && parseInt(localVersion) < parseInt(remoteVersion))) {
+        if (!(remoteVersion && parseInt(localVersion) < remoteVersion)) {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
             return;
         }
@@ -124,27 +122,45 @@ export default function () {
             }
 
         })
-        setConfigValue(remoteVersion, ossVersion)
+        setConfigValue(String(remoteVersion), ossVersion)
     }
 
 
-    // 把数据库的数据同步到 oss
     async function syncToOss() {
-        updateLocalVersion()
-            .then(async () => {
-                if (await getSyncSwitch()) {
-                    return;
-                }
-                getConfigValue(ossSyncAutoUploadSwitch)
-                    .then(async (value) => {
-                        if (value && value === '1') {
-                            await upload().then(() => {
-                                ElMessage.success('数据同步成功');
-                            });
-                        }
-                    })
-            })
+        let localVersion = parseInt(await getConfigValue(ossVersion));
+        localVersion++;
+        setConfigValue(String(localVersion), ossVersion)
 
+        if (await getSyncSwitch()) {
+            return;
+        }
+        let autoValue = await getConfigValue(ossSyncAutoUploadSwitch)
+        if (!autoValue || autoValue !== '1') {
+            return;
+        }
+        // 对比远程的版本号
+        let remoteVersion = await getRemoteVersion();
+        if (remoteVersion >= localVersion) {
+            console.log(`远程版本:${remoteVersion} >= 本地版本:${localVersion}, 无需同步`)
+            ElMessage.error('远程数据版本 >= 本地数据版本, 请先拉取远程数据再进行上传');
+            return;
+        }
+        upload()
+    }
+
+    async function getRemoteVersion() {
+        let remoteVersion;
+        try {
+            let version = await getFile(ossVersionKey);
+            if (!version) {
+                version = '0';
+            }
+            remoteVersion = parseInt(version);
+        } catch (e) {
+            console.log('获取OSS远程版本失败 返回 0 ')
+            remoteVersion = 0;
+        }
+        return remoteVersion;
     }
 
     async function manualSyncToOss() {
@@ -183,7 +199,6 @@ export default function () {
             pwdInfoList: pwdInfoList,
         }
         putFile(pwdListKey, JSON.stringify(syncOjb)).then(async () => {
-            // ElMessage.success('同步成功')
             let localVersion = await getConfigValue(ossVersion);
             putFile(ossVersionKey, localVersion)
                 .then()
@@ -267,5 +282,5 @@ export default function () {
     }
 
 
-    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, manualSyncToOss, syncToLocal,manualSyncToLocal, getSyncSwitch, save, testCli};
+    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, manualSyncToOss, syncToLocal, manualSyncToLocal, getSyncSwitch, save, testCli};
 }
