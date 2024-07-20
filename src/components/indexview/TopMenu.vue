@@ -9,16 +9,24 @@ import Support from "../topMenu/Support.vue";
 import useBrowser from "../../hooks/useBrowser.ts";
 import {helpLink} from "../../config/config.ts";
 import About from "../topMenu/About.vue";
+import useDBConfig from "../../hooks/useDBConfig.ts";
+import {localVersionField} from "../../../electron/db/sqlite/components/configConstants.ts";
+import {ElMessage} from "element-plus";
 
 const {openBrowser} = useBrowser();
 
 const {exportExcel} = useExcel();
+const {setConfigValue} = useDBConfig()
 const importRef = ref();
 const supportRrf = ref();
 const aboutRrf = ref();
 
 function openDevTools() {
   window.ipcRenderer.invoke(IPC_DEV_TOOLS);
+}
+
+function resetLocalVersion() {
+  setConfigValue('1', localVersionField).then(()=>ElMessage.success('重置成功'))
 }
 
 </script>
@@ -70,12 +78,41 @@ function openDevTools() {
           关于软件
         </el-dropdown-item>
 
-        <el-dropdown-item @click="openDevTools">
+        <!--        <el-dropdown-item @click="openDevTools">-->
+        <!--          <el-icon>-->
+        <!--            <Tools/>-->
+        <!--          </el-icon>-->
+        <!--          开发调试-->
+        <!--        </el-dropdown-item>-->
+        <el-dropdown-item>
           <el-icon>
-            <Tools/>
+            <Menu/>
           </el-icon>
-          开发调试
+          隐藏功能
+          <el-dropdown>
+            <span>&emsp;</span>
+
+            <template #dropdown>
+              <el-dropdown-menu>
+
+                <el-dropdown-item @click="openDevTools">
+                  <el-icon>
+                    <Tools/>
+                  </el-icon>
+                  开发调试
+                </el-dropdown-item>
+                <el-dropdown-item @click="resetLocalVersion">
+                  <el-icon>
+                    <Tools/>
+                  </el-icon>
+                  本地版本重置
+                </el-dropdown-item>
+
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </el-dropdown-item>
+
       </el-dropdown-menu>
     </template>
   </el-dropdown>

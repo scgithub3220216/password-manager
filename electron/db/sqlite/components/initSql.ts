@@ -13,10 +13,10 @@ import {
     defaultPwdValue,
     firstLoginFlag,
     firstLoginFlagValue,
+    localVersionField,
     ossSyncAutoDownloadSwitch,
     ossSyncAutoUploadSwitch,
     ossSyncSwitch,
-    ossVersion,
     pwd
 } from "./configConstants.ts";
 
@@ -132,7 +132,7 @@ function insertConfigData() {
         {code: darkSwitch, value: darkSwitchValue},
         {code: autoLockTime, value: autoLockTimeValue},
         {code: autoLockTimeUnit, value: autoLockTimeUnitValue},
-        {code: ossVersion, value: 1},
+        {code: localVersionField, value: 1},
         {code: ossSyncSwitch, value: 0},
         {code: ossSyncAutoUploadSwitch, value: 1},
         {code: ossSyncAutoDownloadSwitch, value: 1},

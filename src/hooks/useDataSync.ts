@@ -6,7 +6,12 @@ import {ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import {ossSyncAutoDownloadSwitch, ossSyncAutoUploadSwitch, ossSyncSwitch, ossVersion} from "../../electron/db/sqlite/components/configConstants.ts";
+import {
+    localVersionField,
+    ossSyncAutoDownloadSwitch,
+    ossSyncAutoUploadSwitch,
+    ossSyncSwitch
+} from "../../electron/db/sqlite/components/configConstants.ts";
 import {useOssStore} from "../store/oss.ts";
 import useOss from "./useOss.ts";
 
@@ -74,7 +79,7 @@ export default function () {
 
         //  先获取 oss 的 version , 查看和本地是否一致
         let remoteVersion = await getRemoteVersion();
-        let localVersion = await getConfigValue(String(ossVersion));
+        let localVersion = await getConfigValue(String(localVersionField));
         console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
         if (!(remoteVersion && parseInt(localVersion) < remoteVersion)) {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
@@ -111,13 +116,13 @@ export default function () {
             }
 
         })
-        setConfigValue(String(remoteVersion), ossVersion)
+        setConfigValue(String(remoteVersion), localVersionField)
     }
 
     async function syncToOss() {
-        let localVersion = parseInt(await getConfigValue(ossVersion));
+        let localVersion = parseInt(await getConfigValue(localVersionField));
         localVersion++;
-        setConfigValue(String(localVersion), ossVersion)
+        setConfigValue(String(localVersion), localVersionField)
 
         if (await getSyncSwitch()) {
             return;
@@ -153,7 +158,7 @@ export default function () {
             pwdInfoList: pwdInfoList,
         }
         putFile(pwdListKey, JSON.stringify(syncOjb)).then(async () => {
-            let localVersion = await getConfigValue(ossVersion);
+            let localVersion = await getConfigValue(localVersionField);
             putFile(ossVersionKey, localVersion)
                 .then()
                 .catch((err: any) => {
@@ -215,8 +220,8 @@ export default function () {
     }
 
     async function updateLocalVersion() {
-        let localVersion = await getConfigValue(ossVersion);
-        await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
+        let localVersion = await getConfigValue(localVersionField);
+        await setConfigValue(String(parseInt(localVersion) + 1), localVersionField)
     }
 
     async function getRemoteVersion() {
