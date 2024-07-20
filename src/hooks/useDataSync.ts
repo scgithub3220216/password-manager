@@ -31,33 +31,6 @@ export default function () {
         console.log('useDataSync.ts 挂载完毕')
     })
 
-    async function getSyncSwitch() {
-        let ossSyncSwitchValue = await getConfigValue(ossSyncSwitch);
-        if (!parseInt(ossSyncSwitchValue)) {
-            console.log('同步开关 关闭,退出')
-            return true;
-        }
-        return false
-    }
-
-    async function judgeOssLoginFlag() {
-        let client = ossStore.getClient()
-        if (client) return true;
-
-        const ossFrom: OssForm = await getOss(ossTypeAliYun)
-        if (!ossFrom || !ossFrom.key_secret) return false;
-        // @ts-ignore
-        return await login(ossFrom).then((client) => {
-            console.log('登录成功！');
-            return true;
-            // 这里可以使用client进行后续操作
-        }).catch((error) => {
-            console.error('登录失败:', error);
-            return false;
-        });
-    }
-
-
     async function syncToLocal() {
         if (await getSyncSwitch()) {
             return;
@@ -74,9 +47,25 @@ export default function () {
             ElMessage.error('同步开关已关闭,请打开同步开关后重试');
             return;
         }
+        if (await JudgeOssConfig()) {
+            ElMessage.error('远程数据同步配置的参数不正确,请正确填写');
+            return;
+        }
+        // 数据同步太快, 没必要用加载
+        // const loadingInstance = ElLoading.service({ fullscreen: true })
         await downLoadOss().then(() => {
             ElMessage.success('数据拉取成功');
-        });
+        })
+        // .finally(()=>loadingInstance.close());
+    }
+
+    async function JudgeOssConfig() {
+        const ossFrom: OssForm = await getOss(ossTypeAliYun)
+        return judgeOssFromNotExists(ossFrom);
+    }
+
+    function judgeOssFromNotExists(ossFrom: OssForm) {
+        return !ossFrom || !ossFrom.keyId || !ossFrom.key_secret || !ossFrom.bucket || !ossFrom.region;
     }
 
 
@@ -125,7 +114,6 @@ export default function () {
         setConfigValue(String(remoteVersion), ossVersion)
     }
 
-
     async function syncToOss() {
         let localVersion = parseInt(await getConfigValue(ossVersion));
         localVersion++;
@@ -146,40 +134,6 @@ export default function () {
             return;
         }
         upload()
-    }
-
-    async function getRemoteVersion() {
-        let remoteVersion;
-        try {
-            let version = await getFile(ossVersionKey);
-            if (!version) {
-                version = '0';
-            }
-            remoteVersion = parseInt(version);
-        } catch (e) {
-            console.log('获取OSS远程版本失败 返回 0 ')
-            remoteVersion = 0;
-        }
-        return remoteVersion;
-    }
-
-    async function manualSyncToOss() {
-
-        updateLocalVersion().then(async () => {
-            if (await getSyncSwitch()) {
-                ElMessage.error('同步开关已关闭,请打开同步开关后重试');
-                return;
-            }
-            await upload().then(() => {
-                ElMessage.success('数据同步成功');
-            });
-        })
-
-    }
-
-    async function updateLocalVersion() {
-        let localVersion = await getConfigValue(ossVersion);
-        await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
     }
 
     async function upload() {
@@ -210,6 +164,74 @@ export default function () {
             ElMessage.error('上传失败')
             console.error('上传数据失败:', err)
         })
+    }
+
+    async function manualSyncToOss() {
+
+        updateLocalVersion().then(async () => {
+            if (await getSyncSwitch()) {
+                ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+                return;
+            }
+            if (await JudgeOssConfig()) {
+                ElMessage.error('远程数据同步配置的参数不正确,请正确填写');
+                return;
+            }
+            await upload().then(() => {
+                ElMessage.success('数据同步成功');
+            });
+        })
+
+    }
+
+    async function getSyncSwitch() {
+        let ossSyncSwitchValue = await getConfigValue(ossSyncSwitch);
+        if (!parseInt(ossSyncSwitchValue)) {
+            console.log('同步开关 关闭,退出')
+            return true;
+        }
+        return false
+    }
+
+    async function judgeOssLoginFlag() {
+        let client = ossStore.getClient()
+        if (client) return true;
+
+        const ossFrom: OssForm = await getOss(ossTypeAliYun)
+        if (judgeOssFromNotExists(ossFrom)) {
+            // 应用进来时, 如果开启了自动配置, 报错只会显示在控制台
+            console.error('远程数据同步配置的参数不正确,请正确填写')
+            return false;
+        }
+        // @ts-ignore
+        return await login(ossFrom).then((client) => {
+            console.log('登录成功！');
+            return true;
+            // 这里可以使用client进行后续操作
+        }).catch((error) => {
+            console.error('登录失败:', error);
+            return false;
+        });
+    }
+
+    async function updateLocalVersion() {
+        let localVersion = await getConfigValue(ossVersion);
+        await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
+    }
+
+    async function getRemoteVersion() {
+        let remoteVersion;
+        try {
+            let version = await getFile(ossVersionKey);
+            if (!version) {
+                version = '0';
+            }
+            remoteVersion = parseInt(version);
+        } catch (e) {
+            console.log('获取OSS远程版本失败 返回 0 ')
+            remoteVersion = 0;
+        }
+        return remoteVersion;
     }
 
 
