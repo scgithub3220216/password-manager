@@ -3,6 +3,8 @@ import {ipcMain} from 'electron';
 
 // const
 import {
+    IPC_SQLITE_DELETE_ALL_GROUP_DATA,
+    IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA,
     IPC_SQLITE_DELETE_GROUP_DATA,
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
     IPC_SQLITE_GET_ID_GROUP_DATA,
@@ -24,9 +26,10 @@ import {
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
-import {delGroup, getIdByTitle, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
+import {delAllGroup, delGroup, getIdByTitle, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
 import {
     countPwdInfo,
+    delAllPwdInfo,
     delPwdInfo,
     getPwdInfo,
     insertPwdInfo,
@@ -85,6 +88,12 @@ export const SQLiteIPC = () => {
         return await delGroup(args);
     });
 
+    // ipc sqlite delete data
+    ipcMain.handle(IPC_SQLITE_DELETE_ALL_GROUP_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_DELETE_ALL_GROUP_DATA `);
+        return await delAllGroup();
+    });
+
 
     // ipc sqlite update data
     ipcMain.handle(IPC_SQLITE_UPDATE_GROUP_DATA, async (_event, ...args) => {
@@ -119,6 +128,12 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_DELETE_PWD_INFO_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_DELETE_PWD_INFO_DATA  args : ${args}`);
         return await delPwdInfo(args);
+    });
+
+    // ipc sqlite delete data
+    ipcMain.handle(IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA`);
+        return await delAllPwdInfo();
     });
 
 

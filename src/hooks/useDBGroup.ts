@@ -1,4 +1,5 @@
 import {
+    IPC_SQLITE_DELETE_ALL_GROUP_DATA,
     IPC_SQLITE_DELETE_GROUP_DATA,
     IPC_SQLITE_GET_ID_GROUP_DATA,
     IPC_SQLITE_INSERT_GROUP_DATA,
@@ -20,6 +21,11 @@ export default function () {
         return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_GROUP_DATA, id);
     }
 
+    async function delAllGroup() {
+        console.log(`useDBGroup.ts delAllGroup`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_ALL_GROUP_DATA);
+    }
+
     async function updateGroup(title: string, id: number) {
         console.log(`useDBGroup.ts updateGroup title:${group},id:${id}`)
         return await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_GROUP_DATA, title, id);
@@ -37,5 +43,5 @@ export default function () {
     }
 
 
-    return {insertGroup, delGroup, updateGroup, listGroup, getIdByTitle};
+    return {insertGroup, delGroup, delAllGroup, updateGroup, listGroup, getIdByTitle};
 }

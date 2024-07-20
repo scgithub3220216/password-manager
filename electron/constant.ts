@@ -21,6 +21,7 @@ export const IPC_SQLITE_SELECT_CONFIG_DATA = 'ipc-sqlite-select-config-data';
 // group
 export const IPC_SQLITE_INSERT_GROUP_DATA = 'ipc-sqlite-insert-group-data';
 export const IPC_SQLITE_DELETE_GROUP_DATA = 'ipc-sqlite-delete-group-data';
+export const IPC_SQLITE_DELETE_ALL_GROUP_DATA = 'ipc-sqlite-delete-all-group-data';
 export const IPC_SQLITE_UPDATE_GROUP_DATA = 'ipc-sqlite-update-group-data';
 export const IPC_SQLITE_SELECT_GROUP_DATA = 'ipc-sqlite-select-group-data';
 export const IPC_SQLITE_GET_ID_GROUP_DATA = 'ipc-sqlite-getId-group-data';
@@ -29,6 +30,7 @@ export const IPC_SQLITE_GET_ID_GROUP_DATA = 'ipc-sqlite-getId-group-data';
 export const IPC_SQLITE_INSERT_PWD_INFO_DATA = 'ipc-sqlite-insert-pwd-info-data';
 export const IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA = 'ipc-sqlite-insert-by-import-pwd-info-data';
 export const IPC_SQLITE_DELETE_PWD_INFO_DATA = 'ipc-sqlite-delete-pwd-info-data';
+export const IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA = 'ipc-sqlite-delete-all-pwd-info-data';
 export const IPC_SQLITE_UPDATE_PWD_INFO_DATA = 'ipc-sqlite-update-pwd-info-data';
 export const IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA = 'ipc-sqlite-select-list-pwd-info-data';
 export const IPC_SQLITE_SELECT_GET_PWD_INFO_DATA = 'ipc-sqlite-select-get-pwd-info-data';

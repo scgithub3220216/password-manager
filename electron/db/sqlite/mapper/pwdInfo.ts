@@ -20,7 +20,12 @@ export const delPwdInfo = async (id: number) => {
     return await baseUpdateSql(`DELETE
                                 FROM "pwd_info"
                                 WHERE id = ?;`, id);
+}
 
+export const delAllPwdInfo = async () => {
+    console.log(`delAllPwdInfo`)
+    return await baseUpdateSql(`DELETE
+                                FROM "pwd_info";`);
 }
 
 export const updatePwdInfo = async (...params: any[]) => {

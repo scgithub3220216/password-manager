@@ -1,4 +1,5 @@
 import {
+    IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA,
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
@@ -26,6 +27,11 @@ export default function () {
     async function delPwdInfo(id: number) {
         console.log(`useDBPwdInfo.ts delPwdInfo id:${id}`)
         return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_PWD_INFO_DATA, id);
+    }
+
+    async function delAllPwdInfo() {
+        console.log(`useDBPwdInfo.ts delAllPwdInfo }`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA);
     }
 
     async function updatePwdInfo(pwdInfo: PwdInfo) {
@@ -56,5 +62,5 @@ export default function () {
     }
 
 
-    return {insertPwdInfo, insertPwdInfoByImport, delPwdInfo, updatePwdInfo, listPwdInfo, listPwdInfoBySearch, countPwdInfo};
+    return {insertPwdInfo, insertPwdInfoByImport, delPwdInfo,delAllPwdInfo, updatePwdInfo, listPwdInfo, listPwdInfoBySearch, countPwdInfo};
 }

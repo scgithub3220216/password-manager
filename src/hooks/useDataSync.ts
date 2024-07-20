@@ -14,8 +14,10 @@ export default function () {
     const pwdListKey = "password"
     const ossVersionKey = "ossVersion";
     const ossStore = useOssStore()
+    const {delAllGroup, insertGroup} = useDBGroup()
+    const {delAllPwdInfo, insertPwdInfoByImport} = useDBPwdInfo()
 
-    // database 配置
+    // @ts-ignore database 配置
     const databaseForm = reactive<OssForm>({})
     const {updateOss, getOss} = useDBOss()
     const {listGroup} = useDBGroup()
@@ -44,7 +46,7 @@ export default function () {
 
         const ossFrom: OssForm = await getOss(ossTypeAliYun)
         if (!ossFrom || !ossFrom.key_secret) return false;
-
+        // @ts-ignore
         return await login(ossFrom).then((client) => {
             console.log('登录成功！');
             return true;
@@ -54,6 +56,7 @@ export default function () {
             return false;
         });
     }
+
 
     async function syncToLocal() {
         console.log('syncToLocal')
@@ -69,9 +72,30 @@ export default function () {
         // 不一致, 获取 oss 数据
         getFile(pwdListKey).then((json) => {
             console.log('syncToLocal json', json)
-            // todo 如果没值, 忽略
+            // 如果没值, 忽略
             if (!json) {
                 return;
+            }
+            // 先进行解析
+            const ossSyncObj: OssSyncObj = JSON.parse(json);
+
+            // 判断是否有值
+            if (ossSyncObj.groupList && ossSyncObj.groupList.length > 0) {
+                // 插入  先删除 再新增
+                delAllGroup().then(() => {
+                    ossSyncObj.groupList.forEach((group) => {
+                        insertGroup(group.title, group.father_id)
+                    })
+                })
+            }
+
+            if (ossSyncObj.pwdInfoList && ossSyncObj.pwdInfoList.length > 0) {
+                // 插入  先删除 再新增
+                delAllPwdInfo().then(() => {
+                    ossSyncObj.pwdInfoList.forEach((pwdInfo) => {
+                        insertPwdInfoByImport(pwdInfo)
+                    })
+                })
             }
 
         })

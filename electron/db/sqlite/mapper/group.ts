@@ -15,7 +15,11 @@ export const delGroup = async (params: number) => {
     return await baseUpdateSql(`DELETE
                                 FROM "group"
                                 WHERE id = ?;`, params);
-
+}
+export const delAllGroup = async () => {
+    console.log(`delAllGroup `)
+    return await baseUpdateSql(`DELETE
+                                FROM "group";`);
 }
 
 export const updateGroup = async (...params: any[]) => {
