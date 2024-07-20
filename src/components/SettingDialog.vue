@@ -37,7 +37,7 @@ defineExpose({
         <UpdatePwd/>
       </el-tab-pane>
 
-      <el-tab-pane label="多端数据同步">
+      <el-tab-pane label="远程数据同步">
         <DataSync/>
       </el-tab-pane>
 

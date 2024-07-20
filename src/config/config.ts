@@ -1,4 +1,4 @@
-export const packageVersion = '1.1.6';
+export const packageVersion = '2.0.0';
 // oss
 export const ossTypeAliYun = 'oss';
 
