@@ -41,7 +41,7 @@ export default function () {
     async function handleEnter() {
         console.log('handlerEnter')
         let pwdValue = await getConfigValue(pwd);
-        console.log(`pwdValue:${pwdValue}; password.value:${password.value}`)
+        // console.log(`pwdValue:${pwdValue}; password.value:${password.value}`)
         pwdValue === sha512HexHash((password.value)) ? loginSuccess() : pwdError()
     }
 
