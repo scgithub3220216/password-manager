@@ -14,7 +14,7 @@ export default function () {
     const pwdListKey = "password"
     const ossVersionKey = "ossVersion";
     const ossStore = useOssStore()
-    const {delAllGroup, insertGroup} = useDBGroup()
+    const {delAllGroup, insertOssGroup} = useDBGroup()
     const {delAllPwdInfo, insertPwdInfoByImport} = useDBPwdInfo()
 
     // @ts-ignore database 配置
@@ -60,22 +60,30 @@ export default function () {
 
     async function syncToLocal() {
         console.log('syncToLocal')
+        if (await getSyncSwitch()) {
+            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+            return;
+        }
+
         getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
             if (value && value === '1') {
-                await downLoadOss();
+                await downLoadOss().then(() => {
+                    ElMessage.success('数据拉取成功');
+                });
             }
         })
 
     }
 
     async function downLoadOss() {
-        // todo ui 同步标识
-        if (await getSyncSwitch()) return;
         if (!await judgeOssLoginFlag()) return;
 
         //  先获取 oss 的 version , 查看和本地是否一致
-        if (!await syncToLocalJudge()) {
-            console.log('syncToLocal 版本一致, 无需更新 ')
+        let remoteVersion = await getFile(ossVersionKey);
+        let localVersion = await getConfigValue(String(ossVersion));
+        console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
+        if (!(remoteVersion && parseInt(localVersion) < parseInt(remoteVersion))) {
+            console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
             return;
         }
 
@@ -94,7 +102,7 @@ export default function () {
                 // 插入  先删除 再新增
                 delAllGroup().then(() => {
                     ossSyncObj.groupList.forEach((group) => {
-                        insertGroup(group.title, group.father_id)
+                        insertOssGroup(group.id, group.title, group.father_id)
                     })
                 })
             }
@@ -109,8 +117,7 @@ export default function () {
             }
 
         })
-        // todo 关闭同步标识
-
+        setConfigValue(remoteVersion, ossVersion)
     }
 
 
@@ -119,24 +126,18 @@ export default function () {
         let localVersion = await getConfigValue(ossVersion);
         await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
 
-        if (await getSyncSwitch()) return;
+        if (await getSyncSwitch()) {
+            ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+            return;
+        }
 
         getConfigValue(ossSyncAutoUploadSwitch).then(async (value) => {
             if (value && value === '1') {
-                await upload();
+                await upload().then(() => {
+                    ElMessage.success('数据同步成功');
+                });
             }
         })
-    }
-
-    async function syncToLocalJudge() {
-        let remoteVersion = await getFile(ossVersionKey);
-        let localVersion = await getConfigValue(String(ossVersion));
-        console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
-        if (remoteVersion && parseInt(localVersion) < parseInt(remoteVersion)) {
-            console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} :需同步`)
-            return true;
-        }
-        return false;
     }
 
     async function upload() {
@@ -240,5 +241,5 @@ export default function () {
     }
 
 
-    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, syncToLocal, save, testCli};
+    return {ruleFormRef, formRules, databaseForm, syncToOss, upload, syncToLocal, getSyncSwitch, save, testCli};
 }

@@ -7,7 +7,6 @@ import emitter from "../utils/emitter.ts";
 import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic, emitterLockTopic} from "../config/config.ts";
 import {ShortCutKeyComb} from "../components/type.ts";
 import useDataSync from "./useDataSync.ts";
-import {ElMessage} from "element-plus";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
@@ -83,16 +82,12 @@ export default function () {
 
     function syncLocalToOss() {
         console.log('syncLocalToOss')
-        syncToOss().then(() => {
-            ElMessage.success('数据同步成功');
-        })
+        syncToOss()
     }
 
     function syncOssToLocal() {
         console.log('syncOssToLocal')
-        syncToLocal().then(() => {
-            ElMessage.success('数据拉取成功');
-        })
+        syncToLocal()
     }
 
     return {getShortCuts};

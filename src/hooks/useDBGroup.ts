@@ -3,6 +3,7 @@ import {
     IPC_SQLITE_DELETE_GROUP_DATA,
     IPC_SQLITE_GET_ID_GROUP_DATA,
     IPC_SQLITE_INSERT_GROUP_DATA,
+    IPC_SQLITE_INSERT_OSS_GROUP_DATA,
     IPC_SQLITE_SELECT_GROUP_DATA,
     IPC_SQLITE_UPDATE_GROUP_DATA
 } from "../../electron/constant.ts";
@@ -14,6 +15,11 @@ export default function () {
     async function insertGroup(title: string, fatherId: number): Promise<number> {
         console.log(`useDBGroup.ts insertGroup title:${title},fatherId:${fatherId}`)
         return await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_GROUP_DATA, title, fatherId);
+    }
+
+    async function insertOssGroup(id: number, title: string, fatherId: number): Promise<number> {
+        console.log(`useDBGroup.ts insertGroup id:${id},.title:${title},fatherId:${fatherId}`)
+        return await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_OSS_GROUP_DATA, id, title, fatherId);
     }
 
     async function delGroup(id: number) {
@@ -43,5 +49,5 @@ export default function () {
     }
 
 
-    return {insertGroup, delGroup, delAllGroup, updateGroup, listGroup, getIdByTitle};
+    return {insertGroup, insertOssGroup, delGroup, delAllGroup, updateGroup, listGroup, getIdByTitle};
 }

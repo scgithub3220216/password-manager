@@ -9,6 +9,11 @@ export const insertGroup = async (...params: any[]) => {
     return await baseInsertSql(`INSERT INTO "group" (title, father_id)
                                 VALUES (?, ?);`, ...params);
 }
+export const insertGroupByOss = async (...params: any[]) => {
+    console.log(`insertGroup params:${params}`)
+    return await baseInsertSql(`INSERT INTO "group" (id, title, father_id)
+                                VALUES (?, ?, ?);`, ...params);
+}
 
 export const delGroup = async (params: number) => {
     console.log(`delGroup params:${params}`)

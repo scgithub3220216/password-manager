@@ -10,6 +10,7 @@ import {
     IPC_SQLITE_GET_ID_GROUP_DATA,
     IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA,
     IPC_SQLITE_INSERT_GROUP_DATA,
+    IPC_SQLITE_INSERT_OSS_GROUP_DATA,
     IPC_SQLITE_INSERT_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_CONFIG_DATA,
     IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA,
@@ -26,7 +27,7 @@ import {
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
-import {delAllGroup, delGroup, getIdByTitle, insertGroup, listGroup, updateGroup} from "./mapper/group.ts";
+import {delAllGroup, delGroup, getIdByTitle, insertGroup, insertGroupByOss, listGroup, updateGroup} from "./mapper/group.ts";
 import {
     countPwdInfo,
     delAllPwdInfo,
@@ -80,6 +81,11 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_INSERT_GROUP_DATA, async (_event, ...args) => {
         console.log(`IPC_SQLITE_INSERT_GROUP_DATA  args : ${args}`);
         return await insertGroup(...args);
+    });
+
+    ipcMain.handle(IPC_SQLITE_INSERT_OSS_GROUP_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_OSS_GROUP_DATA  args : ${args}`);
+        return await insertGroupByOss(...args);
     });
 
     // ipc sqlite delete data

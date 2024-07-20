@@ -16,7 +16,7 @@ export default function () {
                 bucket: form.bucket,
             })
 
-            // 获取文件列表验证权限是否正确
+            // @ts-ignore 获取文件列表验证权限是否正确
             client.list({'max-keys': 1}).then(() => {
                 ossStore.setClient(client);
                 resolve(client)
@@ -29,7 +29,8 @@ export default function () {
 // 上传文件
     async function putFile(ossKey: string, json: string) {
         try {
-            console.log(`putFile ossKey:${ossKey} ;`)
+            console.log(`putFile ossKey:${ossKey}`)
+            // @ts-ignore
             let buffer = new OSS.Buffer(JSON.stringify(json));
             // const blob = new Blob([new Uint8Array(JSON.stringify(json).split('').map(c => c.charCodeAt(0)))], {type: 'application/json'});
 
@@ -86,6 +87,7 @@ export default function () {
             // console.log(client)
             const result = await client.get(ossKey);
             // console.log(result);
+            // @ts-ignore
             if (!result || result.res.statusCode !== 200) {
                 return '';
             }

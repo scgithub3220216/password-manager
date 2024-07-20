@@ -20,6 +20,7 @@ export const IPC_SQLITE_UPDATE_CONFIG_DATA = 'ipc-sqlite-update-config-data';
 export const IPC_SQLITE_SELECT_CONFIG_DATA = 'ipc-sqlite-select-config-data';
 // group
 export const IPC_SQLITE_INSERT_GROUP_DATA = 'ipc-sqlite-insert-group-data';
+export const IPC_SQLITE_INSERT_OSS_GROUP_DATA = 'ipc-sqlite-insert-oss-group-data';
 export const IPC_SQLITE_DELETE_GROUP_DATA = 'ipc-sqlite-delete-group-data';
 export const IPC_SQLITE_DELETE_ALL_GROUP_DATA = 'ipc-sqlite-delete-all-group-data';
 export const IPC_SQLITE_UPDATE_GROUP_DATA = 'ipc-sqlite-update-group-data';

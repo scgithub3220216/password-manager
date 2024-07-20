@@ -15,7 +15,7 @@ export default function () {
     const {logout} = useLoginAction();
     const {getLockTime} = useBasicSet()
     const {getConfigValue} = useDBConfig()
-    const {syncToLocal} = useDataSync()
+    const {syncToLocal, getSyncSwitch} = useDataSync()
     // const {getOss} = useDBOss()
 
 
@@ -23,7 +23,11 @@ export default function () {
         console.log(`App onMounted `)
         setDarkTheme()
         setAutoLogout()
-        syncToLocal()
+        getSyncSwitch().then((flag) => {
+            if (!flag) {
+                syncToLocal()
+            }
+        });
     });
 
 

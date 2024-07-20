@@ -70,7 +70,7 @@ function createWindow() {
     })
     // 隐藏菜单栏 直接关闭,
     Menu.setApplicationMenu(null);
-    openDevTools(win);
+    // openDevTools(win);
 
 
     // Test active push message to Renderer-process.
