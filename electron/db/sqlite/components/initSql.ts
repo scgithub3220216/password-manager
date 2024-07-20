@@ -13,6 +13,8 @@ import {
     defaultPwdValue,
     firstLoginFlag,
     firstLoginFlagValue,
+    ossSyncAutoDownloadSwitch,
+    ossSyncAutoUploadSwitch,
     ossSyncSwitch,
     ossVersion,
     pwd
@@ -132,6 +134,8 @@ function insertConfigData() {
         {code: autoLockTimeUnit, value: autoLockTimeUnitValue},
         {code: ossVersion, value: 1},
         {code: ossSyncSwitch, value: 0},
+        {code: ossSyncAutoUploadSwitch, value: 1},
+        {code: ossSyncAutoDownloadSwitch, value: 1},
     ];
 
     const configValues = configInserts.map(({code, value}) => `('${code}', '${value}')`).join(',');
@@ -156,7 +160,11 @@ function insertShortcutKeyData() {
         `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
          VALUES (6, 'insertGroup', 'Ctrl + G');`,
         `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
-         VALUES (7, 'insertPwdInfo', 'Ctrl + N');`]
+         VALUES (7, 'insertPwdInfo', 'Ctrl + N');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (8, 'syncLocalToOss', 'Ctrl + Shift + K');`,
+        `INSERT INTO "shortcut_key" ("id", "action_name", "desc")
+         VALUES (9, 'syncOssToLocal', 'F5');`]
     shortcutKeyArr.forEach(shortcutKey => db.exec(shortcutKey));
 }
 

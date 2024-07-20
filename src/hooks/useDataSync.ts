@@ -6,7 +6,7 @@ import {ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import {ossSyncSwitch, ossVersion} from "../../electron/db/sqlite/components/configConstants.ts";
+import {ossSyncAutoDownloadSwitch, ossSyncAutoUploadSwitch, ossSyncSwitch, ossVersion} from "../../electron/db/sqlite/components/configConstants.ts";
 import {useOssStore} from "../store/oss.ts";
 import useOss from "./useOss.ts";
 
@@ -60,12 +60,22 @@ export default function () {
 
     async function syncToLocal() {
         console.log('syncToLocal')
+        getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
+            if (value && value === '1') {
+                await downLoadOss();
+            }
+        })
+
+    }
+
+    async function downLoadOss() {
+        // todo ui 同步标识
         if (await getSyncSwitch()) return;
         if (!await judgeOssLoginFlag()) return;
 
         //  先获取 oss 的 version , 查看和本地是否一致
         if (!await syncToLocalJudge()) {
-            console.log('syncToLocal 版本一致, 无序更新 ')
+            console.log('syncToLocal 版本一致, 无需更新 ')
             return;
         }
 
@@ -99,18 +109,23 @@ export default function () {
             }
 
         })
+        // todo 关闭同步标识
+
     }
+
 
     // 把数据库的数据同步到 oss
     async function syncToOss() {
         let localVersion = await getConfigValue(ossVersion);
         await setConfigValue(String(parseInt(localVersion) + 1), ossVersion)
 
-        if (!await judgeOssLoginFlag()) return;
-
         if (await getSyncSwitch()) return;
 
-        upload()
+        getConfigValue(ossSyncAutoUploadSwitch).then(async (value) => {
+            if (value && value === '1') {
+                await upload();
+            }
+        })
     }
 
     async function syncToLocalJudge() {
@@ -126,6 +141,9 @@ export default function () {
 
     async function upload() {
         console.log('useDataSync.ts  upload')
+
+        if (!await judgeOssLoginFlag()) return;
+
         const groupList = await listGroup();
         let pwdInfoList: PwdInfo[] = [];
         if (!groupList) return;

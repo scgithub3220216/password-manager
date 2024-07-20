@@ -7,7 +7,9 @@ import {
     defaultInsertGroupShortcutKey,
     defaultInsertPwdInfoShortcutKey,
     defaultLogoutShortcutKey,
-    defaultOpenMainWinShortcutKey
+    defaultOpenMainWinShortcutKey,
+    defaultSyncLocalToOssShortcutKey,
+    defaultSyncOssToLocalShortcutKey
 } from "../config/config.ts";
 import useDBShortcutKey from "./useDBShortcutKey.ts";
 import {
@@ -51,6 +53,12 @@ export default function () {
     const insertPwdInfos = ref("");
     const insertPwdInfoArr = ref<string[]>([]);
 
+    const syncLocalToOss = ref("");
+    const syncLocalToOssArr = ref<string[]>([]);
+
+    const syncOssToLocals = ref("");
+    const syncOssToLocalsArr = ref<string[]>([]);
+
     onMounted(() => {
         console.log("shorCutKeys onMounted");
         mainShortcuts.value = shortCutKeyCombs.value[0].desc;
@@ -60,6 +68,8 @@ export default function () {
         cpLinks.value = shortCutKeyCombs.value[4].desc;
         insertGroups.value = shortCutKeyCombs.value[5].desc;
         insertPwdInfos.value = shortCutKeyCombs.value[6].desc;
+        syncLocalToOss.value = shortCutKeyCombs.value[7].desc;
+        syncOssToLocals.value = shortCutKeyCombs.value[8].desc;
     });
 
 
@@ -307,6 +317,74 @@ export default function () {
         updateShortCutKey(insertPwdInfo, insertPwdInfos.value)
     }
 
+    // 上传数据 syncLocalToOss
+    function handleSyncLocalToOssKeydown(e: any) {
+        console.log('handleSyncLocalToOssKeydown key:', e.key)
+        e.stopPropagation();
+        let key = e.key;
+        if (key === "Control") {
+            key = "Ctrl";
+        }
+        if (syncLocalToOssArr.value.includes(key)) {
+            return;
+        }
+        syncLocalToOssArr.value.push(processKey(key));
+        syncLocalToOss.value = syncLocalToOssArr.value.join(joinSymbol);
+    }
+
+    function handleSyncLocalToOssKeyup() {
+        console.log('handleSyncLocalToOssKeyup')
+        // 在键盘抬起时清空 currentKeys 数组
+        syncLocalToOssArr.value = [];
+    }
+
+    function clearSyncLocalToOssKeys() {
+        console.log('clearSyncLocalToOssKeys')
+        syncLocalToOssArr.value = [];
+        syncLocalToOss.value = ""
+    }
+
+
+    function saveSyncLocalToOssShortcuts() {
+        console.log("saveSyncLocalToOssShortcuts", syncLocalToOss.value);
+        shortcutKeyStore.setShortCutKeyComb(6, syncLocalToOss.value);
+        updateShortCutKey(insertPwdInfo, syncLocalToOss.value)
+    }
+
+    // 下载数据 syncOssToLocals
+    function handleSyncOssToLocalsKeydown(e: any) {
+        console.log('handleSyncOssToLocalsKeydown key:', e.key)
+        e.stopPropagation();
+        let key = e.key;
+        if (key === "Control") {
+            key = "Ctrl";
+        }
+        if (syncOssToLocalsArr.value.includes(key)) {
+            return;
+        }
+        syncOssToLocalsArr.value.push(processKey(key));
+        syncOssToLocals.value = syncOssToLocalsArr.value.join(joinSymbol);
+    }
+
+    function handleSyncOssToLocalsKeyup() {
+        console.log('handleSyncOssToLocalsKeyup')
+        // 在键盘抬起时清空 currentKeys 数组
+        syncOssToLocalsArr.value = [];
+    }
+
+    function clearSyncOssToLocalsKeys() {
+        console.log('clearSyncOssToLocalsKeys')
+        syncOssToLocalsArr.value = [];
+        syncOssToLocals.value = ""
+    }
+
+
+    function saveSyncOssToLocalsShortcuts() {
+        console.log("saveSyncOssToLocalsShortcuts", syncOssToLocals.value);
+        shortcutKeyStore.setShortCutKeyComb(6, syncOssToLocals.value);
+        updateShortCutKey(insertPwdInfo, syncOssToLocals.value)
+    }
+
     function processKey(key: string): string {
         if (!key) {
             return key;
@@ -329,6 +407,8 @@ export default function () {
             saveCpLinksShortcuts();
             saveInsertGroupsShortcuts();
             saveInsertPwdInfosShortcuts();
+            saveSyncLocalToOssShortcuts();
+            saveSyncOssToLocalsShortcuts();
         } catch (e) {
             console.log("saveAll error:", e);
             ElMessage.error('快捷键设置失败');
@@ -345,6 +425,8 @@ export default function () {
         cpLinks.value = defaultCopyLinkShortcutKey;
         insertGroups.value = defaultInsertGroupShortcutKey;
         insertPwdInfos.value = defaultInsertPwdInfoShortcutKey;
+        syncLocalToOss.value = defaultSyncLocalToOssShortcutKey;
+        syncOssToLocals.value = defaultSyncOssToLocalShortcutKey;
     }
 
     return {
@@ -382,6 +464,16 @@ export default function () {
         handleInsertPwdInfosKeydown,
         handleInsertPwdInfosKeyup,
         clearInsertPwdInfosKeys,
+
+        syncLocalToOss,
+        handleSyncLocalToOssKeydown,
+        handleSyncLocalToOssKeyup,
+        clearSyncLocalToOssKeys,
+
+        syncOssToLocals,
+        handleSyncOssToLocalsKeydown,
+        handleSyncOssToLocalsKeyup,
+        clearSyncOssToLocalsKeys,
 
         saveAll,
         reset

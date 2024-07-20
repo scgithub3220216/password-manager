@@ -8,7 +8,6 @@ import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts
 import useDBConfig from "./useDBConfig.ts";
 import {toggleDark} from "../styles/dark/dark.ts";
 import useDataSync from "./useDataSync.ts";
-import useDBOss from "./useDBOss.ts";
 
 export default function () {
 
@@ -17,7 +16,7 @@ export default function () {
     const {getLockTime} = useBasicSet()
     const {getConfigValue} = useDBConfig()
     const {syncToLocal} = useDataSync()
-    const {getOss} = useDBOss()
+    // const {getOss} = useDBOss()
 
 
     onMounted(() => {

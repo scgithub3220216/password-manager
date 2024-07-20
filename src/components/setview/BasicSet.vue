@@ -40,6 +40,9 @@ const {autoStartChange,ossSwitchChange,ossSwitchValue, autoStartValue, lockTime,
   <div class="setting-item">
     <el-form-item label="Oss同步" >
       <el-switch v-model="ossSwitchValue" @change="ossSwitchChange"/>
+    <!--  上传  修改上传 / 手动上传     -->
+
+    <!--  下载  手动下载 / 自动下载     -->
     </el-form-item>
   </div>
 </template>

@@ -26,6 +26,8 @@ export const defaultCopyPwdShortcutKey = 'Ctrl + P';
 export const defaultCopyLinkShortcutKey = 'Ctrl + L';
 export const defaultInsertGroupShortcutKey = 'Ctrl + G';
 export const defaultInsertPwdInfoShortcutKey = 'Ctrl + N';
+export const defaultSyncLocalToOssShortcutKey = 'Ctrl + Shift + K';
+export const defaultSyncOssToLocalShortcutKey = 'F5';
 
 export const ossHelpLink = 'https://www.yuque.com/youshidadianhua-tbssk/xd5gi1/zdv235flfkshlpv7?singleDoc# 《阿里云账号操作指引》'
 

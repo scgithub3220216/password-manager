@@ -6,10 +6,13 @@ import {storeToRefs} from "pinia";
 import emitter from "../utils/emitter.ts";
 import {emitterInsertGroupTopic, emitterInsertPwdInfoTopic, emitterLockTopic} from "../config/config.ts";
 import {ShortCutKeyComb} from "../components/type.ts";
+import useDataSync from "./useDataSync.ts";
+import {ElMessage} from "element-plus";
 
 export default function () {
     const userDataInfoStore = useUserDataInfoStore();
     const {curPwdInfo} = storeToRefs(userDataInfoStore);
+    const {syncToLocal, syncToOss} = useDataSync()
     //设置秘钥和秘钥偏移量
     const functionMap: { [key: string]: () => void } = {
         // 'openMainWin': openMainWin,
@@ -19,6 +22,8 @@ export default function () {
         'copyLink': copyLink,
         'insertGroup': insertGroup,
         'insertPwdInfo': insertPwdInfo,
+        'syncLocalToOss': syncLocalToOss,
+        'syncOssToLocal': syncOssToLocal,
         // 其他函数...
     };
 
@@ -74,7 +79,20 @@ export default function () {
     function insertPwdInfo() {
         console.log('insertPwdInfo')
         emitter.emit(emitterInsertPwdInfoTopic, '')
+    }
 
+    function syncLocalToOss() {
+        console.log('syncLocalToOss')
+        syncToOss().then(() => {
+            ElMessage.success('数据同步成功');
+        })
+    }
+
+    function syncOssToLocal() {
+        console.log('syncOssToLocal')
+        syncToLocal().then(() => {
+            ElMessage.success('数据拉取成功');
+        })
     }
 
     return {getShortCuts};

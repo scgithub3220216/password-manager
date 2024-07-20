@@ -8,7 +8,9 @@ import {
     defaultInsertGroupShortcutKey,
     defaultInsertPwdInfoShortcutKey,
     defaultLogoutShortcutKey,
-    defaultOpenMainWinShortcutKey
+    defaultOpenMainWinShortcutKey,
+    defaultSyncLocalToOssShortcutKey,
+    defaultSyncOssToLocalShortcutKey
 } from "../config/config.ts";
 
 export const useShortcutKeyStore = defineStore('shortcutKey', {
@@ -77,6 +79,18 @@ export const useShortcutKeyStore = defineStore('shortcutKey', {
                     keys: ['Ctrl', 'N'],
                     action_name: 'insertPwdInfo',
                     desc: defaultInsertPwdInfoShortcutKey
+                },
+                // 7
+                {
+                    keys: ['Ctrl', 'Shift', 'K'],
+                    action_name: 'syncLocalToOss',
+                    desc: defaultSyncLocalToOssShortcutKey
+                },
+                // 9
+                {
+                    keys: ['F5'],
+                    action_name: 'syncOssToLocal',
+                    desc: defaultSyncOssToLocalShortcutKey
                 },
 
             ]
