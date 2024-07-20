@@ -37,6 +37,16 @@ const {
   handleInsertPwdInfosKeyup,
   clearInsertPwdInfosKeys,
 
+  syncLocalToOss,
+  handleSyncLocalToOssKeydown,
+  handleSyncLocalToOssKeyup,
+  clearSyncLocalToOssKeys,
+
+  syncOssToLocals,
+  handleSyncOssToLocalsKeydown,
+  handleSyncOssToLocalsKeyup,
+  clearSyncOssToLocalsKeys,
+
   saveAll,
   reset
 } = useSetShortcutKey()
@@ -150,6 +160,36 @@ const {
         />
       </div>
 
+      <div class="setting-item">
+        <span style="display: block;">本地同步至远程:</span>
+        <el-input
+            id="shortcuts"
+            v-model="syncLocalToOss"
+            class="ipt"
+            clearable
+            placeholder="无"
+            type="text"
+            @keydown="handleSyncLocalToOssKeydown"
+            @keyup="handleSyncLocalToOssKeyup"
+            @keydown.delete="clearSyncLocalToOssKeys"
+        />
+      </div>
+
+      <div class="setting-item">
+        <span style="display: block;">远程同步至本地:</span>
+        <el-input
+            id="shortcuts"
+            v-model="syncOssToLocals"
+            class="ipt"
+            clearable
+            placeholder="无"
+            type="text"
+            @keydown="handleSyncOssToLocalsKeydown"
+            @keyup="handleSyncOssToLocalsKeyup"
+            @keydown.delete="clearSyncOssToLocalsKeys"
+        />
+
+      </div>
 
       <div class="bttn">
         <el-button class="btn" type="primary" @click="reset">

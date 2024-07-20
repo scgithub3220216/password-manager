@@ -347,7 +347,7 @@ export default function () {
 
     function saveSyncLocalToOssShortcuts() {
         console.log("saveSyncLocalToOssShortcuts", syncLocalToOss.value);
-        shortcutKeyStore.setShortCutKeyComb(6, syncLocalToOss.value);
+        shortcutKeyStore.setShortCutKeyComb(7, syncLocalToOss.value);
         updateShortCutKey(insertPwdInfo, syncLocalToOss.value)
     }
 
@@ -381,7 +381,7 @@ export default function () {
 
     function saveSyncOssToLocalsShortcuts() {
         console.log("saveSyncOssToLocalsShortcuts", syncOssToLocals.value);
-        shortcutKeyStore.setShortCutKeyComb(6, syncOssToLocals.value);
+        shortcutKeyStore.setShortCutKeyComb(8, syncOssToLocals.value);
         updateShortCutKey(insertPwdInfo, syncOssToLocals.value)
     }
 
