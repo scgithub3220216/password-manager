@@ -4,6 +4,7 @@ export const ossTypeAliYun = 'oss';
 
 // emitter topic
 export const emitterInsertGroupTopic = 'insertGroupTopic';
+export const emitterRefreshGroupData = 'refreshGroupData';
 export const emitterLockTopic = 'lockTopic';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
 

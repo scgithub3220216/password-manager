@@ -5,7 +5,7 @@ import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
-import {emitterInsertGroupTopic} from "../../config/config.ts";
+import {emitterInsertGroupTopic, emitterRefreshGroupData} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
@@ -40,10 +40,15 @@ emitter.on(emitterInsertGroupTopic, (value) => {
   console.log(emitterInsertGroupTopic, ' 事件被触发 value:', value)
   triggerGroupsInsert()
 })
+emitter.on(emitterRefreshGroupData, (value) => {
+  console.log(emitterRefreshGroupData, ' 事件被触发 value:', value)
+  initData()
+})
 
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertGroupTopic)
+  emitter.off(emitterRefreshGroupData)
 })
 
 watch((importFlag), async (newVal) => {

@@ -2,7 +2,7 @@ import useDBOss from "./useDBOss.ts";
 import {onMounted, reactive, ref} from "vue";
 import {OssForm, OssSyncObj, PwdInfo} from "../components/type.ts";
 import {ElMessage, ElNotification} from "element-plus";
-import {ossTypeAliYun} from "../config/config.ts";
+import {emitterRefreshGroupData, ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
@@ -14,6 +14,7 @@ import {
 } from "../../electron/db/sqlite/components/configConstants.ts";
 import {useOssStore} from "../store/oss.ts";
 import useOss from "./useOss.ts";
+import emitter from "../utils/emitter.ts";
 
 export default function () {
     const pwdListKey = "password"
@@ -110,6 +111,7 @@ export default function () {
                     ossSyncObj.groupList.forEach((group) => {
                         insertOssGroup(group.id, group.title, group.father_id)
                     })
+                    emitter.emit(emitterRefreshGroupData, '')
                 })
             }
 
