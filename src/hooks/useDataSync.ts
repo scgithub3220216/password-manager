@@ -43,7 +43,7 @@ export default function () {
         }
         getConfigValue(ossSyncAutoDownloadSwitch).then(async (value) => {
             if (value && value === '1') {
-                await downLoadOss()
+                await downLoadOss(0)
             }
         })
     }
@@ -59,9 +59,7 @@ export default function () {
         }
         // 数据同步太快, 没必要用加载
         // const loadingInstance = ElLoading.service({ fullscreen: true })
-        await downLoadOss().then(() => {
-            // ElMessage.success('数据拉取成功');
-        })
+        await downLoadOss(1)
         // .finally(()=>loadingInstance.close());
     }
 
@@ -74,8 +72,11 @@ export default function () {
         return !ossFrom || !ossFrom.keyId || !ossFrom.key_secret || !ossFrom.bucket || !ossFrom.region;
     }
 
-
-    async function downLoadOss() {
+    /**
+     *
+     * @param type  0 自动  1 手动
+     */
+    async function downLoadOss(type: number) {
         if (!await judgeOssLoginFlag()) return;
 
         //  先获取 oss 的 version , 查看和本地是否一致
@@ -123,9 +124,11 @@ export default function () {
                     })
                 })
             }
-
         })
-        setConfigValue(String(remoteVersion), localVersionField)
+        await setConfigValue(String(remoteVersion), localVersionField)
+        if (type) {
+            ElMessage.success('数据拉取成功');
+        }
     }
 
     async function syncToOss() {
@@ -148,6 +151,24 @@ export default function () {
             return;
         }
         upload()
+    }
+
+    async function manualSyncToOss() {
+
+        updateLocalVersion().then(async () => {
+            if (await getSyncSwitch()) {
+                ElMessage.error('同步开关已关闭,请打开同步开关后重试');
+                return;
+            }
+            if (await JudgeOssConfig()) {
+                ElMessage.error('远程数据同步配置的参数不正确,请正确填写');
+                return;
+            }
+            await upload().then(() => {
+                ElMessage.success('数据同步成功');
+            });
+        })
+
     }
 
     async function upload() {
@@ -178,24 +199,6 @@ export default function () {
             ElMessage.error('上传失败')
             console.error('上传数据失败:', err)
         })
-    }
-
-    async function manualSyncToOss() {
-
-        updateLocalVersion().then(async () => {
-            if (await getSyncSwitch()) {
-                ElMessage.error('同步开关已关闭,请打开同步开关后重试');
-                return;
-            }
-            if (await JudgeOssConfig()) {
-                ElMessage.error('远程数据同步配置的参数不正确,请正确填写');
-                return;
-            }
-            await upload().then(() => {
-                ElMessage.success('数据同步成功');
-            });
-        })
-
     }
 
     async function getSyncSwitch() {
