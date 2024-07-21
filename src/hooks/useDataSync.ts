@@ -87,7 +87,7 @@ export default function () {
             ElMessage.error('远程数据为空,请先推送数据再进行拉取')
         } else if (parseInt(localVersion) == remoteVersion) {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
-            ElMessage.success('当前已是最新版本');
+            if (type) ElMessage.success('当前已是最新版本');
             return;
         } else if (parseInt(localVersion) > remoteVersion) {
             console.log(`remoteVersion:${remoteVersion} < localVersion:${localVersion} , 需要重置本地版本才能拉取 `)
@@ -126,9 +126,7 @@ export default function () {
             }
         })
         await setConfigValue(String(remoteVersion), localVersionField)
-        if (type) {
-            ElMessage.success('数据拉取成功');
-        }
+        if (type) ElMessage.success('数据拉取成功');
     }
 
     async function syncToOss() {
