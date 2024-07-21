@@ -81,8 +81,15 @@ export default function () {
         let remoteVersion = await getRemoteVersion();
         let localVersion = await getConfigValue(String(localVersionField));
         console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
-        if (!(remoteVersion && parseInt(localVersion) < remoteVersion)) {
+        if (!remoteVersion) {
+            ElMessage.error('远程数据为空,请先推送数据再进行拉取')
+        } else if (parseInt(localVersion) == remoteVersion) {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
+            return;
+            // ElMessage.error('本地数据版本与远程数据版')
+        } else if (parseInt(localVersion) > remoteVersion) {
+            console.log(`remoteVersion:${remoteVersion} < localVersion:${localVersion} , 需要重置本地版本才能拉取 `)
+            ElMessage.error(`本地数据版本(${localVersion}) > 远程数据版本(${remoteVersion}), \n\r 需要在隐藏功能中进行本地版本重置后才能拉取`)
             return;
         }
 
