@@ -6,8 +6,10 @@ import TopMenu from "./TopMenu.vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
 import {IPC_CLOSE_WIN, IPC_MAXIMIZE, IPC_MINIMIZE} from "../../../electron/constant.ts";
+import useLoginAction from "../../hooks/useLoginAction.ts";
 
 const {loginFlag} = storeToRefs(useUserDataInfoStore())
+const {logout} = useLoginAction();
 
 function minimize() {
   window.ipcRenderer.invoke(IPC_MINIMIZE);
@@ -19,7 +21,9 @@ function maximize() {
 }
 
 function close() {
+  // 退出登录
   window.ipcRenderer.invoke(IPC_CLOSE_WIN);
+  logout();
 }
 
 const isMaximized = ref(false)
