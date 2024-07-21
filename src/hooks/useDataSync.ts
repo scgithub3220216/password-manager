@@ -89,7 +89,6 @@ export default function () {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
             ElMessage.success('当前已是最新版本');
             return;
-            // ElMessage.error('本地数据版本与远程数据版')
         } else if (parseInt(localVersion) > remoteVersion) {
             console.log(`remoteVersion:${remoteVersion} < localVersion:${localVersion} , 需要重置本地版本才能拉取 `)
             ElMessage.error(`本地数据版本(${localVersion}) > 远程数据版本(${remoteVersion}), \n\r 需要在隐藏功能中进行本地版本重置后才能拉取`)
