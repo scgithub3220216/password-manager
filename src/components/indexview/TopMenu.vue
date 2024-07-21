@@ -26,7 +26,7 @@ function openDevTools() {
 }
 
 function resetLocalVersion() {
-  setConfigValue('1', localVersionField).then(()=>ElMessage.success('重置成功'))
+  setConfigValue('1', localVersionField).then(() => ElMessage.success('重置成功'))
 }
 
 </script>
@@ -78,19 +78,16 @@ function resetLocalVersion() {
           关于软件
         </el-dropdown-item>
 
-        <!--        <el-dropdown-item @click="openDevTools">-->
-        <!--          <el-icon>-->
-        <!--            <Tools/>-->
-        <!--          </el-icon>-->
-        <!--          开发调试-->
-        <!--        </el-dropdown-item>-->
         <el-dropdown-item>
-          <el-icon>
-            <Menu/>
-          </el-icon>
-          隐藏功能
+
+          <!--默认触发方式为hover-->
           <el-dropdown>
-            <span>&emsp;</span>
+            <div style="display: flex">
+              <el-icon>
+                <Menu/>
+              </el-icon>
+              隐藏功能
+            </div>
 
             <template #dropdown>
               <el-dropdown-menu>
