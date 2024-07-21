@@ -59,7 +59,7 @@ export default function () {
         // 数据同步太快, 没必要用加载
         // const loadingInstance = ElLoading.service({ fullscreen: true })
         await downLoadOss().then(() => {
-            ElMessage.success('数据拉取成功');
+            // ElMessage.success('数据拉取成功');
         })
         // .finally(()=>loadingInstance.close());
     }
