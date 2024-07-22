@@ -112,7 +112,7 @@ const {
         自动拉取
         <el-tooltip
             class="box-item"
-            content="软件启动时触发"
+            content="软件启动与登录成功时触发"
             effect="dark"
             placement="top"
         >
