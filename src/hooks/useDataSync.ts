@@ -85,6 +85,7 @@ export default function () {
         console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} `)
         if (!remoteVersion) {
             ElMessage.error('远程数据为空,请先推送数据再进行拉取')
+            return;
         } else if (parseInt(localVersion) == remoteVersion) {
             console.log(`remoteVersion:${remoteVersion} ,  localVersion:${localVersion} 版本一致, 无需更新 `)
             if (type) ElMessage.success('当前已是最新版本');
