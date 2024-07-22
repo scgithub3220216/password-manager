@@ -43,5 +43,12 @@
       "AppImage"
     ],
     "artifactName": "${productName}-Linux-${version}.${ext}"
-  }
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "star-sc",
+      "repo": "https://gitee.com/star-sc/password-manager.git"
+    }
+  ]
 }
