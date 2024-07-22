@@ -101,6 +101,38 @@ npm run dev
 npm run build
 ```
 
+
+
+## 问题指引
+
+### 1. better_sqlite3  NODE_MODULE_VERSION  版本不一致报错
+
+```bash
+Error: The module '\\?\F:\electron\password-manager\node_modules\better-sqlite3\build\Release\better_sqlite3.node'
+was compiled against a different Node.js version using
+NODE_MODULE_VERSION 115. This version of Node.js requires
+NODE_MODULE_VERSION 123. Please try re-compiling or re-installing
+the module (for instance, using `npm rebuild` or `npm install`).
+   at process.func [as dlopen] (node:electron/js2c/node_init:2:2214)
+   at Module._extensions..node (node:internal/modules/cjs/loader:1470:18)
+   at Object.func [as .node] (node:electron/js2c/node_init:2:2214)
+   at Module.load (node:internal/modules/cjs/loader:1215:32)
+   at Module._load (node:internal/modules/cjs/loader:1031:12)
+   at c._load (node:electron/js2c/node_init:2:13801)
+   at Module.require (node:internal/modules/cjs/loader:1240:19)
+   at require (node:internal/modules/helpers:179:18)
+   at bindings (F:\electron\password-manager\node_modules\bindings\bindings.js:112:48)
+   at new Database (F:\electron\password-manager\node_modules\better-sqlite3\lib\database.js:48:64) {
+ code: 'ERR_DLOPEN_FAILED'
+
+```
+
+#### 解决
+
+[参考文章](https://blog.csdn.net/OnMyWaySc/article/details/140570160?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22140570160%22%2C%22source%22%3A%22OnMyWaySc%22%7D)
+
+
+
 # 微信交流群
 
 <img src="./README.assets/image-20240704170636650.png" alt="image-20240704170636650" style="zoom:50%;" />
