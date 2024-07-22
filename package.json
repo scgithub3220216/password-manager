@@ -3,6 +3,12 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "description": "一个安全的密码管理器应用",
+  "author": "sc <gitee.com/star-sc>",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/star-sc/password-manager.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
