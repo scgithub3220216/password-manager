@@ -18,8 +18,8 @@ const version = ref(packageVersion)
     <p>密码管理器 <span></span></p>
     <p>作者：sc夫妻</p>
     <p>版本 {{ version }} (简体中文)</p>
-    <p>永久免费使用，无广告，无插件，无后门，无数据上传</p>
-    <a href="#"><p @click="openBrowser(giteeCodeLink)">Gitee开源 MIT协议</p></a>
+    <p>永久免费使用，无广告，无插件，无后门并承诺该软件永远不会以任何方式保留您的任何数据</p>
+    <a href="#"><p @click="openBrowser(giteeCodeLink)">Gitee开源 GPL3.0开源协议</p></a>
   </el-dialog>
 </template>
 
