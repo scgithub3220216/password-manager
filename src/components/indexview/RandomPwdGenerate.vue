@@ -4,7 +4,7 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {Promotion, RefreshLeft} from "@element-plus/icons-vue";
 
 const form = ref({});
-const selectedTypes = ref(["uppercase", "lowercase", "numbers", "special"]);
+const selectedTypes = ref(["uppercase", "lowercase", "numbers"]);
 const length = ref(8);
 const password = ref("");
 
