@@ -46,8 +46,7 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
 let win: BrowserWindow | null
-
-
+const appState = { isAppClosing: false };
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
     app.setAppUserModelId('password-manager')
@@ -83,8 +82,14 @@ function createWindow() {
     } else {
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
-    win.on('close', () => {
+    win.on('close', (event) => {
         console.log('close event')
+        if (!appState.isAppClosing) {
+            console.log('win?.hide()')
+            event.preventDefault();
+            win?.hide();
+            return false;
+        }
         quit();
     });
 
@@ -92,7 +97,7 @@ function createWindow() {
 
 app.whenReady().then(async () => {
     createWindow()
-    createTrayMenu(win)
+    createTrayMenu(win,appState)
     SQLiteIPC();
     await initTable();
     registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
@@ -100,6 +105,7 @@ app.whenReady().then(async () => {
 
 
 function quit() {
+    console.log('quit')
     app.quit()
     win = null
 }
@@ -118,6 +124,7 @@ app.on('window-all-closed', () => {
         quit();
     }
 })
+
 
 app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the

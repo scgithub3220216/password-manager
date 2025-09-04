@@ -3,7 +3,7 @@ import path from "node:path";
 import {helpLink} from "../src/config/config.ts";
 import {showWindows} from "./common.ts";
 
-export const createTrayMenu = (win: BrowserWindow | null) => {
+export const createTrayMenu = (win: BrowserWindow | null, appState: any) => {
     if (!win) return;
 
     let trayIcon = nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, 'assets/icon.ico'))
@@ -26,6 +26,7 @@ export const createTrayMenu = (win: BrowserWindow | null) => {
         },
         {
             label: '退出', click() {
+                appState.isAppClosing = true
                 app.quit()
             }
         },
