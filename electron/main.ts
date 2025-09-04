@@ -23,10 +23,10 @@ import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 import {openMainWindows} from "./db/sqlite/components/configConstants.ts";
 import {getShortcutKey} from "./db/sqlite/mapper/shortcutKey.ts";
+import UpdateManager from "./update-manager.ts";
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -44,7 +44,8 @@ export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
-
+//@ts-ignore
+let updateManager:UpdateManager
 let win: BrowserWindow | null
 const appState = { isAppClosing: false };
 function createWindow() {
@@ -82,6 +83,8 @@ function createWindow() {
     } else {
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
+    // 初始化更新管理器
+    updateManager = new UpdateManager(win);
     win.on('close', (event) => {
         console.log('close event')
         if (!appState.isAppClosing) {
@@ -92,16 +95,46 @@ function createWindow() {
         }
         quit();
     });
+    // 主窗口完成后显示托盘
+    win.webContents.on('dom-ready', () => {
+        // 如果需要在启动时就显示窗口，可以取消注释下面这行
+        // win.show();
+        console.log('hide app to pallet')
+        // 或者直接隐藏
+        win?.hide();
+    });
 
 }
 
 app.whenReady().then(async () => {
     createWindow()
     createTrayMenu(win,appState)
+    configureAutoUpdater();
     SQLiteIPC();
     await initTable();
     registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
+    // 应用启动时检查更新（可选）
+    setTimeout(() => {
+        console.log('准备检查更新')
+        updateManager.checkForUpdates();
+    }, 5000);
 })
+
+// 处理 IPC 消息
+ipcMain.handle('check-for-updates', async () => {
+    if (updateManager) {
+        updateManager.checkForUpdates();
+    }
+});
+function configureAutoUpdater() {
+// 配置自动更新
+    updateManager.setFeedURL({
+        provider: 'github',
+        owner: 'scgithub3220216',           // GitHub 用户名
+        repo: 'password-manager',            // 仓库名称
+        private: false                    // 是否私有仓库
+    });
+}
 
 
 function quit() {
