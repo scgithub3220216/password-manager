@@ -36,6 +36,15 @@ export interface Config {
 
     value: string;
 }
+export interface UpdateVersion {
+
+    id: number;
+
+    skip_version: string;
+
+    auto_check_switch: string; // 1 开启自动检查更新 0 关闭自动检查更新
+    auto_switch: string; // 1 开启自动更新 0 关闭自动更新
+}
 
 
 // 存放 密码数据

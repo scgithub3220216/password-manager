@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 import {
     AUTO_HIDE_MENU_BAR,
+    CHECK_UPDATE,
     FRAME,
     IPC_AUTO_START,
     IPC_CLOSE_WIN,
@@ -27,15 +28,7 @@ import {updateManager} from './updater';
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
+
 process.env.APP_ROOT = path.join(__dirname, '..')
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
@@ -47,6 +40,17 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 //@ts-ignore
 let win: BrowserWindow | null
 const appState = { isAppClosing: false };
+app.whenReady().then(async () => {
+    createWindow()
+    createTrayMenu(win,appState)
+    SQLiteIPC();
+    await initTable();
+    registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
+
+    setupIPC();
+
+    updateManager.launchCheckUpdate();
+})
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
     app.setAppUserModelId('password-manager')
@@ -101,36 +105,6 @@ function createWindow() {
         win?.hide();
     });
 
-}
-
-app.whenReady().then(async () => {
-    createWindow()
-    createTrayMenu(win,appState)
-    SQLiteIPC();
-    await initTable();
-    registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
-
-    setupIPC();
-
-    // 应用启动后自动检查更新（可选）
-    setTimeout(() => {
-        debugLog('checkForUpdates')
-        updateManager.checkForUpdates();
-    }, 3000); // 延迟3秒检查
-})
-
-
-// 为调试创建一个专门的函数
-function debugLog(message: string) {
-    console.log(`[MAIN PROCESS DEBUG] ${new Date().toISOString()}: ${message}`);
-
-    // 如果需要，也可以发送到渲染进程
-    if (win && win.webContents) {
-        win.webContents.send('debug-message', {
-            message,
-            timestamp: new Date().toISOString()
-        });
-    }
 }
 
 function quit() {
@@ -209,6 +183,12 @@ ipcMain.handle(IPC_CLOSE_WIN, () => {
     console.log(IPC_CLOSE_WIN)
     // 最小化窗口到系统托盘
     win?.hide();
+})
+
+// update CHECK_UPDATE
+ipcMain.handle(CHECK_UPDATE, () => {
+    console.log(CHECK_UPDATE)
+   return updateManager.checkForUpdates(1);
 })
 // IPC 事件处理
 function setupIPC() {

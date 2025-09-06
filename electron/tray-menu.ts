@@ -2,6 +2,7 @@ import {app, BrowserWindow, Menu, nativeImage, shell, Tray} from "electron";
 import path from "node:path";
 import {helpLink} from "../src/config/config.ts";
 import {showWindows} from "./common.ts";
+import {updateManager} from './updater';
 
 export const createTrayMenu = (win: BrowserWindow | null, appState: any) => {
     if (!win) return;
@@ -17,6 +18,11 @@ export const createTrayMenu = (win: BrowserWindow | null, appState: any) => {
         {
             label: '显示主界面', click() {
                 win?.show();
+            }
+        },
+        {
+            label: '检查更新', click() {
+                updateManager.checkForUpdates(2);
             }
         },
         {

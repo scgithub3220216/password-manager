@@ -3,6 +3,8 @@ import {ipcMain} from 'electron';
 
 // const
 import {
+    AUTO_CHECK_UPDATE_SWITCH_SELECT,
+    AUTO_UPDATE_SWITCH_UPDATE,
     IPC_SQLITE_DELETE_ALL_GROUP_DATA,
     IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA,
     IPC_SQLITE_DELETE_GROUP_DATA,
@@ -40,6 +42,7 @@ import {
     updatePwdInfo
 } from "./mapper/pwdInfo.ts";
 import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
+import {getAutoCheckUpateSwitch, updateAutoCheckSwitch,} from "./mapper/version.ts";
 import {getOss, updateOss} from "./mapper/oss.ts";
 
 
@@ -49,6 +52,18 @@ import {getOss, updateOss} from "./mapper/oss.ts";
  * SQLiteIPC
  */
 export const SQLiteIPC = () => {
+    // update
+    ipcMain.handle(AUTO_CHECK_UPDATE_SWITCH_SELECT, async (_event, args) => {
+        console.log(`AUTO_UPDATE_SWITCH  args : ${args}`);
+        return await getAutoCheckUpateSwitch();
+    });
+
+    ipcMain.handle(AUTO_UPDATE_SWITCH_UPDATE, async (_event, args) => {
+        console.log(`AUTO_UPDATE_SWITCH_UPDATE  args : ${args}`);
+        return await updateAutoCheckSwitch(args);
+    });
+
+
     // config
     // ipc sqlite update data
     ipcMain.handle(IPC_SQLITE_UPDATE_OSS_DATA, (_event, ...args) => {

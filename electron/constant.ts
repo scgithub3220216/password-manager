@@ -51,4 +51,10 @@ export const IPC_MINIMIZE = 'ipc-minimize';
 export const IPC_MAXIMIZE = 'ipc-maximize';
 export const IPC_CLOSE_WIN = 'ipc-close-win';
 
+// update
+export const AUTO_CHECK_UPDATE_SWITCH_SELECT = 'auto-check-update-switch-select';
+export const AUTO_UPDATE_SWITCH_UPDATE   = 'auto-update-switch-update';
+export const CHECK_UPDATE = 'check-update';
+
+
 

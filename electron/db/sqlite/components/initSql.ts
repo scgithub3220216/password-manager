@@ -35,14 +35,18 @@ export const initTable = async () => {
         flag = res;
     })
     console.log('initTable flag:', flag)
+    // 检查 版本表是否存在,不存在创建
+    createVersionTable()
     if (flag) {
         return;
     }
 
+
     createTable();
 }
 
-function createTable() {
+function createTable()
+{
     // 创建  表
     db.exec(`
         CREATE TABLE IF NOT EXISTS "group"
@@ -100,6 +104,30 @@ function createTable() {
     insertData();
 }
 
+async function createVersionTable() {
+// 判断表是否存在
+
+    const stmt = db.prepare("SELECT COUNT(*) as 'count' FROM sqlite_master WHERE type = 'table' AND name = 'update_version'");
+    const count = await stmt.get().count;
+    if(count>0){
+        return;
+    }
+    console.log(`count:${count},create update_version and insert data`)
+
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS "update_version"
+        (
+            "id"                INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "skip_version"      TEXT    NOT NULL,
+            "auto_check_switch" TEXT,
+            "auto_switch"       TEXT,
+            "remark"            TEXT
+        );
+    `);
+    insertUpdateVersion()
+    console.log('createVersionTable 表创建成功');
+}
+
 function insertData() {
     try {
         insertConfigData()
@@ -107,10 +135,18 @@ function insertData() {
         insertGroupData()
         insertPwdInfoData()
         insertOssData();
+        insertUpdateVersion();
         console.log('批量插入成功');
     } catch (err) {
         console.error('批量插入时出错:', err);
     }
+}
+function insertUpdateVersion() {
+    const updateVersionArr: string[] = [
+        `INSERT INTO "update_version" ("id", "skip_version", "auto_check_switch", "auto_switch", "remark")
+         VALUES (1, '', '0', '0',  '');`
+    ]
+    updateVersionArr.forEach(obj => db.exec(obj));
 }
 
 function insertOssData() {
@@ -122,6 +158,8 @@ function insertOssData() {
     ]
     ossArr.forEach(oss => db.exec(oss));
 }
+
+
 
 function insertConfigData() {
     // config
