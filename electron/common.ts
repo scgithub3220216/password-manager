@@ -52,5 +52,5 @@ export const setAutoStart = (autoStart: boolean) => {
 export const openDevTools = (win: BrowserWindow) => {
     console.log('openDevTools')
     // 调试窗口
-    win.webContents.openDevTools()
+    win.webContents.openDevTools({ mode: 'detach' });
 }

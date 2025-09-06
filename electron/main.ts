@@ -23,7 +23,7 @@ import {initTable} from "./db/sqlite/components/initSql.ts";
 import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 import {openMainWindows} from "./db/sqlite/components/configConstants.ts";
 import {getShortcutKey} from "./db/sqlite/mapper/shortcutKey.ts";
-import UpdateManager from "./update-manager.ts";
+import {updateManager} from './updater';
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -45,7 +45,6 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 //@ts-ignore
-let updateManager:UpdateManager
 let win: BrowserWindow | null
 const appState = { isAppClosing: false };
 function createWindow() {
@@ -83,8 +82,6 @@ function createWindow() {
     } else {
         win.loadFile(path.join(RENDERER_DIST, 'index.html'))
     }
-    // 初始化更新管理器
-    updateManager = new UpdateManager(win);
     win.on('close', (event) => {
         console.log('close event')
         if (!appState.isAppClosing) {
@@ -109,33 +106,32 @@ function createWindow() {
 app.whenReady().then(async () => {
     createWindow()
     createTrayMenu(win,appState)
-    configureAutoUpdater();
     SQLiteIPC();
     await initTable();
     registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
-    // 应用启动时检查更新（可选）
+
+    setupIPC();
+
+    // 应用启动后自动检查更新（可选）
     setTimeout(() => {
-        console.log('准备检查更新')
+        debugLog('checkForUpdates')
         updateManager.checkForUpdates();
-    }, 5000);
+    }, 3000); // 延迟3秒检查
 })
 
-// 处理 IPC 消息
-ipcMain.handle('check-for-updates', async () => {
-    if (updateManager) {
-        updateManager.checkForUpdates();
-    }
-});
-function configureAutoUpdater() {
-// 配置自动更新
-    updateManager.setFeedURL({
-        provider: 'github',
-        owner: 'scgithub3220216',           // GitHub 用户名
-        repo: 'password-manager',            // 仓库名称
-        private: false                    // 是否私有仓库
-    });
-}
 
+// 为调试创建一个专门的函数
+function debugLog(message: string) {
+    console.log(`[MAIN PROCESS DEBUG] ${new Date().toISOString()}: ${message}`);
+
+    // 如果需要，也可以发送到渲染进程
+    if (win && win.webContents) {
+        win.webContents.send('debug-message', {
+            message,
+            timestamp: new Date().toISOString()
+        });
+    }
+}
 
 function quit() {
     console.log('quit')
@@ -214,3 +210,41 @@ ipcMain.handle(IPC_CLOSE_WIN, () => {
     // 最小化窗口到系统托盘
     win?.hide();
 })
+// IPC 事件处理
+function setupIPC() {
+    // 检查更新
+    ipcMain.handle('check-for-updates', async () => {
+        try {
+            return await updateManager.checkForUpdatesManually();
+        } catch (error) {
+            throw error;
+        }
+    });
+
+    // 下载更新
+    ipcMain.handle('download-update', () => {
+        updateManager.downloadUpdate();
+    });
+
+    // 安装更新
+    ipcMain.handle('install-update', () => {
+        updateManager.quitAndInstall();
+    });
+
+    // 获取当前版本
+    ipcMain.handle('get-current-version', () => {
+        return updateManager.getCurrentVersion();
+    });
+}
+// 监听更新事件
+updateManager.on('update-available', (info) => {
+    console.log('主进程收到更新可用事件:', info);
+});
+
+updateManager.on('download-progress', (progress) => {
+    console.log('主进程收到下载进度:', progress);
+});
+
+updateManager.on('update-downloaded', () => {
+    console.log('主进程收到更新下载完成事件');
+});

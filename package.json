@@ -1,18 +1,19 @@
 {
   "name": "password-manager",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.1.2",
   "type": "module",
   "description": "一个安全的密码管理器应用",
   "author": "sc <gitee.com/star-sc>",
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/star-sc/password-manager.git"
+    "url": "https://github.com/scgithub3220216/password-manager"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "ali-oss": "^6.20.0",
@@ -40,5 +41,10 @@
     "vite-plugin-electron": "^0.28.6",
     "vite-plugin-electron-renderer": "^0.14.5"
   },
+  "publish": {
+    "provider": "generic",
+    "url": "http://47.98.114.76/passwordManager/"
+  },
+
   "main": "dist-electron/main.js"
 }

@@ -21,4 +21,18 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // You can expose other APTs you need here.
     // ...
+
+    // 添加更新相关的便捷方法
+    update: {
+        checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+        downloadUpdate: () => ipcRenderer.invoke('download-update'),
+        installUpdate: () => ipcRenderer.invoke('install-update'),
+        getCurrentVersion: () => ipcRenderer.invoke('get-current-version'),
+        onDownloadProgress: (callback: (progress: any) => void) => {
+            ipcRenderer.on('download-progress', (_, progress) => callback(progress))
+        },
+        removeDownloadProgressListener: () => {
+            ipcRenderer.removeAllListeners('download-progress')
+        }
+    }
 })
