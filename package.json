@@ -1,7 +1,7 @@
 {
   "name": "password-manager",
   "private": true,
-  "version": "2.1.5",
+  "version": "2.2.0",
   "type": "module",
   "description": "一个安全的密码管理器应用",
   "author": "sc <gitee.com/star-sc>",
@@ -23,6 +23,7 @@
     "element-plus": "^2.7.6",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
+    "pinyin-match": "^1.2.8",
     "vue": "^3.4.21",
     "xlsx": "^0.18.5"
   },
@@ -45,6 +46,5 @@
     "provider": "generic",
     "url": "http://47.98.114.76/passwordManager/"
   },
-
   "main": "dist-electron/main.js"
 }

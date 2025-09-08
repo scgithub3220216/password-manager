@@ -16,8 +16,10 @@ import GroupView from "./indexview/Group.vue";
 import useShortcutKey from "../hooks/useShortcutKey.ts";
 import {useSearchResultStore} from "../store/searchResult.ts";
 import {storeToRefs} from "pinia";
+import {usePwdListCacheStore} from "../store/pwdListCache.ts";
 
 useShortcutKey()
+usePwdListCacheStore()
 const searchResultStore = useSearchResultStore();
 const {searchViewShowFlag} = storeToRefs(searchResultStore)
 const headerRef = ref();

@@ -16,6 +16,9 @@ import {darkSwitch} from "../../../electron/db/sqlite/components/configConstants
 import Moon from "../svg/Moon.vue";
 import Sunny from "../svg/Sunny.vue";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
+import {usePwdListCacheStore} from "../../store/pwdListCache.ts";
+import PinyinMatch from 'pinyin-match';
+import {PwdInfo} from "../type.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const shortcutKeyStore = useShortcutKeyStore();
@@ -24,11 +27,12 @@ const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
 const searchResultStore = useSearchResultStore();
 const themeSwitch = ref(false)
 const {logout} = useLoginAction();
-const {listPwdInfoBySearch} = useDBPwdInfo();
+const {listPwdInfoByIds} = useDBPwdInfo();
 const search = ref('');
 const searchInputRef = ref();
 const {setConfigValue, getConfigValue} = useDBConfig()
-
+const cacheStore = usePwdListCacheStore();
+const {cacheList} = storeToRefs(cacheStore)
 let settingDialogRef = ref();
 onMounted(async () => {
   console.log('Header.vue onMounted')
@@ -65,7 +69,19 @@ async function searchAction() {
     searchResultStore.closeSearchView();
     return;
   }
-  let pwdInfoList = await listPwdInfoBySearch(searchValue);
+  // let pwdInfoList = await listPwdInfoBySearch(searchValue);
+  let idList :  number[] = []
+  cacheList.value.forEach(item => {
+    if (PinyinMatch.match(item.title, searchValue) || PinyinMatch.match(item.username, searchValue)) {
+      idList.push(item.id)
+    }
+  })
+  let pwdInfoList: PwdInfo[];
+  if (idList.length > 0) {
+    pwdInfoList = await listPwdInfoByIds(idList);
+  } else {
+    pwdInfoList = []
+  }
 
   searchResultStore.setSearchResultData(pwdInfoList);
   searchResultStore.openSearchView()

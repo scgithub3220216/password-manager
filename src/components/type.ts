@@ -65,6 +65,13 @@ export interface PwdInfo {
 
     remark: string;
 }
+export interface PwdCache{
+    id: number;
+
+    title: string;
+
+    username: string;
+}
 
 export interface PwdGroup {
     id: number;
