@@ -36,6 +36,7 @@ export const IPC_SQLITE_UPDATE_PWD_INFO_DATA = 'ipc-sqlite-update-pwd-info-data'
 export const IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA = 'ipc-sqlite-select-list-pwd-info-data';
 export const IPC_SQLITE_SELECT_GET_PWD_INFO_DATA = 'ipc-sqlite-select-get-pwd-info-data';
 export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA = 'ipc-sqlite-select-search-pwd-info-data';
+export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS = 'ipc-sqlite-select-search-pwd-info-data-ids';
 export const IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA = 'ipc-sqlite-select-count-pwd-info-data';
 
 // shortcutKey

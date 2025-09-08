@@ -62,6 +62,20 @@ export const listPwdInfoBySearch = async (searchValue: string) => {
                                         or username like '%' || ? || '%';`, searchValue, searchValue);
 }
 
+export const listPwdInfoByIds = async (ids: number[]) => {
+    console.log(`listPwdInfo listPwdInfoByIds:${ids}`)
+    if (ids.length <=0) return [];
+    // 过滤无效的ID值
+    const validIds = ids.filter(id => typeof id === 'number' && !isNaN(id) && id > 0);
+    if (validIds.length === 0) return [];
+
+    // 构建参数化查询
+    const placeholders = validIds.map(() => '?').join(',');
+    const sql = `SELECT * FROM "pwd_info" WHERE id IN (${placeholders})`;
+
+    return await baseListSql(sql, validIds);
+}
+
 export const countPwdInfo = async (groupId: string) => {
     console.log(`listPwdInfo countPwdInfo:${groupId}`)
     if (!groupId) return 0;

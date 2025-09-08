@@ -21,6 +21,7 @@ import {
     IPC_SQLITE_SELECT_LIST_PWD_INFO_DATA,
     IPC_SQLITE_SELECT_OSS_DATA,
     IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA,
+    IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS,
     IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA,
     IPC_SQLITE_UPDATE_CONFIG_DATA,
     IPC_SQLITE_UPDATE_GROUP_DATA,
@@ -38,6 +39,7 @@ import {
     insertPwdInfo,
     insertPwdInfoByImport,
     listPwdInfo,
+    listPwdInfoByIds,
     listPwdInfoBySearch,
     updatePwdInfo
 } from "./mapper/pwdInfo.ts";
@@ -180,6 +182,11 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA  args : ${args}`);
         return await listPwdInfoBySearch(args);
+    });
+
+    ipcMain.handle(IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS  args : ${args}`);
+        return await listPwdInfoByIds(args);
     });
 
     // ipc sqlite select COUNT data
