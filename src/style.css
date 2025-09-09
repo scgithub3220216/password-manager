@@ -11,6 +11,12 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --base-group-background-color-light: #e4f0f6;
+    --base-group-background-color-dark: rgba(255, 255, 255, 0.08);
+
+    --base-list-background-color-light: rgba(228, 240, 246, 0.71);
+    --base-list-background-color-dark: rgba(255, 255, 255, 0.20);
 }
 
 a {
@@ -104,41 +110,41 @@ div.msg-tips {
 
 
 .selected-dark-group {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--base-group-background-color-dark);
 }
 
 .hover-effect-dark-group:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--base-group-background-color-dark);
     cursor: pointer;
 }
 
 
 .selected-light-group {
-    background: rgba(80, 74, 74, 0.11);
+    background: var(--base-group-background-color-light);
 }
 
 .hover-effect-light-group:hover {
-    background: rgba(80, 74, 74, 0.11);
+    background:var(--base-group-background-color-light);
     cursor: pointer;
 }
 
 
 .selected-dark-pwdList {
-    background: rgba(255, 255, 255, 0.20);
+    background: var(--base-list-background-color-dark);
 }
 
 .hover-effect-dark-pwdList:hover {
-    background: rgba(255, 255, 255, 0.20);
+    background: var(--base-list-background-color-dark);
     cursor: pointer;
 }
 
 
 .selected-light-pwdList {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--base-list-background-color-light);
 }
 
 .hover-effect-light-pwdList:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--base-list-background-color-light);
     cursor: pointer;
 }
 
