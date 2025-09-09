@@ -3,13 +3,18 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdInfo} from "../type.ts";
 import {useSearchResultStore} from "../../store/searchResult.ts";
 import {storeToRefs} from "pinia";
-import {nextTick, ref} from "vue";
+import {nextTick, ref, watch} from "vue";
 
 const tableRef = ref(null)
 const userDataInfoStore = useUserDataInfoStore();
 const searchResultStore = useSearchResultStore();
 const {searchResultList} = storeToRefs(searchResultStore)
 let currentIndex = ref(0)
+const {darkSwitch} = storeToRefs(userDataInfoStore)
+watch(searchResultList.value, () => {
+  currentIndex.value = -1
+  focusTable(2)
+})
 
 // @ts-ignore
 function searchTableClick(row: PwdInfo, column: any, event: Event) {
@@ -20,41 +25,80 @@ function searchTableClick(row: PwdInfo, column: any, event: Event) {
   userDataInfoStore.setCurPwdInfo(row)
 }
 
+const removeClass = (cssName: string) => {
+  console.log(`removeClass cssName:${cssName}`)
+  if (!tableRef.value) {
+    return;
+  }
+  // @ts-ignore
+  const rows: NodeListOf<Element> = tableRef.value.$el.querySelectorAll('.el-table__row')
+  rows.forEach(row => {
+    row.classList.remove(cssName)
+  })
+}
+
+const manualFocus = (addIndex: number) => {
+  console.log(`manualFocus index:${addIndex}`)
+  if (!tableRef.value) {
+    return;
+  }
+  // @ts-ignore
+  const rows = tableRef.value.$el.querySelectorAll('.el-table__row')
+
+  if (rows.length <= 0) {
+    console.log('rows.length  <= 0 ')
+    return;
+  }
+
+  const addRow = rows[addIndex]
+
+  let cssName;
+  console.log(`darkSwitch:${darkSwitch}`)
+  if (darkSwitch.value) {
+    cssName = 'list-dark';
+  } else {
+    cssName = 'list-light';
+  }
+  removeClass(cssName)
+  addRow?.classList.add(cssName);
+}
+
 // 焦点移动到表格 type : 1 ⬆️ 2:⬇️
-const focusTable = (type:number) => {
-  console.log(`forceTABLE type:${type}` )
+const focusTable = (type: number) => {
+  console.log(`forceTABLE type:${type}`)
   if (searchResultList.value.length === 0) {
     return;
   }
-  if (type ===1){
-    if (currentIndex.value  <= 0) {
+  if (type === 1) {
+    if (currentIndex.value <= 0) {
       currentIndex.value = searchResultList.value.length - 1
-    }else{
+    } else {
       currentIndex.value--
     }
-  }else if (type ===2){
+  } else if (type === 2) {
     if (currentIndex.value >= searchResultList.value.length - 1) {
       currentIndex.value = 0
-    }else{
+    } else {
       currentIndex.value++
     }
   }
-  console.log(`forceTABLE currentIndex:${currentIndex.value}`)
+  console.log(`index;${currentIndex.value}`)
 
   nextTick(() => {
     if (!tableRef.value) {
       return;
     }
-    console.log('into talbe ')
-    // 设置表格为可聚焦状态并聚焦
+    // @ts-ignore 设置表格为可聚焦状态并聚焦
     tableRef.value.$el.focus()
-    // 如果有数据，将焦点设置到第一行
     if (searchResultList.value.length === 0) {
       return;
     }
+    manualFocus(currentIndex.value)
+    // @ts-ignore
     searchTableClick(searchResultList.value[currentIndex.value], null, null)
   })
 }
+
 defineExpose({focusTable,});
 
 
@@ -77,4 +121,16 @@ defineExpose({focusTable,});
   width: 60%;
   border-right: 1px #cab8b8 solid;
 }
+
+:deep(.list-light) {
+  background: var(--base-list-background-color-light);
+  cursor: pointer;
+}
+
+:deep(.list-dark) {
+  background: var(--base-list-background-color-dark);
+  cursor: pointer;
+}
+
+
 </style>
