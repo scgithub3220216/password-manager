@@ -25,6 +25,7 @@ const {searchViewShowFlag} = storeToRefs(searchResultStore)
 const headerRef = ref();
 const groupRef = ref()
 const pwdInfoViewRef = ref();
+const searchResultRef = ref();
 
 
 /**
@@ -34,19 +35,23 @@ function transferInputFocus() {
   console.log('transferInputFocus')
   pwdInfoViewRef.value.pwdInfoTitleInput.focus();
 }
+// 焦点移动到表格
+const focusSearchResultTable = (type:number) => {
+  searchResultRef.value.focusTable(type)
+}
 
 
 </script>
 
 <template>
   <div class="outer">
-    <Header ref="headerRef"/>
+    <Header ref="headerRef" :focusSearchResultTable="focusSearchResultTable"/>
     <div class="content">
       <GroupView v-if="!searchViewShowFlag" ref="groupRef"/>
 
       <PwdInfoListView v-if="!searchViewShowFlag" :transferInputFocus="transferInputFocus"/>
 
-      <SearchResult v-if="searchViewShowFlag"/>
+      <SearchResult v-if="searchViewShowFlag" ref="searchResultRef"/>
 
       <PwdInfoView ref="pwdInfoViewRef"/>
 
