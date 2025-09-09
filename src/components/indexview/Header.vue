@@ -34,6 +34,7 @@ const {setConfigValue, getConfigValue} = useDBConfig()
 const cacheStore = usePwdListCacheStore();
 const {cacheList} = storeToRefs(cacheStore)
 let settingDialogRef = ref();
+let props = defineProps(['focusSearchResultTable'])
 onMounted(async () => {
   console.log('Header.vue onMounted')
   searchInputRef.value.focus();
@@ -97,6 +98,10 @@ function openSettingDialog() {
 function clickLock() {
   logout();
 }
+const handleSearchDownKey= (type:number)=>{
+  console.log(`handleSearchDownKey type:${type}`,)
+  props.focusSearchResultTable(type)
+}
 
 </script>
 
@@ -127,6 +132,8 @@ function clickLock() {
         placeholder="标题/用户名搜索"
         style="margin-left: 40px; width: 500px;font-size: 16px; height: 40px"
         type="search"
+        @keydown.up.prevent="handleSearchDownKey(1)"
+        @keydown.down.prevent="handleSearchDownKey(2)"
         @input="searchAction()"
     />
     <div>
