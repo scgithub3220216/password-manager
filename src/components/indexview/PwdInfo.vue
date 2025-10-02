@@ -10,6 +10,8 @@ import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 import useDataSync from "../../hooks/useDataSync.ts";
 import {useSearchResultStore} from "../../store/searchResult.ts";
+import emitter from "../../utils/emitter.ts";
+import {updatePwdInfoTitle} from "../../config/config.ts";
 
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
@@ -41,6 +43,7 @@ async function pwdInfoChange() {
   } else {
     console.log(`PwdInfo.vue updateRowTitle`)
     searchResultStore.updateRowTitle(curPwdInfo.value.id, curPwdInfo.value.title)
+    emitter.emit(updatePwdInfoTitle,[curPwdInfo.value.id, curPwdInfo.value.title])
   }
   updatePwdInfo(curPwdInfo.value)
       .then(() => {

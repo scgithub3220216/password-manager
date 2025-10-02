@@ -38,9 +38,9 @@ export const useSearchResultStore = defineStore('searchResult', () => {
 
     function updateRowTitle(id: number, newTitle: string) {
         if (!id || !newTitle) return;
-        const pwdList = searchResultList.findIndex(u => u.id === id)
-        if (pwdList !== -1) {
-            searchResultList[pwdList].title = newTitle
+        const index = searchResultList.findIndex(u => u.id === id)
+        if (index !== -1) {
+            searchResultList[index].title = newTitle
         }
     }
 

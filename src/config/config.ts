@@ -6,6 +6,7 @@ export const emitterInsertGroupTopic = 'insertGroupTopic';
 export const emitterRefreshGroupData = 'refreshGroupData';
 export const emitterLockTopic = 'lockTopic';
 export const searchResultData = 'searchResultData';
+export const updatePwdInfoTitle = 'updatePwdInfoTitle';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
 
 export const salt = '`f:i+(o ====~.~====  Hello world n"iaj4~R>0@';

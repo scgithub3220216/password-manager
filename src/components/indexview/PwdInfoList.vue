@@ -5,7 +5,7 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
-import {emitterInsertPwdInfoTopic} from "../../config/config.ts";
+import {emitterInsertPwdInfoTopic, updatePwdInfoTitle} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
@@ -62,10 +62,20 @@ emitter.on(emitterInsertPwdInfoTopic, (value) => {
   console.log(emitterInsertPwdInfoTopic, ' 事件被触发 value:', value)
   addPwdInfo()
 })
+emitter.on(updatePwdInfoTitle, (value) => {
+  console.log(updatePwdInfoTitle, ' 事件被触发 value:', value)
+  const [id, newTitle] = value as [number, string];
+  pwdInfoList.value?.forEach(pwdInfo => {
+    if(pwdInfo.id === id) {
+      pwdInfo.title = newTitle
+    }
+  })
+})
 
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertPwdInfoTopic)
+  emitter.off(updatePwdInfoTitle)
 })
 
 function addPwdInfo() {
