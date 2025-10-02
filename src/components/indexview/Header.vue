@@ -7,7 +7,7 @@ import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import SettingDialog from "../SettingDialog.vue";
 import emitter from "../../utils/emitter.ts";
-import {emitterLockTopic} from "../../config/config.ts";
+import {emitterLockTopic, searchResultData} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useSearchResultStore} from "../../store/searchResult.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
@@ -102,6 +102,7 @@ async function searchAction() {
 
   searchResultStore.setSearchResultData(pwdInfoList);
   searchResultStore.openSearchView()
+  emitter.emit(searchResultData, "")
 }
 
 

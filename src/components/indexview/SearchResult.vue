@@ -3,7 +3,9 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdInfo} from "../type.ts";
 import {useSearchResultStore} from "../../store/searchResult.ts";
 import {storeToRefs} from "pinia";
-import {nextTick, ref, watch} from "vue";
+import {nextTick, onUnmounted, ref} from "vue";
+import emitter from "../../utils/emitter.ts";
+import {searchResultData} from "../../config/config.ts";
 
 const tableRef = ref(null)
 const userDataInfoStore = useUserDataInfoStore();
@@ -11,9 +13,16 @@ const searchResultStore = useSearchResultStore();
 const {searchResultList} = storeToRefs(searchResultStore)
 let currentIndex = ref(0)
 const {darkSwitch} = storeToRefs(userDataInfoStore)
-watch(searchResultList.value, () => {
+
+emitter.on(searchResultData, (value) => {
+  console.log(searchResultData, ' 事件被触发 value:', value)
   currentIndex.value = -1
   focusTable(2)
+})
+
+onUnmounted(() => {
+  // 解绑事件
+  emitter.off(searchResultData)
 })
 
 // @ts-ignore

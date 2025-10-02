@@ -9,12 +9,14 @@ import {storeToRefs} from "pinia";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 import useDataSync from "../../hooks/useDataSync.ts";
+import {useSearchResultStore} from "../../store/searchResult.ts";
 
 const pwdInfoTitleInput = ref(null);
 const passwordVisible = ref(false);
 const userDataInfoStore = useUserDataInfoStore();
 const {curPwdInfo, curGroup} = storeToRefs(userDataInfoStore)
-
+const searchResultStore = useSearchResultStore();
+// const {updateRowTitle} = storeToRefs(searchResultStore)
 const {openBrowser} = useBrowser();
 const shortcutKeyStore = useShortcutKeyStore();
 const {shortCutKeyCombs} = storeToRefs(shortcutKeyStore);
@@ -36,6 +38,9 @@ async function pwdInfoChange() {
       curPwdInfo.value.group_id = curGroup.value.id;
       curPwdInfo.value.group_title = curGroup.value.title;
     }
+  } else {
+    console.log(`PwdInfo.vue updateRowTitle`)
+    searchResultStore.updateRowTitle(curPwdInfo.value.id, curPwdInfo.value.title)
   }
   updatePwdInfo(curPwdInfo.value)
       .then(() => {

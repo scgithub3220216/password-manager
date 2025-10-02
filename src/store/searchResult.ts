@@ -36,6 +36,14 @@ export const useSearchResultStore = defineStore('searchResult', () => {
         userDataInfoStore.setCurPwdInfo(null)
     }
 
+    function updateRowTitle(id: number, newTitle: string) {
+        if (!id || !newTitle) return;
+        const pwdList = searchResultList.findIndex(u => u.id === id)
+        if (pwdList !== -1) {
+            searchResultList[pwdList].title = newTitle
+        }
+    }
 
-    return {searchViewShowFlag, searchResultList, openSearchView, closeSearchView, setSearchResultData}
+
+    return {searchViewShowFlag, searchResultList, updateRowTitle, openSearchView, closeSearchView, setSearchResultData}
 })
