@@ -6,13 +6,17 @@ import {storeToRefs} from "pinia";
 import {nextTick, onUnmounted, ref} from "vue";
 import emitter from "../../utils/emitter.ts";
 import {searchResultData} from "../../config/config.ts";
+import {Delete} from "@element-plus/icons-vue";
+import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 
 const tableRef = ref(null)
 const userDataInfoStore = useUserDataInfoStore();
+const {curPwdInfo} = storeToRefs(userDataInfoStore)
 const searchResultStore = useSearchResultStore();
 const {searchResultList} = storeToRefs(searchResultStore)
 let currentIndex = ref(0)
 const {darkSwitch} = storeToRefs(userDataInfoStore)
+const {delPwdInfo} = useDBPwdInfo();
 
 emitter.on(searchResultData, (value) => {
   console.log(searchResultData, ' 事件被触发 value:', value)
@@ -35,7 +39,7 @@ function handleRowClick(row: PwdInfo, column: any, event: Event, rowIndex: numbe
   if (rowIndex === -1) {
     return
   }
-  rowIndex  = searchResultList.value.findIndex(item => item === row)
+  rowIndex = searchResultList.value.findIndex(item => item.id === row.id)
   manualFocus(rowIndex)
 }
 
@@ -112,7 +116,26 @@ const focusTable = (type: number) => {
     handleRowClick(searchResultList.value[currentIndex.value], null, null, null)
   })
 }
+const handleDelete = () => {
+  console.log(`handleDelete`)
+  //  删除行
+  let row = curPwdInfo.value;
+  console.log(`${JSON.stringify(row)}`);
+  const indexOf = searchResultList.value.findIndex(item => item.id === row.id)
+  console.log(`index:${indexOf}`);
+  if (indexOf == -1) {
+    console.log(`当前数据不存在`)
+    return;
+  }
+  searchResultList.value.splice(indexOf, 1);
+  // 删除数据
+  delPwdInfo(row.id)
+  // 重新设置当前行
+  if (searchResultList.value.length <= 0) return
+  let index = indexOf - 1
+  handleRowClick(searchResultList.value[index], null, null, index)
 
+}
 
 defineExpose({focusTable,});
 
@@ -128,7 +151,18 @@ defineExpose({focusTable,});
       <el-table-column :min-width="100" label="分组" prop="group_title"/>
       <el-table-column :min-width="100" label="标题" prop="title" show-overflow-tooltip/>
       <el-table-column :min-width="100" label="用户名" prop="username" show-overflow-tooltip/>
+      <el-table-column label="操作" :min-width="40">
+        <template #default="scope">
+          <el-popconfirm title="是否删除此账号?" @confirm="handleDelete" confirm-button-text="是" cancel-button-text="否">
+            <template #reference>
+              <el-button :icon="Delete" circle/>
+            </template>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+
     </el-table>
+
   </div>
 </template>
 
