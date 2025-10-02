@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import usePwd from "../hooks/usePwd.ts";
 import InitSetPwd from "./setview/InitSetPwd.vue";
 import useLoginView from "../hooks/useLoginView.ts";
@@ -7,21 +7,34 @@ import {IPC_FIRST_LOGIN} from "../../electron/constant.ts";
 import {firstLoginFlag} from "../../electron/db/sqlite/components/configConstants.ts";
 import useDBConfig from "../hooks/useDBConfig.ts";
 import Enter from "./svg/Enter.vue";
+import useCurrentPath from "../hooks/useCurrentPath.ts";
 
 const initSetPwdRef = ref()
 const pwdInputRef = ref()
 const {setPwdMsgTips} = usePwd()
 const {getConfigValue} = useDBConfig()
-
+const {currentView, checkCurrentPath} = useCurrentPath();
 
 const {handleEnter, capsLockFlag, password} = useLoginView()
 
-
+// 监听路由变化
+watch(() => currentView, (newPath, oldPath) => {
+      console.log(`路由从 ${oldPath} 变为 ${newPath}`)
+      switchFocus()
+    }
+)
 onMounted(() => {
   console.log("Login onMounted");
-  pwdInputRef.value.focus();
+  switchFocus()
   firstLogin()
 });
+const switchFocus = () => {
+  const flag = checkCurrentPath();
+  if (flag) {
+    pwdInputRef.value.focus();
+  }
+}
+
 
 async function firstLogin() {
   console.log('firstLogin')

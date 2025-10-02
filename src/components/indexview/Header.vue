@@ -2,7 +2,7 @@
 
 import {Search} from "@element-plus/icons-vue";
 import {toggleDark} from "../../styles/dark/dark.ts";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import useLoginAction from "../../hooks/useLoginAction.ts";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import SettingDialog from "../SettingDialog.vue";
@@ -19,6 +19,7 @@ import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 import {usePwdListCacheStore} from "../../store/pwdListCache.ts";
 import PinyinMatch from 'pinyin-match';
 import {PwdInfo} from "../type.ts";
+import useCurrentPath from "../../hooks/useCurrentPath.ts";
 
 const userInfoStore = useUserDataInfoStore();
 const shortcutKeyStore = useShortcutKeyStore();
@@ -31,18 +32,26 @@ const {listPwdInfoByIds} = useDBPwdInfo();
 const search = ref('');
 const searchInputRef = ref();
 const {setConfigValue, getConfigValue} = useDBConfig()
+const {currentView, checkCurrentPath} = useCurrentPath();
+
 const cacheStore = usePwdListCacheStore();
 const {cacheList} = storeToRefs(cacheStore)
 let settingDialogRef = ref();
 let props = defineProps(['focusSearchResultTable'])
 onMounted(async () => {
   console.log('Header.vue onMounted')
-  searchInputRef.value.focus();
+  switchFocus()
   let switchValue = !!parseInt(await getConfigValue(darkSwitch));
   themeSwitch.value = switchValue;
   userInfoStore.darkSwitch = switchValue;
   console.log('Header.vue 挂载完毕')
 })
+// 监听路由变化
+watch(() => currentView, (newPath, oldPath) => {
+      console.log(`路由从 ${oldPath} 变为 ${newPath}`)
+      switchFocus()
+    }
+)
 
 // 绑定事件
 emitter.on(emitterLockTopic, (value) => {
@@ -62,6 +71,13 @@ function clickDarkSwitch() {
   toggleDark();
 }
 
+const switchFocus = () => {
+  const flag = checkCurrentPath();
+  if (!flag) {
+    searchInputRef.value.focus();
+  }
+}
+
 async function searchAction() {
   console.log('searchAction')
 
@@ -71,7 +87,7 @@ async function searchAction() {
     return;
   }
   // let pwdInfoList = await listPwdInfoBySearch(searchValue);
-  let idList :  number[] = []
+  let idList: number[] = []
   cacheList.value.forEach(item => {
     if (PinyinMatch.match(item.title, searchValue) || PinyinMatch.match(item.username, searchValue)) {
       idList.push(item.id)
@@ -98,7 +114,8 @@ function openSettingDialog() {
 function clickLock() {
   logout();
 }
-const handleSearchDownKey= (type:number)=>{
+
+const handleSearchDownKey = (type: number) => {
   console.log(`handleSearchDownKey type:${type}`,)
   props.focusSearchResultTable(type)
 }

@@ -1,8 +1,6 @@
 import useLoginAction from "./useLoginAction.ts";
 import useBasicSet from "./useBasicSet.ts";
-import {computed, onMounted, ref} from "vue";
-import Login from "../components/Login.vue";
-import Index from "../components/Index.vue";
+import {onMounted} from "vue";
 import {useDark} from "@vueuse/core";
 import {darkSwitch} from "../../electron/db/sqlite/components/configConstants.ts";
 import useDBConfig from "./useDBConfig.ts";
@@ -69,23 +67,5 @@ export default function () {
         document.addEventListener('scroll', resetTimer);
     }
 
-
-// 监听路由哈希
-    const routes = {
-        '/login': Login,
-        '/index': Index,
-    }
-
-    const currentPath = ref(window.location.hash)
-    window.addEventListener('hashchange', () => {
-        currentPath.value = window.location.hash
-    })
-
-    const currentView = computed(() => {
-        let slice = currentPath.value.slice(1);
-        // @ts-ignore
-        return routes[slice || '/'] || Login
-    })
-
-    return {currentView};
+    return {};
 }
