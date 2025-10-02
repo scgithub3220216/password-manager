@@ -26,12 +26,17 @@ onUnmounted(() => {
 })
 
 // @ts-ignore
-function searchTableClick(row: PwdInfo, column: any, event: Event) {
-  console.log('searchTableClick,row:', row)
+function handleRowClick(row: PwdInfo, column: any, event: Event, rowIndex: number) {
+  console.log(`handleRowClick,rowIndex:${rowIndex} , row:${row}`)
   if (!row) {
     return;
   }
   userDataInfoStore.setCurPwdInfo(row)
+  if (rowIndex === -1) {
+    return
+  }
+  rowIndex  = searchResultList.value.findIndex(item => item === row)
+  manualFocus(rowIndex)
 }
 
 const removeClass = (cssName: string) => {
@@ -104,9 +109,10 @@ const focusTable = (type: number) => {
     }
     manualFocus(currentIndex.value)
     // @ts-ignore
-    searchTableClick(searchResultList.value[currentIndex.value], null, null)
+    handleRowClick(searchResultList.value[currentIndex.value], null, null, null)
   })
 }
+
 
 defineExpose({focusTable,});
 
@@ -117,7 +123,8 @@ defineExpose({focusTable,});
   <div class="search-result">
     <el-table :data="searchResultList" style="width: 100%;height: calc(100vh - 50px)"
               ref="tableRef"
-              @row-click="searchTableClick">
+              @row-click="handleRowClick"
+    >
       <el-table-column :min-width="100" label="分组" prop="group_title"/>
       <el-table-column :min-width="100" label="标题" prop="title" show-overflow-tooltip/>
       <el-table-column :min-width="100" label="用户名" prop="username" show-overflow-tooltip/>
