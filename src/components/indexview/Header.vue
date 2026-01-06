@@ -33,6 +33,7 @@ const search = ref('');
 const searchInputRef = ref();
 const {setConfigValue, getConfigValue} = useDBConfig()
 const {currentView, checkCurrentPath} = useCurrentPath();
+const {searchViewShowFlag} = storeToRefs(searchResultStore)
 
 const cacheStore = usePwdListCacheStore();
 const {cacheList} = storeToRefs(cacheStore)
@@ -56,6 +57,12 @@ watch(() => currentView, (newPath, oldPath) => {
 // 绑定事件
 emitter.on(emitterLockTopic, (value) => {
   console.log(emitterLockTopic, ' 事件被触发 value:', value)
+  // 如果当前在搜索页面, 则返回主页
+  if(searchViewShowFlag.value){
+    searchResultStore.closeSearchView();
+    return;
+  }
+  // 反之则退出登录
   clickLock()
 })
 
