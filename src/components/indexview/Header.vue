@@ -56,9 +56,10 @@ watch(() => currentView, (newPath, oldPath) => {
 
 // 绑定事件
 emitter.on(emitterLockTopic, (value) => {
-  console.log(emitterLockTopic, ' 事件被触发 value:', value)
+  console.log(emitterLockTopic, 'header 事件被触发 value:', value)
   // 如果当前在搜索页面, 则返回主页
   if(searchViewShowFlag.value){
+    console.log(`当前在搜索页面,返回首页`)
     searchResultStore.closeSearchView();
     return;
   }

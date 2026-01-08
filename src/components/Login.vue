@@ -8,13 +8,14 @@ import {firstLoginFlag} from "../../electron/db/sqlite/components/configConstant
 import useDBConfig from "../hooks/useDBConfig.ts";
 import Enter from "./svg/Enter.vue";
 import useCurrentPath from "../hooks/useCurrentPath.ts";
+import useLoginEscShortcutKey from "../hooks/useLoginEscShortcutKey.ts";
 
 const initSetPwdRef = ref()
 const pwdInputRef = ref()
 const {setPwdMsgTips} = usePwd()
 const {getConfigValue} = useDBConfig()
 const {currentView, checkCurrentPath} = useCurrentPath();
-
+useLoginEscShortcutKey()
 const {handleEnter, capsLockFlag, password} = useLoginView()
 
 // 监听路由变化
