@@ -39,18 +39,26 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 //@ts-ignore
 let win: BrowserWindow | null
-const appState = { isAppClosing: false };
-app.whenReady().then(async () => {
-    createWindow()
-    createTrayMenu(win,appState)
-    SQLiteIPC();
-    await initTable();
-    registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
+const appState = {isAppClosing: false};
+// 检查是否已有实例运行
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+    // 如果已有实例，直接退出
+    app.quit()
+} else {
+    app.whenReady().then(async () => {
+        createWindow()
+        createTrayMenu(win, appState)
+        SQLiteIPC();
+        await initTable();
+        registerGlobalShortcut((await getShortcutKey(openMainWindows))?.desc, win);
 
-    setupIPC();
+        setupIPC();
 
-    updateManager.launchCheckUpdate();
-})
+        updateManager.launchCheckUpdate();
+    })
+}
+
 function createWindow() {
     // 在创建浏览器窗口之前设置AppUserModelId
     app.setAppUserModelId('password-manager')
@@ -188,8 +196,9 @@ ipcMain.handle(IPC_CLOSE_WIN, () => {
 // update CHECK_UPDATE
 ipcMain.handle(CHECK_UPDATE, () => {
     console.log(CHECK_UPDATE)
-   return updateManager.checkForUpdates(1);
+    return updateManager.checkForUpdates(1);
 })
+
 // IPC 事件处理
 function setupIPC() {
     // 检查更新
@@ -216,6 +225,7 @@ function setupIPC() {
         return updateManager.getCurrentVersion();
     });
 }
+
 // 监听更新事件
 updateManager.on('update-available', (info) => {
     console.log('主进程收到更新可用事件:', info);
