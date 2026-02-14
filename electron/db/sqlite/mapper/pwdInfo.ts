@@ -73,7 +73,7 @@ export const listPwdInfoByIds = async (ids: number[]) => {
     const placeholders = validIds.map(() => '?').join(',');
     const sql = `SELECT * FROM "pwd_info" WHERE id IN (${placeholders})`;
 
-    return await baseListSql(sql, validIds);
+    return await baseListSql(sql, ...validIds);
 }
 
 export const countPwdInfo = async (groupId: string) => {

@@ -39,6 +39,10 @@ const cacheStore = usePwdListCacheStore();
 const {cacheList} = storeToRefs(cacheStore)
 let settingDialogRef = ref();
 let props = defineProps(['focusSearchResultTable'])
+
+// 搜索防抖和请求取消
+let searchTimer: number | null = null;
+let searchCounter = ref(0); // 用于标记最新的搜索请求
 onMounted(async () => {
   console.log('Header.vue onMounted')
   switchFocus()
@@ -70,6 +74,11 @@ emitter.on(emitterLockTopic, (value) => {
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterLockTopic)
+  // 清理搜索定时器
+  if (searchTimer !== null) {
+    clearTimeout(searchTimer);
+    searchTimer = null;
+  }
 })
 
 function clickDarkSwitch() {
@@ -86,28 +95,62 @@ const switchFocus = () => {
   }
 }
 
-async function searchAction() {
-  console.log('searchAction')
+function searchAction() {
+  // 清除之前的防抖定时器
+  if (searchTimer !== null) {
+    clearTimeout(searchTimer);
+  }
 
   let searchValue = search.value;
+
+  // 如果搜索为空，立即关闭搜索视图
   if (!searchValue.trim()) {
     searchResultStore.closeSearchView();
     return;
   }
-  // let pwdInfoList = await listPwdInfoBySearch(searchValue);
+
+  // @ts-ignore 防抖：300ms 后执行实际搜索
+  searchTimer = setTimeout(() => {
+    performSearch(searchValue);
+  }, 100);
+}
+
+async function performSearch(searchValue: string) {
+  console.log('performSearch:', searchValue)
+
+  // 记录当前搜索请求的序号
+  searchCounter.value++;
+  const currentSearchId = searchCounter.value;
+
+  // 在本地缓存中进行拼音匹配
   let idList: number[] = []
   cacheList.value.forEach(item => {
     if (PinyinMatch.match(item.title, searchValue) || PinyinMatch.match(item.username, searchValue)) {
       idList.push(item.id)
     }
   })
+
+  // 如果在异步操作前，已经有新的搜索请求，则放弃当前请求
+  if (currentSearchId !== searchCounter.value) {
+    console.log('搜索请求已过期，放弃:', currentSearchId)
+    return;
+  }
+
   let pwdInfoList: PwdInfo[];
   if (idList.length > 0) {
+    // 异步数据库查询
     pwdInfoList = await listPwdInfoByIds(idList);
+
+    // 查询完成后，再次检查是否是最新的搜索请求
+    if (currentSearchId !== searchCounter.value) {
+      console.log('搜索结果已过期，放弃显示:', currentSearchId)
+      return;
+    }
   } else {
     pwdInfoList = []
   }
 
+  // 只有最新的搜索结果才会被显示
   searchResultStore.setSearchResultData(pwdInfoList);
   searchResultStore.openSearchView()
   emitter.emit(searchResultData, "")
