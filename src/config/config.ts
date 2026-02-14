@@ -5,6 +5,7 @@ export const ossTypeAliYun = 'oss';
 export const emitterInsertGroupTopic = 'insertGroupTopic';
 export const emitterRefreshGroupData = 'refreshGroupData';
 export const emitterLockTopic = 'lockTopic';
+export const emitterGroupShortcutKeyTopic = 'groupShortcutKeyTopic';
 export const searchResultData = 'searchResultData';
 export const updatePwdInfoTitle = 'updatePwdInfoTitle';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';

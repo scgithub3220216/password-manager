@@ -4,14 +4,16 @@ import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
-import {emitterInsertGroupTopic, emitterRefreshGroupData} from "../../config/config.ts";
+import {emitterGroupShortcutKeyTopic, emitterInsertGroupTopic, emitterRefreshGroupData} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 import useDataSync from "../../hooks/useDataSync.ts";
+import useGroupShortcutKey from "../../hooks/useGroupShortcutKey.ts";
 
+useGroupShortcutKey()
 const userDataInfoStore = useUserDataInfoStore();
 const {curGroup, darkSwitch, importFlag} = storeToRefs(userDataInfoStore)
 const shortcutKeyStore = useShortcutKeyStore();
@@ -25,7 +27,7 @@ const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 const curEditGroupIndex = ref(-1)
 const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
-const {countPwdInfo,delPwdInfoByGroupId} = useDBPwdInfo()
+const {countPwdInfo, delPwdInfoByGroupId} = useDBPwdInfo()
 const groupList = ref<PwdGroup[]>()
 const {syncToOss} = useDataSync()
 
@@ -43,11 +45,16 @@ emitter.on(emitterRefreshGroupData, (value) => {
   console.log(emitterRefreshGroupData, ' 事件被触发 value:', value)
   initData()
 })
-
+emitter.on(emitterGroupShortcutKeyTopic, (value) => {
+  console.log(emitterGroupShortcutKeyTopic, ' 事件被触发 value:', value)
+  const index = value as number;
+  clickGroupShortcut(index)
+})
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertGroupTopic)
   emitter.off(emitterRefreshGroupData)
+  emitter.off(emitterGroupShortcutKeyTopic)
 })
 
 watch((importFlag), async (newVal) => {
@@ -71,9 +78,16 @@ async function initData() {
   cssSwitchStore.setGroupIndex(0)
 }
 
+function clickGroupShortcut(index: number) {
+  console.log(`clickGroupShortcut index:${index}`);
+  if (!groupList.value) return;
+  if (index < 0 || index >= groupList.value.length) return;
+
+  clickGroup(groupList.value[index], index)
+}
 
 function clickGroup(group: PwdGroup, index: number) {
-  console.log(`clickGroup groupId:${group.id}' groupTitle:${group.title}`);
+  console.log(`clickGroup index:${index}, groupId:${group.id}' groupTitle:${group.title}`);
   userDataInfoStore.setCurGroup(group);
   // 单击样式
   cssSwitchStore.setGroupIndex(index)
