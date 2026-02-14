@@ -5,7 +5,7 @@ import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
-import {emitterInsertPwdInfoTopic, updatePwdInfoTitle} from "../../config/config.ts";
+import {emitterInsertPwdInfoTopic, updatePwdInfoTitle, emitterPwdInfoDragToGroup} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
@@ -71,11 +71,17 @@ emitter.on(updatePwdInfoTitle, (value) => {
     }
   })
 })
+emitter.on(emitterPwdInfoDragToGroup, (value) => {
+  console.log(emitterPwdInfoDragToGroup, ' 事件被触发 value:', value)
+  // 拖拽完成后刷新密码列表
+  queryPwdInfo(curGroup.value.id)
+})
 
 onUnmounted(() => {
   // 解绑事件
   emitter.off(emitterInsertPwdInfoTopic)
   emitter.off(updatePwdInfoTitle)
+  emitter.off(emitterPwdInfoDragToGroup)
 })
 
 function addPwdInfo() {
@@ -131,6 +137,21 @@ function deletePwdInfo() {
   console.log("deletePwdInfo");
   delPwdInfo(curPwdInfo.value.id).then(() => queryAndRefreshIndex(curGroup.value.id))
 }
+
+// 拖拽处理函数
+function handleDragStart(pwdInfo: PwdInfo, event: DragEvent) {
+  console.log("handleDragStart", pwdInfo);
+  if (event.dataTransfer) {
+    // 传递密码条目的完整信息
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('pwdInfoId', pwdInfo.id.toString());
+    event.dataTransfer.setData('pwdInfoData', JSON.stringify(pwdInfo));
+  }
+}
+
+function handleDragEnd(event: DragEvent) {
+  console.log("handleDragEnd");
+}
 </script>
 
 <template>
@@ -141,6 +162,7 @@ function deletePwdInfo() {
           <li
               v-for="(pwdInfo,index) in pwdInfoList"
               :key="index"
+              draggable="true"
               :class="{
                   'selected-dark-pwdList': curPwdListIndex === index && darkSwitch,
                   'selected-light-pwdList': curPwdListIndex === index && !darkSwitch,
@@ -148,6 +170,8 @@ function deletePwdInfo() {
                   'hover-effect-light-pwdList': isHover && !darkSwitch
               }"
               @click="clickPwdInfo(pwdInfo,index)"
+              @dragstart="handleDragStart(pwdInfo, $event)"
+              @dragend="handleDragEnd($event)"
               @mouseout="isHover = false" @mouseover="isHover = true"
           >
             {{ pwdInfo.title }}
@@ -221,6 +245,15 @@ li:first-child {
 
 li:last-child {
   border-bottom: 0 #cab8b8 solid;
+}
+
+/* 拖拽样式 */
+li[draggable="true"] {
+  cursor: move;
+}
+
+li[draggable="true"]:active {
+  opacity: 0.5;
 }
 
 

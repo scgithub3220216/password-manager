@@ -2,9 +2,9 @@
 import {Delete, Edit, Plus} from "@element-plus/icons-vue";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
-import {PwdGroup} from "../type.ts";
+import {PwdGroup, PwdInfo} from "../type.ts";
 import emitter from "../../utils/emitter.ts";
-import {emitterGroupShortcutKeyTopic, emitterInsertGroupTopic, emitterRefreshGroupData} from "../../config/config.ts";
+import {emitterGroupShortcutKeyTopic, emitterInsertGroupTopic, emitterRefreshGroupData, emitterPwdInfoDragToGroup} from "../../config/config.ts";
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBGroup from "../../hooks/useDBGroup.ts";
@@ -27,9 +27,10 @@ const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 const curEditGroupIndex = ref(-1)
 const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
-const {countPwdInfo, delPwdInfoByGroupId} = useDBPwdInfo()
+const {countPwdInfo, delPwdInfoByGroupId, updatePwdInfo} = useDBPwdInfo()
 const groupList = ref<PwdGroup[]>()
 const {syncToOss} = useDataSync()
+const dragOverGroupIndex = ref(-1) // 追踪拖拽悬停的分组索引
 
 onMounted(() => {
   console.log("Index onMounted");
@@ -155,6 +156,60 @@ async function deleteGroup() {
     userDataInfoStore.setCurGroup(null);
   })
 }
+
+// 拖拽放置处理函数
+function handleDragOver(event: DragEvent) {
+  event.preventDefault(); // 允许放置
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'move';
+  }
+}
+
+function handleDragEnter(index: number) {
+  console.log("handleDragEnter", index);
+  dragOverGroupIndex.value = index;
+}
+
+function handleDragLeave() {
+  console.log("handleDragLeave");
+  dragOverGroupIndex.value = -1;
+}
+
+async function handleDrop(group: PwdGroup, index: number, event: DragEvent) {
+  console.log("handleDrop", group, index);
+  event.preventDefault();
+  dragOverGroupIndex.value = -1; // 清除拖拽悬停状态
+
+  if (!event.dataTransfer) return;
+
+  try {
+    const pwdInfoData = event.dataTransfer.getData('pwdInfoData');
+    if (!pwdInfoData) return;
+
+    const pwdInfo: PwdInfo = JSON.parse(pwdInfoData);
+
+    // 如果拖拽到当前所属分组，则不采取任何动作
+    if (pwdInfo.group_id === group.id) {
+      console.log("拖拽到当前所属分组，不执行操作");
+      return;
+    }
+
+    // 更新密码条目的分组信息
+    pwdInfo.group_id = group.id;
+    pwdInfo.group_title = group.title;
+
+    await updatePwdInfo(pwdInfo);
+    console.log("密码条目分组更新成功");
+
+    // 通知密码列表刷新
+    emitter.emit(emitterPwdInfoDragToGroup, true);
+
+    // 同步到 OSS
+    syncToOss();
+  } catch (error) {
+    console.error("拖拽处理失败", error);
+  }
+}
 </script>
 
 <template>
@@ -170,9 +225,14 @@ async function deleteGroup() {
                   'selected-dark-group': curGroupIndex === index && darkSwitch,
                   'selected-light-group': curGroupIndex === index && !darkSwitch,
                   'hover-effect-dark-group': isHover && darkSwitch,
-                  'hover-effect-light-group': isHover && !darkSwitch
+                  'hover-effect-light-group': isHover && !darkSwitch,
+                  'drag-over-target': dragOverGroupIndex === index
               }"
               @click="clickGroup(group,index)"
+              @dragover="handleDragOver($event)"
+              @dragenter="handleDragEnter(index)"
+              @dragleave="handleDragLeave()"
+              @drop="handleDrop(group, index, $event)"
               @mouseout="isHover = false" @mouseover="isHover = true"
           >
             <span v-show="index !== curEditGroupIndex"> {{ group.title }}</span>
@@ -260,6 +320,14 @@ li:first-child {
 
 li:last-child {
   border-bottom: 0 #cab8b8 solid;
+}
+
+/* 拖拽目标高亮样式 */
+.drag-over-target {
+  background-color: #409eff !important;
+  color: white !important;
+  border-left: 3px solid #67c23a;
+  transition: all 0.3s ease;
 }
 
 </style>

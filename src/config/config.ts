@@ -9,6 +9,7 @@ export const emitterGroupShortcutKeyTopic = 'groupShortcutKeyTopic';
 export const searchResultData = 'searchResultData';
 export const updatePwdInfoTitle = 'updatePwdInfoTitle';
 export const emitterInsertPwdInfoTopic = 'insertPwdInfoTopic';
+export const emitterPwdInfoDragToGroup = 'pwdInfoDragToGroup';
 
 export const salt = '`f:i+(o ====~.~====  Hello world n"iaj4~R>0@';
 
