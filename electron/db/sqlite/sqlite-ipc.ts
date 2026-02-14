@@ -6,6 +6,7 @@ import {
     AUTO_CHECK_UPDATE_SWITCH_SELECT,
     AUTO_UPDATE_SWITCH_UPDATE,
     IPC_SQLITE_DELETE_ALL_GROUP_DATA,
+    IPC_SQLITE_DELETE_ALL_PWD_INFO_BY_GROUP_ID,
     IPC_SQLITE_DELETE_ALL_PWD_INFO_DATA,
     IPC_SQLITE_DELETE_GROUP_DATA,
     IPC_SQLITE_DELETE_PWD_INFO_DATA,
@@ -35,6 +36,7 @@ import {
     countPwdInfo,
     delAllPwdInfo,
     delPwdInfo,
+    delPwdInfoByGroupId,
     getPwdInfo,
     insertPwdInfo,
     insertPwdInfoByImport,
@@ -151,6 +153,12 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_DELETE_PWD_INFO_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_DELETE_PWD_INFO_DATA  args : ${args}`);
         return await delPwdInfo(args);
+    });
+
+    // ipc sqlite delete data
+    ipcMain.handle(IPC_SQLITE_DELETE_ALL_PWD_INFO_BY_GROUP_ID, async (_event, args) => {
+        console.log(`IPC_SQLITE_DELETE_ALL_PWD_INFO_BY_GROUP_ID  args : ${args}`);
+        return await delPwdInfoByGroupId(args);
     });
 
     // ipc sqlite delete data

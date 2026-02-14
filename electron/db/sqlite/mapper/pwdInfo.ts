@@ -21,6 +21,12 @@ export const delPwdInfo = async (id: number) => {
                                 FROM "pwd_info"
                                 WHERE id = ?;`, id);
 }
+export const delPwdInfoByGroupId = async (groupId: number) => {
+    console.log(`delPwdInfoByGroupId id:${groupId}`)
+    return await baseUpdateSql(`DELETE
+                                FROM "pwd_info"
+                                WHERE group_id = ?;`, groupId);
+}
 
 export const delAllPwdInfo = async () => {
     console.log(`delAllPwdInfo`)

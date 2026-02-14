@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {Delete, Edit, Plus} from "@element-plus/icons-vue";
-import {ElMessage} from "element-plus";
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {PwdGroup} from "../type.ts";
@@ -26,7 +25,7 @@ const cssSwitchStore = useCssSwitchStore();
 const {curGroupIndex} = storeToRefs(cssSwitchStore)
 const curEditGroupIndex = ref(-1)
 const {insertGroup, delGroup, updateGroup, listGroup} = useDBGroup();
-const {countPwdInfo} = useDBPwdInfo()
+const {countPwdInfo,delPwdInfoByGroupId} = useDBPwdInfo()
 const groupList = ref<PwdGroup[]>()
 const {syncToOss} = useDataSync()
 
@@ -127,8 +126,13 @@ async function deleteGroup() {
   // 判断下面是否还有数据
   let count = await countPwdInfo(curGroup.value.id);
   if (count > 0) {
-    ElMessage.error("该分组下还有账号,不能删除");
-    return;
+    // 如果还有账号则二次确认
+    if (!confirm("该分组下还有账号,是否确认删除?")) {
+      console.log("取消删除");
+      return;
+    }
+    // 删除 groupId = curGroup.value.id 的 pwdList
+    await delPwdInfoByGroupId(curGroup.value.id)
   }
 
   delGroup(curGroup.value.id).then(async () => {
