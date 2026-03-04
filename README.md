@@ -126,9 +126,23 @@ the module (for instance, using `npm rebuild` or `npm install`).
 
 ```
 
-#### 解决
+#### 解决方案
 
-[参考文章](https://blog.csdn.net/OnMyWaySc/article/details/140570160?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22140570160%22%2C%22source%22%3A%22OnMyWaySc%22%7D)
+**原因**：`better-sqlite3` 是原生模块，需要与 Electron 的 Node.js 版本匹配。预编译的二进制文件通常与 Electron 版本不兼容。
+
+**解决步骤**：
+
+1. 安装 `better-sqlite3`（跳过自动编译脚本）：
+   ```bash
+   npm install better-sqlite3 --ignore-scripts
+   ```
+
+2. 使用 `electron-rebuild` 重新编译模块以匹配 Electron 版本：
+   ```bash
+   npx electron-rebuild --force --arch=x64
+   ```
+
+**参考文章**：[better-sqlite3 NODE_MODULE_VERSION 解决方案](https://blog.csdn.net/OnMyWaySc/article/details/140570160)
 
 
 

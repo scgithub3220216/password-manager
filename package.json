@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "ali-oss": "^6.20.0",
-    "better-sqlite3": "^11.1.2",
+    "better-sqlite3": "^12.6.2",
     "crypto-js": "^4.2.0",
     "electron-updater": "^6.6.2",
     "element-plus": "^2.7.6",
