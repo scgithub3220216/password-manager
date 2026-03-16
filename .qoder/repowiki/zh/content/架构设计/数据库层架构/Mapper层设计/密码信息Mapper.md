@@ -13,7 +13,16 @@
 - [pwdListCache.ts](file://src/store/pwdListCache.ts)
 - [PwdInfo.vue](file://src/components/indexview/PwdInfo.vue)
 - [config.ts](file://src/config/config.ts)
+- [ImageGallery.vue](file://src/components/indexview/ImageGallery.vue)
+- [searchResult.ts](file://src/store/searchResult.ts)
 </cite>
+
+## 更新摘要
+**变更内容**
+- 更新了PwdInfo.vue组件的UI改进分析，包括169行代码增强
+- 新增了图片模式和随机密码生成功能的详细说明
+- 增强了表单验证和布局管理的描述
+- 补充了快捷键支持和复制功能的实现细节
 
 ## 目录
 1. [简介](#简介)
@@ -21,20 +30,22 @@
 3. [核心组件](#核心组件)
 4. [架构总览](#架构总览)
 5. [详细组件分析](#详细组件分析)
-6. [依赖关系分析](#依赖关系分析)
-7. [性能考量](#性能考量)
-8. [故障排查指南](#故障排查指南)
-9. [结论](#结论)
-10. [附录](#附录)
+6. [UI组件重大改进](#ui组件重大改进)
+7. [依赖关系分析](#依赖关系分析)
+8. [性能考量](#性能考量)
+9. [故障排查指南](#故障排查指南)
+10. [结论](#结论)
+11. [附录](#附录)
 
 ## 简介
-本技术文档围绕“密码信息Mapper”展开，系统性解析PwdInfo Mapper在Electron+Vue前端应用中的实现与使用。重点覆盖：
+本技术文档围绕"密码信息Mapper"展开，系统性解析PwdInfo Mapper在Electron+Vue前端应用中的实现与使用。重点覆盖：
 - 密码数据的完整CRUD操作与复杂查询能力
 - 存储结构设计与字段含义（用户名、密码、URL、备注等）
 - 加密存储机制（AES/CBC + Base64，以及盐值与哈希策略）
 - 搜索功能实现（模糊匹配、多条件组合查询）
 - 业务规则与安全策略（重复检测、强密码校验、缓存与同步）
 - 实际操作示例（添加、编辑、删除、复制、批量操作）
+- **UI组件重大改进**：PwdInfo.vue组件的增强功能，包括图片模式、随机密码生成、表单验证等
 
 ## 项目结构
 PwdInfo Mapper位于Electron侧的SQLite数据库层，通过IPC桥接前端调用；前端通过Hook封装统一暴露接口，并在渲染进程中进行加密/解密处理。
@@ -49,48 +60,53 @@ M --> INIT["初始化脚本<br/>initSql.ts"]
 FE --> CRYPTO["加密/解密 Hook<br/>useCrypto.ts"]
 FE --> CACHE["密码列表缓存 Store<br/>pwdListCache.ts"]
 FE --> UI["密码信息组件<br/>PwdInfo.vue"]
+UI --> IMG["图片画廊组件<br/>ImageGallery.vue"]
+UI --> RAND["随机密码生成器<br/>RandomPwdGenerate.vue"]
 ```
 
-图表来源
+**图表来源**
 - [useDBPwdInfo.ts:17-103](file://src/hooks/useDBPwdInfo.ts#L17-L103)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
-- [pwdInfo.ts:1-100](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L100)
+- [pwdInfo.ts:1-101](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L101)
 - [baseSql.ts:1-87](file://electron/db/sqlite/components/baseSql.ts#L1-L87)
 - [initSql.ts:48-105](file://electron/db/sqlite/components/initSql.ts#L48-L105)
 - [useCrypto.ts:1-77](file://src/hooks/useCrypto.ts#L1-L77)
 - [pwdListCache.ts:1-37](file://src/store/pwdListCache.ts#L1-L37)
-- [PwdInfo.vue:1-257](file://src/components/indexview/PwdInfo.vue#L1-L257)
+- [PwdInfo.vue:1-323](file://src/components/indexview/PwdInfo.vue#L1-L323)
+- [ImageGallery.vue:1-506](file://src/components/indexview/ImageGallery.vue#L1-L506)
 
-章节来源
-- [pwdInfo.ts:1-100](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L100)
+**章节来源**
+- [pwdInfo.ts:1-101](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L101)
 - [baseSql.ts:1-87](file://electron/db/sqlite/components/baseSql.ts#L1-L87)
 - [initSql.ts:48-105](file://electron/db/sqlite/components/initSql.ts#L48-L105)
 - [useDBPwdInfo.ts:17-103](file://src/hooks/useDBPwdInfo.ts#L17-L103)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
 - [useCrypto.ts:1-77](file://src/hooks/useCrypto.ts#L1-L77)
 - [pwdListCache.ts:1-37](file://src/store/pwdListCache.ts#L1-L37)
-- [PwdInfo.vue:1-257](file://src/components/indexview/PwdInfo.vue#L1-L257)
+- [PwdInfo.vue:1-323](file://src/components/indexview/PwdInfo.vue#L1-L323)
 
 ## 核心组件
 - PwdInfo Mapper（Electron侧）：提供密码信息的CRUD与查询接口，基于SQLite执行SQL。
 - 基础SQL封装：统一封装查询、插入、更新、事务等通用逻辑。
-- 初始化脚本：负责创建pwd_info表及相关默认数据。
+- 初始化脚本：负责创建pwd_info表及相关默认数据，包含type字段支持。
 - 前端Hook（useDBPwdInfo）：封装IPC调用，统一暴露CRUD与查询方法，并负责加密/解密与缓存刷新。
 - 加密/解密Hook：提供AES/CBC加密、Base64编码、MD5/SHA512哈希等工具。
 - 类型定义：统一PwdInfo接口，确保前后端字段一致性。
 - 缓存Store：维护轻量级缓存，减少频繁读取。
+- **UI组件增强**：PwdInfo.vue提供增强的编辑界面，支持图片模式、随机密码生成等。
 
-章节来源
-- [pwdInfo.ts:1-100](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L100)
+**章节来源**
+- [pwdInfo.ts:1-101](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L101)
 - [baseSql.ts:1-87](file://electron/db/sqlite/components/baseSql.ts#L1-L87)
 - [initSql.ts:48-105](file://electron/db/sqlite/components/initSql.ts#L48-L105)
 - [useDBPwdInfo.ts:17-103](file://src/hooks/useDBPwdInfo.ts#L17-L103)
 - [useCrypto.ts:1-77](file://src/hooks/useCrypto.ts#L1-L77)
 - [type.ts:50-67](file://src/components/type.ts#L50-L67)
 - [pwdListCache.ts:1-37](file://src/store/pwdListCache.ts#L1-L37)
+- [PwdInfo.vue:1-323](file://src/components/indexview/PwdInfo.vue#L1-L323)
 
 ## 架构总览
-PwdInfo Mapper采用“前端Hook + IPC + Electron侧Mapper + SQLite”的分层架构。前端通过useDBPwdInfo发起请求，经IPC映射到Electron侧的pwdInfo.ts，再由baseSql.ts执行SQL，最终持久化到SQLite。
+PwdInfo Mapper采用"前端Hook + IPC + Electron侧Mapper + SQLite"的分层架构。前端通过useDBPwdInfo发起请求，经IPC映射到Electron侧的pwdInfo.ts，再由baseSql.ts执行SQL，最终持久化到SQLite。
 
 ```mermaid
 sequenceDiagram
@@ -111,7 +127,7 @@ Mapper-->>Hook : 返回结果
 Hook-->>UI : 解密并刷新缓存
 ```
 
-图表来源
+**图表来源**
 - [PwdInfo.vue:28-53](file://src/components/indexview/PwdInfo.vue#L28-L53)
 - [useDBPwdInfo.ts:21-63](file://src/hooks/useDBPwdInfo.ts#L21-L63)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
@@ -122,10 +138,11 @@ Hook-->>UI : 解密并刷新缓存
 
 ### 数据模型与存储结构
 - 表结构：pwd_info
-  - 字段：id、group_id、group_title、title、username、password、link、remark
+  - 字段：id、group_id、group_title、title、username、password、link、remark、type
   - 主键：id（自增）
   - 外键：group_id（关联分组）
-- 初始化：首次启动时创建表并插入默认数据（含一条默认密码记录）。
+  - **新增字段**：type（0=普通模式，1=图片模式，默认0）
+- 初始化：首次启动时创建表并插入默认数据（含一条默认密码记录），同时检查并添加type字段。
 
 ```mermaid
 erDiagram
@@ -138,13 +155,14 @@ string username
 string password
 string link
 string remark
+int type
 }
 ```
 
-图表来源
+**图表来源**
 - [initSql.ts:60-71](file://electron/db/sqlite/components/initSql.ts#L60-L71)
 
-章节来源
+**章节来源**
 - [initSql.ts:60-71](file://electron/db/sqlite/components/initSql.ts#L60-L71)
 - [type.ts:50-67](file://src/components/type.ts#L50-L67)
 
@@ -158,7 +176,7 @@ string remark
   - 按分组ID批量删除
   - 全量清空
 - 更新
-  - 按ID更新全部字段
+  - 按ID更新全部字段（包含新增的remark和type字段）
 - 查询
   - 列表：按分组ID或全量查询
   - 搜索：标题/用户名模糊匹配
@@ -182,11 +200,11 @@ SQLU --> End
 SQLS --> End
 ```
 
-图表来源
+**图表来源**
 - [pwdInfo.ts:6-99](file://electron/db/sqlite/mapper/pwdInfo.ts#L6-L99)
 - [baseSql.ts:9-81](file://electron/db/sqlite/components/baseSql.ts#L9-L81)
 
-章节来源
+**章节来源**
 - [pwdInfo.ts:6-99](file://electron/db/sqlite/mapper/pwdInfo.ts#L6-L99)
 - [baseSql.ts:9-81](file://electron/db/sqlite/components/baseSql.ts#L9-L81)
 
@@ -214,20 +232,20 @@ Mapper-->>Hook : 返回结果
 Hook-->>UI : 刷新缓存
 ```
 
-图表来源
+**图表来源**
 - [useDBPwdInfo.ts:28-62](file://src/hooks/useDBPwdInfo.ts#L28-L62)
 - [useCrypto.ts:41-66](file://src/hooks/useCrypto.ts#L41-L66)
 - [pwdInfo.ts:6-48](file://electron/db/sqlite/mapper/pwdInfo.ts#L6-L48)
 - [baseSql.ts:35-49](file://electron/db/sqlite/components/baseSql.ts#L35-L49)
 
-章节来源
+**章节来源**
 - [useDBPwdInfo.ts:28-62](file://src/hooks/useDBPwdInfo.ts#L28-L62)
 - [useCrypto.ts:41-66](file://src/hooks/useCrypto.ts#L41-L66)
 - [config.ts:14-22](file://src/config/config.ts#L14-L22)
 
 ### 搜索功能实现
 - 模糊匹配：标题与用户名字段使用LIKE进行模糊查询
-- 多条件组合：当前实现为“标题 LIKE 或 用户名 LIKE”，可扩展为更复杂的组合条件
+- 多条件组合：当前实现为"标题 LIKE 或 用户名 LIKE"，可扩展为更复杂的组合条件
 - 正则表达式：当前未直接使用正则，如需可扩展为SQLite正则函数或前端过滤
 
 ```mermaid
@@ -239,11 +257,11 @@ Q --> E["执行查询"]
 E --> D["解密并返回"]
 ```
 
-图表来源
+**图表来源**
 - [pwdInfo.ts:62-69](file://electron/db/sqlite/mapper/pwdInfo.ts#L62-L69)
 - [useDBPwdInfo.ts:72-76](file://src/hooks/useDBPwdInfo.ts#L72-L76)
 
-章节来源
+**章节来源**
 - [pwdInfo.ts:62-69](file://electron/db/sqlite/mapper/pwdInfo.ts#L62-L69)
 - [useDBPwdInfo.ts:72-76](file://src/hooks/useDBPwdInfo.ts#L72-L76)
 
@@ -256,7 +274,7 @@ E --> D["解密并返回"]
   - 默认密码与盐值在配置中定义
 - 缓存与同步：每次写操作后刷新缓存，便于快速展示与后续同步
 
-章节来源
+**章节来源**
 - [useCrypto.ts:11-29](file://src/hooks/useCrypto.ts#L11-L29)
 - [config.ts:14-22](file://src/config/config.ts#L14-L22)
 - [pwdListCache.ts:30-33](file://src/store/pwdListCache.ts#L30-L33)
@@ -288,10 +306,44 @@ E --> D["解密并返回"]
   - 批量删除：delPwdInfoByGroupId
   - 批量导入：insertPwdInfoByImport（带完整字段）
 
-章节来源
+**章节来源**
 - [PwdInfo.vue:32-78](file://src/components/indexview/PwdInfo.vue#L32-L78)
 - [useDBPwdInfo.ts:21-63](file://src/hooks/useDBPwdInfo.ts#L21-L63)
 - [pwdInfo.ts:6-99](file://electron/db/sqlite/mapper/pwdInfo.ts#L6-L99)
+
+## UI组件重大改进
+
+### 图片模式支持
+PwdInfo.vue组件新增了图片模式功能，允许用户以图片形式查看和管理密码相关信息：
+
+- **模式切换**：提供普通模式和图片模式两种视图
+- **图片画廊**：集成ImageGallery组件，支持图片附件管理
+- **响应式布局**：根据模式动态调整界面布局
+
+### 随机密码生成器集成
+- **集成组件**：引入RandomPwdGenerate组件，提供安全的随机密码生成
+- **一键生成**：通过图标按钮触发密码生成对话框
+- **安全策略**：生成符合安全要求的复杂密码
+
+### 增强的表单验证
+- **实时验证**：字段变更时即时触发保存操作
+- **状态反馈**：提供视觉反馈和错误提示
+- **快捷键支持**：支持Ctrl+U/Ctrl+P/Ctrl+L快捷键进行复制操作
+
+### 改进的布局管理
+- **响应式设计**：适配不同屏幕尺寸
+- **间距优化**：改进元素间距和对齐方式
+- **主题适配**：支持深色/浅色主题切换
+
+### 复制功能增强
+- **多字段支持**：支持复制用户名、密码、链接三个字段
+- **快捷键绑定**：提供键盘快捷键操作
+- **剪贴板集成**：使用现代Web API进行剪贴板操作
+
+**章节来源**
+- [PwdInfo.vue:86-241](file://src/components/indexview/PwdInfo.vue#L86-L241)
+- [ImageGallery.vue:1-506](file://src/components/indexview/ImageGallery.vue#L1-L506)
+- [config.ts:27-34](file://src/config/config.ts#L27-L34)
 
 ## 依赖关系分析
 
@@ -306,29 +358,34 @@ Base --> DB["SQLite"]
 Init["初始化脚本<br/>initSql.ts"] --> DB
 Cache["缓存Store<br/>pwdListCache.ts"] --> Hook
 UI["UI组件<br/>PwdInfo.vue"] --> Hook
+UI --> IMG["图片画廊组件<br/>ImageGallery.vue"]
+UI --> RAND["随机密码生成器<br/>RandomPwdGenerate.vue"]
+SR["搜索结果Store<br/>searchResult.ts"] --> UI
 ```
 
-图表来源
+**图表来源**
 - [type.ts:50-67](file://src/components/type.ts#L50-L67)
 - [useDBPwdInfo.ts:17-103](file://src/hooks/useDBPwdInfo.ts#L17-L103)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
 - [useCrypto.ts:1-77](file://src/hooks/useCrypto.ts#L1-L77)
-- [pwdInfo.ts:1-100](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L100)
+- [pwdInfo.ts:1-101](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L101)
 - [baseSql.ts:1-87](file://electron/db/sqlite/components/baseSql.ts#L1-L87)
 - [initSql.ts:48-105](file://electron/db/sqlite/components/initSql.ts#L48-L105)
 - [pwdListCache.ts:1-37](file://src/store/pwdListCache.ts#L1-L37)
-- [PwdInfo.vue:1-257](file://src/components/indexview/PwdInfo.vue#L1-L257)
+- [PwdInfo.vue:1-323](file://src/components/indexview/PwdInfo.vue#L1-L323)
+- [ImageGallery.vue:1-506](file://src/components/indexview/ImageGallery.vue#L1-L506)
+- [searchResult.ts:1-49](file://src/store/searchResult.ts#L1-L49)
 
-章节来源
+**章节来源**
 - [type.ts:50-67](file://src/components/type.ts#L50-L67)
 - [useDBPwdInfo.ts:17-103](file://src/hooks/useDBPwdInfo.ts#L17-L103)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
 - [useCrypto.ts:1-77](file://src/hooks/useCrypto.ts#L1-L77)
-- [pwdInfo.ts:1-100](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L100)
+- [pwdInfo.ts:1-101](file://electron/db/sqlite/mapper/pwdInfo.ts#L1-L101)
 - [baseSql.ts:1-87](file://electron/db/sqlite/components/baseSql.ts#L1-L87)
 - [initSql.ts:48-105](file://electron/db/sqlite/components/initSql.ts#L48-L105)
 - [pwdListCache.ts:1-37](file://src/store/pwdListCache.ts#L1-L37)
-- [PwdInfo.vue:1-257](file://src/components/indexview/PwdInfo.vue#L1-L257)
+- [PwdInfo.vue:1-323](file://src/components/indexview/PwdInfo.vue#L1-L323)
 
 ## 性能考量
 - SQL参数化：所有操作均使用参数化查询，避免SQL注入并提升执行效率
@@ -336,6 +393,7 @@ UI["UI组件<br/>PwdInfo.vue"] --> Hook
 - 缓存策略：pwdListCache仅缓存必要字段，降低内存占用
 - 加密成本：AES/CBC在渲染进程执行，建议在高频场景下合并提交，减少多次加密开销
 - 索引建议：若搜索频繁，可在title、username、group_id上建立索引（需结合实际查询模式评估）
+- **UI性能优化**：PwdInfo.vue的图片模式采用懒加载和虚拟滚动，提升大列表性能
 
 ## 故障排查指南
 - 查询失败
@@ -350,15 +408,19 @@ UI["UI组件<br/>PwdInfo.vue"] --> Hook
 - 缓存不同步
   - 确认每次写操作后是否调用refreshCache
   - 检查缓存初始化逻辑（onMounted）
+- **UI组件问题**
+  - 检查图片模式切换是否正常工作
+  - 确认随机密码生成器组件是否正确加载
+  - 验证快捷键绑定是否生效
 
-章节来源
+**章节来源**
 - [baseSql.ts:12-31](file://electron/db/sqlite/components/baseSql.ts#L12-L31)
 - [constant.ts:30-41](file://electron/constant.ts#L30-L41)
 - [initSql.ts:26-46](file://electron/db/sqlite/components/initSql.ts#L26-L46)
 - [pwdListCache.ts:15-33](file://src/store/pwdListCache.ts#L15-L33)
 
 ## 结论
-PwdInfo Mapper提供了简洁而完整的密码信息管理能力，结合前端加密与缓存机制，实现了安全、高效的密码存储与检索。当前实现聚焦于基本CRUD与简单搜索，后续可在重复检测、强密码校验、正则搜索与索引优化等方面进一步增强。
+PwdInfo Mapper提供了简洁而完整的密码信息管理能力，结合前端加密与缓存机制，实现了安全、高效的密码存储与检索。当前实现聚焦于基本CRUD与简单搜索，后续可在重复检测、强密码校验、正则搜索与索引优化等方面进一步增强。**最新的UI组件改进显著提升了用户体验，包括图片模式支持、随机密码生成、增强的表单验证和快捷键操作**，为密码管理提供了更加丰富和便捷的功能。
 
 ## 附录
 
@@ -371,7 +433,17 @@ PwdInfo Mapper提供了简洁而完整的密码信息管理能力，结合前端
 - password：加密后的密码
 - link：站点链接
 - remark：备注说明
+- **type**：显示模式（0=普通模式，1=图片模式）
 
-章节来源
+### 快捷键说明
+- Ctrl+U：复制用户名
+- Ctrl+P：复制密码
+- Ctrl+L：复制链接
+- Ctrl+G：新建分组
+- Ctrl+N：新建密码条目
+- F5：同步数据
+
+**章节来源**
 - [initSql.ts:60-71](file://electron/db/sqlite/components/initSql.ts#L60-L71)
 - [type.ts:50-67](file://src/components/type.ts#L50-L67)
+- [config.ts:27-34](file://src/config/config.ts#L27-L34)
