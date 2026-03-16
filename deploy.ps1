@@ -16,5 +16,5 @@ $files = Get-ChildItem -Path $releaseDir | Where-Object { $_.Name -ne "win-unpac
 
 foreach ($file in $files) {
     Write-Host "Uploading: $($file.Name)" -ForegroundColor Cyan
-    scp -r $file.FullName root@47.98.114.76:/data/nginx/html/passwordManager/
+    scp -r $file.FullName root@172.23.119.210:/data/nginx/html/passwordManager/
 }
