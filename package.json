@@ -1,7 +1,7 @@
 {
   "name": "password-manager",
   "private": true,
-  "version": "2.3.5",
+  "version": "2.3.6",
   "type": "module",
   "description": "一个安全的密码管理器应用",
   "author": "sc <gitee.com/star-sc>",
