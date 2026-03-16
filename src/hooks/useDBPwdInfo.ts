@@ -27,7 +27,7 @@ export default function () {
 
     async function insertPwdInfoByImport(pwdInfo: PwdInfo): Promise<number> {
         console.log(`useDBPwdInfo.ts insertPwdInfoByImport`)
-        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, encryptData(pwdInfo.password), pwdInfo.link, pwdInfo.remark, pwdInfo.type ?? 0);
+        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, pwdInfo.id, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, encryptData(pwdInfo.password), pwdInfo.link, pwdInfo.remark, pwdInfo.type ?? 0);
         refreshCache()
         return res;
     }

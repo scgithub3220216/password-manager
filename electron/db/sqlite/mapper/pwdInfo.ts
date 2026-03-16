@@ -11,8 +11,8 @@ export const insertPwdInfo = async (...params: any[]) => {
 
 export const insertPwdInfoByImport = async (...params: any[]) => {
     console.log(`insertPwdInfo params:${params}`)
-    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title, title, username, password, link, remark, type)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?);`, ...params);
+    return await baseInsertSql(`INSERT INTO "pwd_info" (id, group_id, group_title, title, username, password, link, remark, type)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, ...params);
 }
 
 export const delPwdInfo = async (id: number) => {
