@@ -16,6 +16,7 @@ export const localVersionField = 'local_version';
 export const ossSyncSwitch = 'oss_sync_switch';
 export const ossSyncAutoUploadSwitch = 'oss_sync_auto_upload_switch';
 export const ossSyncAutoDownloadSwitch = 'oss_sync_auto_download_switch';
+export const imageMigratedFlag = 'image_migrated';
 
 export const openMainWindows = 'openMainWindows';
 export const logout = 'logout';

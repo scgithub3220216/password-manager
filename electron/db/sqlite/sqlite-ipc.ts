@@ -38,6 +38,8 @@ import {
     IPC_SQLITE_SELECT_ALL_IMAGE_DATA,
     IPC_SQLITE_SELECT_COUNT_IMAGE_DATA,
     IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA,
+    IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED,
+    IPC_SQLITE_SELECT_IMAGE_FILE_PATH,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
 import {delAllGroup, delGroup, getIdByTitle, insertGroup, insertGroupByOss, listGroup, updateGroup} from "./mapper/group.ts";
@@ -63,10 +65,12 @@ import {
     deleteImage,
     deleteImagesByPwdId,
     getImageData,
+    getImageFilePath,
     insertImage,
     insertImageByImport,
     listAllImages,
     listImageMeta,
+    updateOssUploaded,
 } from "./mapper/image.ts";
 
 
@@ -289,6 +293,18 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_SELECT_COUNT_IMAGE_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_SELECT_COUNT_IMAGE_DATA  args : ${args}`);
         return await countImagesByPwdId(args);
+    });
+
+    // ipc sqlite select image file path
+    ipcMain.handle(IPC_SQLITE_SELECT_IMAGE_FILE_PATH, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_IMAGE_FILE_PATH  args : ${args}`);
+        return await getImageFilePath(args);
+    });
+
+    // ipc sqlite update image oss_uploaded
+    ipcMain.handle(IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED  args : ${args}`);
+        return await updateOssUploaded(...args);
     });
 
 };

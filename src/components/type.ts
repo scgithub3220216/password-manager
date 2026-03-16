@@ -4,7 +4,7 @@ import PwdInfo from "./indexview/PwdInfo.vue";
 export interface OssSyncObj {
     pwdInfoList:PwdInfo[];
     groupList: PwdGroup[];
-    imageList?: PwdImage[];
+    imageList?: PwdImageSyncMeta[];
 }
 
 export interface OssForm {
@@ -90,7 +90,7 @@ export interface PwdGroup {
 
 }
 
-// 图片附件（数据库存储格式，data 为加密后的 Base64）
+// 图片附件（数据库存储格式，data 为本地文件相对路径）
 export interface PwdImage {
     id: number;
     pwd_id: number;
@@ -100,6 +100,7 @@ export interface PwdImage {
     data: string;
     sort_order: number;
     created_at: string;
+    oss_uploaded: number;
 }
 
 // 图片元数据（列表展示用，不含 data）
@@ -109,6 +110,19 @@ export interface PwdImageMeta {
     file_name: string;
     file_size: number;
     mime_type: string;
+    sort_order: number;
+    created_at: string;
+    oss_uploaded: number;
+}
+
+// 图片同步元数据（OSS 同步用，不含文件内容）
+export interface PwdImageSyncMeta {
+    id: number;
+    pwd_id: number;
+    file_name: string;
+    file_size: number;
+    mime_type: string;
+    data: string;
     sort_order: number;
     created_at: string;
 }

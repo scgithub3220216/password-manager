@@ -11,6 +11,13 @@ import {
     IPC_CLOSE_WIN,
     IPC_DEV_TOOLS,
     IPC_FIRST_LOGIN,
+    IPC_IMAGE_DELETE_ALL_LOCAL,
+    IPC_IMAGE_DELETE_LOCAL_DIR,
+    IPC_IMAGE_DELETE_LOCAL_FILE,
+    IPC_IMAGE_GET_ENCRYPTED_CONTENT,
+    IPC_IMAGE_READ_FROM_LOCAL,
+    IPC_IMAGE_SAVE_ENCRYPTED_CONTENT,
+    IPC_IMAGE_SAVE_TO_LOCAL,
     IPC_MAXIMIZE,
     IPC_MINIMIZE,
     IPC_OPEN_BROWSER,
@@ -27,6 +34,15 @@ import {SQLiteIPC} from "./db/sqlite/sqlite-ipc.ts";
 import {openMainWindows} from "./db/sqlite/components/configConstants.ts";
 import {getShortcutKey} from "./db/sqlite/mapper/shortcutKey.ts";
 import {updateManager} from './updater';
+import {
+    deleteAllImageFiles,
+    deleteImageDir,
+    deleteImageFile,
+    getEncryptedFileContent,
+    readImageFile,
+    saveEncryptedFileContent,
+    saveImageFile,
+} from './image-file.ts';
 //@ts-ignore
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -215,6 +231,42 @@ ipcMain.handle(IPC_SAVE_IMAGE_TO_DESKTOP, async (_event, base64Data: string, fil
     }
     fs.writeFileSync(targetPath, buffer);
     return targetPath;
+})
+
+// 图片文件操作 IPC
+ipcMain.handle(IPC_IMAGE_SAVE_TO_LOCAL, async (_event, pwdId: number, base64Data: string, originalName: string) => {
+    console.log(`IPC_IMAGE_SAVE_TO_LOCAL pwdId:${pwdId}, originalName:${originalName}`);
+    return saveImageFile(pwdId, base64Data, originalName);
+})
+
+ipcMain.handle(IPC_IMAGE_READ_FROM_LOCAL, async (_event, relativePath: string) => {
+    console.log(`IPC_IMAGE_READ_FROM_LOCAL relativePath:${relativePath}`);
+    return readImageFile(relativePath);
+})
+
+ipcMain.handle(IPC_IMAGE_DELETE_LOCAL_FILE, async (_event, relativePath: string) => {
+    console.log(`IPC_IMAGE_DELETE_LOCAL_FILE relativePath:${relativePath}`);
+    deleteImageFile(relativePath);
+})
+
+ipcMain.handle(IPC_IMAGE_DELETE_LOCAL_DIR, async (_event, pwdId: number) => {
+    console.log(`IPC_IMAGE_DELETE_LOCAL_DIR pwdId:${pwdId}`);
+    deleteImageDir(pwdId);
+})
+
+ipcMain.handle(IPC_IMAGE_DELETE_ALL_LOCAL, async (_event) => {
+    console.log(`IPC_IMAGE_DELETE_ALL_LOCAL`);
+    deleteAllImageFiles();
+})
+
+ipcMain.handle(IPC_IMAGE_GET_ENCRYPTED_CONTENT, async (_event, relativePath: string) => {
+    console.log(`IPC_IMAGE_GET_ENCRYPTED_CONTENT relativePath:${relativePath}`);
+    return getEncryptedFileContent(relativePath);
+})
+
+ipcMain.handle(IPC_IMAGE_SAVE_ENCRYPTED_CONTENT, async (_event, relativePath: string, content: string) => {
+    console.log(`IPC_IMAGE_SAVE_ENCRYPTED_CONTENT relativePath:${relativePath}`);
+    saveEncryptedFileContent(relativePath, content);
 })
 
 // IPC 事件处理

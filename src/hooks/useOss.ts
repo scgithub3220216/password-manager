@@ -32,7 +32,6 @@ export default function () {
             console.log(`putFile ossKey:${ossKey}`)
             // @ts-ignore
             let buffer = new OSS.Buffer(JSON.stringify(json));
-            // const blob = new Blob([new Uint8Array(JSON.stringify(json).split('').map(c => c.charCodeAt(0)))], {type: 'application/json'});
 
             const result = await getClient().put(ossKey, buffer);
             console.log(result);
@@ -98,10 +97,108 @@ export default function () {
         }
     }
 
+    /**
+     * 上传二进制/文本内容到 OSS（用于图片加密文件上传）
+     */
+    async function putBinaryFile(ossKey: string, content: string): Promise<string> {
+        try {
+            console.log(`putBinaryFile ossKey:${ossKey}`)
+            // @ts-ignore
+            const buffer = new OSS.Buffer(content);
+            const result = await getClient().put(ossKey, buffer);
+            console.log(`putBinaryFile result:`, result?.res?.statusCode);
+            return '';
+        } catch (e) {
+            console.log("putBinaryFile error:", e);
+            return String(e);
+        }
+    }
+
+    /**
+     * 从 OSS 下载文件内容（用于图片加密文件下载）
+     */
+    async function getBinaryFile(ossKey: string): Promise<string> {
+        try {
+            console.log(`getBinaryFile ossKey:${ossKey}`)
+            const result = await getClient().get(ossKey);
+            // @ts-ignore
+            if (!result || result.res.statusCode !== 200) {
+                return '';
+            }
+            // content 是 Buffer，转为 utf-8 字符串（加密的文本内容）
+            return result.content.toString();
+        } catch (e) {
+            console.log("getBinaryFile error:", e);
+            return '';
+        }
+    }
+
+    /**
+     * 删除 OSS 上的单个文件
+     */
+    async function deleteOssFile(ossKey: string): Promise<boolean> {
+        try {
+            console.log(`deleteOssFile ossKey:${ossKey}`)
+            await getClient().delete(ossKey);
+            return true;
+        } catch (e) {
+            console.log("deleteOssFile error:", e);
+            return false;
+        }
+    }
+
+    /**
+     * 批量删除 OSS 文件
+     */
+    async function deleteMultiOssFiles(ossKeys: string[]): Promise<boolean> {
+        try {
+            if (!ossKeys || ossKeys.length === 0) return true;
+            console.log(`deleteMultiOssFiles count:${ossKeys.length}`)
+            await getClient().deleteMulti(ossKeys);
+            return true;
+        } catch (e) {
+            console.log("deleteMultiOssFiles error:", e);
+            return false;
+        }
+    }
+
+    /**
+     * 列出 OSS 上指定前缀的所有文件
+     */
+    async function listOssFiles(prefix: string): Promise<string[]> {
+        try {
+            console.log(`listOssFiles prefix:${prefix}`)
+            const result = await getClient().list({prefix: prefix, 'max-keys': 1000}, {});
+            if (!result || !result.objects) return [];
+            return result.objects.map((obj: any) => obj.name);
+        } catch (e) {
+            console.log("listOssFiles error:", e);
+            return [];
+        }
+    }
+
+    /**
+     * 实时生成签名 URL（用于私有 OSS 的图片访问）
+     */
+    function signatureUrl(ossKey: string, expires?: number): string {
+        try {
+            console.log(`signatureUrl ossKey:${ossKey}`)
+            return getClient().signatureUrl(ossKey, {expires: expires || 3600});
+        } catch (e) {
+            console.log("signatureUrl error:", e);
+            return '';
+        }
+    }
+
     function getClient(): OSS {
         const ossStore = useOssStore();
         return ossStore.getClient();
     }
 
-    return {login, putFile, getFile};
+    return {
+        login, putFile, getFile,
+        putBinaryFile, getBinaryFile,
+        deleteOssFile, deleteMultiOssFiles,
+        listOssFiles, signatureUrl
+    };
 }

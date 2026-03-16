@@ -51,6 +51,19 @@ export const IPC_SQLITE_SELECT_ALL_IMAGE_DATA = 'ipc-sqlite-select-all-image-dat
 export const IPC_SQLITE_SELECT_COUNT_IMAGE_DATA = 'ipc-sqlite-select-count-image-data';
 export const IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA = 'ipc-sqlite-insert-image-by-import-data';
 
+// image file operations
+export const IPC_IMAGE_SAVE_TO_LOCAL = 'ipc-image-save-to-local';
+export const IPC_IMAGE_READ_FROM_LOCAL = 'ipc-image-read-from-local';
+export const IPC_IMAGE_DELETE_LOCAL_FILE = 'ipc-image-delete-local-file';
+export const IPC_IMAGE_DELETE_LOCAL_DIR = 'ipc-image-delete-local-dir';
+export const IPC_IMAGE_DELETE_ALL_LOCAL = 'ipc-image-delete-all-local';
+export const IPC_IMAGE_GET_ENCRYPTED_CONTENT = 'ipc-image-get-encrypted-content';
+export const IPC_IMAGE_SAVE_ENCRYPTED_CONTENT = 'ipc-image-save-encrypted-content';
+
+// image db extra operations
+export const IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED = 'ipc-sqlite-update-image-oss-uploaded';
+export const IPC_SQLITE_SELECT_IMAGE_FILE_PATH = 'ipc-sqlite-select-image-file-path';
+
 // image download
 export const IPC_SAVE_IMAGE_TO_DESKTOP = 'ipc-save-image-to-desktop';
 
