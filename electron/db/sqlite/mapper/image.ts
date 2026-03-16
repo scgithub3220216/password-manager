@@ -73,9 +73,9 @@ export const countImagesByPwdId = async (pwdId: number) => {
                              WHERE pwd_id = ?;`, pwdId);
 }
 
-export const updateOssUploaded = async (id: number, uploaded: number) => {
-    console.log(`updateOssUploaded id:${id}, uploaded:${uploaded}`)
+export const updateOssUploaded = async (...params: any[]) => {
+    console.log(`updateOssUploaded params : ${params}`)
     return await baseUpdateSql(`UPDATE "pwd_image"
                                 SET oss_uploaded = ?
-                                WHERE id = ?;`, uploaded, id);
+                                WHERE id = ?;`, ...params);
 }

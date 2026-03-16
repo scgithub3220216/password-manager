@@ -40,32 +40,32 @@ export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA = 'ipc-sqlite-select-search-
 export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS = 'ipc-sqlite-select-search-pwd-info-data-ids';
 export const IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA = 'ipc-sqlite-select-count-pwd-info-data';
 
-// image
-export const IPC_SQLITE_INSERT_IMAGE_DATA = 'ipc-sqlite-insert-image-data';
-export const IPC_SQLITE_DELETE_IMAGE_DATA = 'ipc-sqlite-delete-image-data';
-export const IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID = 'ipc-sqlite-delete-images-by-pwd-id';
-export const IPC_SQLITE_DELETE_ALL_IMAGE_DATA = 'ipc-sqlite-delete-all-image-data';
-export const IPC_SQLITE_SELECT_LIST_IMAGE_META = 'ipc-sqlite-select-list-image-meta';
-export const IPC_SQLITE_SELECT_GET_IMAGE_DATA = 'ipc-sqlite-select-get-image-data';
-export const IPC_SQLITE_SELECT_ALL_IMAGE_DATA = 'ipc-sqlite-select-all-image-data';
-export const IPC_SQLITE_SELECT_COUNT_IMAGE_DATA = 'ipc-sqlite-select-count-image-data';
-export const IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA = 'ipc-sqlite-insert-image-by-import-data';
+// file
+export const IPC_SQLITE_INSERT_FILE_DATA = 'ipc-sqlite-insert-image-data';
+export const IPC_SQLITE_DELETE_FILE_DATA = 'ipc-sqlite-delete-image-data';
+export const IPC_SQLITE_DELETE_FILES_BY_PWD_ID = 'ipc-sqlite-delete-images-by-pwd-id';
+export const IPC_SQLITE_DELETE_ALL_FILE_DATA = 'ipc-sqlite-delete-all-image-data';
+export const IPC_SQLITE_SELECT_LIST_FILE_META = 'ipc-sqlite-select-list-image-meta';
+export const IPC_SQLITE_SELECT_GET_FILE_DATA = 'ipc-sqlite-select-get-image-data';
+export const IPC_SQLITE_SELECT_ALL_FILE_DATA = 'ipc-sqlite-select-all-image-data';
+export const IPC_SQLITE_SELECT_COUNT_FILE_DATA = 'ipc-sqlite-select-count-image-data';
+export const IPC_SQLITE_INSERT_FILE_BY_IMPORT_DATA = 'ipc-sqlite-insert-image-by-import-data';
 
-// image file operations
-export const IPC_IMAGE_SAVE_TO_LOCAL = 'ipc-image-save-to-local';
-export const IPC_IMAGE_READ_FROM_LOCAL = 'ipc-image-read-from-local';
-export const IPC_IMAGE_DELETE_LOCAL_FILE = 'ipc-image-delete-local-file';
-export const IPC_IMAGE_DELETE_LOCAL_DIR = 'ipc-image-delete-local-dir';
-export const IPC_IMAGE_DELETE_ALL_LOCAL = 'ipc-image-delete-all-local';
-export const IPC_IMAGE_GET_ENCRYPTED_CONTENT = 'ipc-image-get-encrypted-content';
-export const IPC_IMAGE_SAVE_ENCRYPTED_CONTENT = 'ipc-image-save-encrypted-content';
+// file operations
+export const IPC_FILE_SAVE_TO_LOCAL = 'ipc-image-save-to-local';
+export const IPC_FILE_READ_FROM_LOCAL = 'ipc-image-read-from-local';
+export const IPC_FILE_DELETE_LOCAL_FILE = 'ipc-image-delete-local-file';
+export const IPC_FILE_DELETE_LOCAL_DIR = 'ipc-image-delete-local-dir';
+export const IPC_FILE_DELETE_ALL_LOCAL = 'ipc-image-delete-all-local';
+export const IPC_FILE_GET_ENCRYPTED_CONTENT = 'ipc-image-get-encrypted-content';
+export const IPC_FILE_SAVE_ENCRYPTED_CONTENT = 'ipc-image-save-encrypted-content';
 
-// image db extra operations
-export const IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED = 'ipc-sqlite-update-image-oss-uploaded';
-export const IPC_SQLITE_SELECT_IMAGE_FILE_PATH = 'ipc-sqlite-select-image-file-path';
+// file db extra operations
+export const IPC_SQLITE_UPDATE_FILE_OSS_UPLOADED = 'ipc-sqlite-update-image-oss-uploaded';
+export const IPC_SQLITE_SELECT_FILE_PATH = 'ipc-sqlite-select-image-file-path';
 
-// image download
-export const IPC_SAVE_IMAGE_TO_DESKTOP = 'ipc-save-image-to-desktop';
+// file download
+export const IPC_SAVE_FILE_TO_DESKTOP = 'ipc-save-image-to-desktop';
 
 // shortcutKey
 export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-key-data';
@@ -84,6 +84,12 @@ export const IPC_CLOSE_WIN = 'ipc-close-win';
 export const AUTO_CHECK_UPDATE_SWITCH_SELECT = 'auto-check-update-switch-select';
 export const AUTO_UPDATE_SWITCH_UPDATE   = 'auto-update-switch-update';
 export const CHECK_UPDATE = 'check-update';
+
+// file download config
+export const IPC_GET_DESKTOP_PATH = 'ipc-get-desktop-path';
+export const IPC_SHOW_SAVE_DIALOG = 'ipc-show-save-dialog';
+export const IPC_SAVE_FILE_TO_PATH = 'ipc-save-file-to-path';
+export const IPC_SELECT_DIRECTORY = 'ipc-select-directory';
 
 
 

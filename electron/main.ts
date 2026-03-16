@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
+import {app, BrowserWindow, dialog, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
@@ -11,18 +11,22 @@ import {
     IPC_CLOSE_WIN,
     IPC_DEV_TOOLS,
     IPC_FIRST_LOGIN,
-    IPC_IMAGE_DELETE_ALL_LOCAL,
-    IPC_IMAGE_DELETE_LOCAL_DIR,
-    IPC_IMAGE_DELETE_LOCAL_FILE,
-    IPC_IMAGE_GET_ENCRYPTED_CONTENT,
-    IPC_IMAGE_READ_FROM_LOCAL,
-    IPC_IMAGE_SAVE_ENCRYPTED_CONTENT,
-    IPC_IMAGE_SAVE_TO_LOCAL,
+    IPC_FILE_DELETE_ALL_LOCAL,
+    IPC_FILE_DELETE_LOCAL_DIR,
+    IPC_FILE_DELETE_LOCAL_FILE,
+    IPC_FILE_GET_ENCRYPTED_CONTENT,
+    IPC_FILE_READ_FROM_LOCAL,
+    IPC_FILE_SAVE_ENCRYPTED_CONTENT,
+    IPC_FILE_SAVE_TO_LOCAL,
     IPC_MAXIMIZE,
     IPC_MINIMIZE,
     IPC_OPEN_BROWSER,
-    IPC_SAVE_IMAGE_TO_DESKTOP,
+    IPC_SAVE_FILE_TO_DESKTOP,
     IPC_SAVE_SHORTCUTS,
+    IPC_GET_DESKTOP_PATH,
+    IPC_SHOW_SAVE_DIALOG,
+    IPC_SAVE_FILE_TO_PATH,
+    IPC_SELECT_DIRECTORY,
     TRANSPARENT,
     WINDOW_INDEX_HEIGHT,
     WINDOW_INDEX_WIDTH
@@ -217,8 +221,8 @@ ipcMain.handle(CHECK_UPDATE, () => {
     return updateManager.checkForUpdates(1);
 })
 
-// 图片下载到桌面
-ipcMain.handle(IPC_SAVE_IMAGE_TO_DESKTOP, async (_event, base64Data: string, fileName: string) => {
+// 文件下载到桌面
+ipcMain.handle(IPC_SAVE_FILE_TO_DESKTOP, async (_event, base64Data: string, fileName: string) => {
     const desktopPath = app.getPath('desktop');
     const buffer = Buffer.from(base64Data, 'base64');
     const ext = path.extname(fileName);
@@ -233,40 +237,93 @@ ipcMain.handle(IPC_SAVE_IMAGE_TO_DESKTOP, async (_event, base64Data: string, fil
     return targetPath;
 })
 
-// 图片文件操作 IPC
-ipcMain.handle(IPC_IMAGE_SAVE_TO_LOCAL, async (_event, pwdId: number, base64Data: string, originalName: string) => {
-    console.log(`IPC_IMAGE_SAVE_TO_LOCAL pwdId:${pwdId}, originalName:${originalName}`);
+// 文件操作 IPC
+ipcMain.handle(IPC_FILE_SAVE_TO_LOCAL, async (_event, pwdId: number, base64Data: string, originalName: string) => {
+    console.log(`IPC_FILE_SAVE_TO_LOCAL pwdId:${pwdId}, originalName:${originalName}`);
     return saveImageFile(pwdId, base64Data, originalName);
 })
 
-ipcMain.handle(IPC_IMAGE_READ_FROM_LOCAL, async (_event, relativePath: string) => {
-    console.log(`IPC_IMAGE_READ_FROM_LOCAL relativePath:${relativePath}`);
+ipcMain.handle(IPC_FILE_READ_FROM_LOCAL, async (_event, relativePath: string) => {
+    console.log(`IPC_FILE_READ_FROM_LOCAL relativePath:${relativePath}`);
     return readImageFile(relativePath);
 })
 
-ipcMain.handle(IPC_IMAGE_DELETE_LOCAL_FILE, async (_event, relativePath: string) => {
-    console.log(`IPC_IMAGE_DELETE_LOCAL_FILE relativePath:${relativePath}`);
+ipcMain.handle(IPC_FILE_DELETE_LOCAL_FILE, async (_event, relativePath: string) => {
+    console.log(`IPC_FILE_DELETE_LOCAL_FILE relativePath:${relativePath}`);
     deleteImageFile(relativePath);
 })
 
-ipcMain.handle(IPC_IMAGE_DELETE_LOCAL_DIR, async (_event, pwdId: number) => {
-    console.log(`IPC_IMAGE_DELETE_LOCAL_DIR pwdId:${pwdId}`);
+ipcMain.handle(IPC_FILE_DELETE_LOCAL_DIR, async (_event, pwdId: number) => {
+    console.log(`IPC_FILE_DELETE_LOCAL_DIR pwdId:${pwdId}`);
     deleteImageDir(pwdId);
 })
 
-ipcMain.handle(IPC_IMAGE_DELETE_ALL_LOCAL, async (_event) => {
-    console.log(`IPC_IMAGE_DELETE_ALL_LOCAL`);
+ipcMain.handle(IPC_FILE_DELETE_ALL_LOCAL, async (_event) => {
+    console.log(`IPC_FILE_DELETE_ALL_LOCAL`);
     deleteAllImageFiles();
 })
 
-ipcMain.handle(IPC_IMAGE_GET_ENCRYPTED_CONTENT, async (_event, relativePath: string) => {
-    console.log(`IPC_IMAGE_GET_ENCRYPTED_CONTENT relativePath:${relativePath}`);
+ipcMain.handle(IPC_FILE_GET_ENCRYPTED_CONTENT, async (_event, relativePath: string) => {
+    console.log(`IPC_FILE_GET_ENCRYPTED_CONTENT relativePath:${relativePath}`);
     return getEncryptedFileContent(relativePath);
 })
 
-ipcMain.handle(IPC_IMAGE_SAVE_ENCRYPTED_CONTENT, async (_event, relativePath: string, content: string) => {
-    console.log(`IPC_IMAGE_SAVE_ENCRYPTED_CONTENT relativePath:${relativePath}`);
+ipcMain.handle(IPC_FILE_SAVE_ENCRYPTED_CONTENT, async (_event, relativePath: string, content: string) => {
+    console.log(`IPC_FILE_SAVE_ENCRYPTED_CONTENT relativePath:${relativePath}`);
     saveEncryptedFileContent(relativePath, content);
+})
+
+// 获取桌面路径
+ipcMain.handle(IPC_GET_DESKTOP_PATH, async () => {
+    return app.getPath('desktop');
+})
+
+// 弹出目录选择对话框
+ipcMain.handle(IPC_SELECT_DIRECTORY, async () => {
+    if (!win) return '';
+    const result = await dialog.showOpenDialog(win, {
+        properties: ['openDirectory'],
+        title: '选择下载目录',
+    });
+    if (result.canceled || result.filePaths.length === 0) {
+        return '';
+    }
+    return result.filePaths[0];
+})
+
+// 弹出文件保存对话框
+ipcMain.handle(IPC_SHOW_SAVE_DIALOG, async (_event, fileName: string) => {
+    if (!win) return '';
+    const result = await dialog.showSaveDialog(win, {
+        defaultPath: fileName,
+        title: '保存文件',
+    });
+    if (result.canceled || !result.filePath) {
+        return '';
+    }
+    return result.filePath;
+})
+
+// 保存文件到指定路径
+ipcMain.handle(IPC_SAVE_FILE_TO_PATH, async (_event, base64Data: string, dirOrFullPath: string, fileName: string) => {
+    const buffer = Buffer.from(base64Data, 'base64');
+    let targetPath: string;
+    if (fileName) {
+        // dirOrFullPath 是目录，拼接文件名
+        const ext = path.extname(fileName);
+        const nameWithoutExt = path.basename(fileName, ext);
+        targetPath = path.join(dirOrFullPath, fileName);
+        let counter = 1;
+        while (fs.existsSync(targetPath)) {
+            targetPath = path.join(dirOrFullPath, `${nameWithoutExt}(${counter})${ext}`);
+            counter++;
+        }
+    } else {
+        // dirOrFullPath 是完整文件路径（来自 showSaveDialog）
+        targetPath = dirOrFullPath;
+    }
+    fs.writeFileSync(targetPath, buffer);
+    return targetPath;
 })
 
 // IPC 事件处理

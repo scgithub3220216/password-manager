@@ -43,6 +43,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Enter: typeof import('./src/components/svg/Enter.vue')['default']
+    FileGallery: typeof import('./src/components/indexview/FileGallery.vue')['default']
     Group: typeof import('./src/components/indexview/Group.vue')['default']
     Header: typeof import('./src/components/indexview/Header.vue')['default']
     ImageGallery: typeof import('./src/components/indexview/ImageGallery.vue')['default']

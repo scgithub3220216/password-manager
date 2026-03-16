@@ -29,7 +29,7 @@ export function getImageDir(): string {
  * 生成唯一文件名: {timestamp}_{6位随机hex}.{ext}.enc
  */
 export function generateFileName(originalName: string): string {
-    const ext = path.extname(originalName) || '.png';
+    const ext = path.extname(originalName) || '.bin';
     const timestamp = Date.now();
     const random = crypto.randomBytes(3).toString('hex');
     return `${timestamp}_${random}${ext}.enc`;

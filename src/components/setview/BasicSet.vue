@@ -8,7 +8,12 @@ const {
   ossAutoDownloadSwitchValue,
   ossAutoUploadSwitchValueChange,
   ossAutoDownloadSwitchValueChange,
-  lockTimeChange
+  lockTimeChange,
+  defaultDownloadPathSwitchValue,
+  defaultDownloadPathValue,
+  defaultDownloadPathSwitchChange,
+  selectDownloadPath,
+  downloadPathChange,
 } = useBasicSet();
 
 
@@ -62,6 +67,42 @@ const {
             :value="item.value"
         />
       </el-select>
+    </div>
+  </div>
+
+  <div class="setting-item item">
+    <div class="left">
+      <el-text class="mx-1">
+        启用默认下载路径
+        <el-tooltip
+            class="box-item"
+            content="开启后文件下载将自动保存到指定路径，关闭则每次弹窗选择保存位置"
+            effect="dark"
+            placement="top"
+        >
+          <el-icon>
+            <QuestionFilled/>
+          </el-icon>
+        </el-tooltip>
+      </el-text>
+    </div>
+    <div class="right">
+      <el-switch v-model="defaultDownloadPathSwitchValue" @change="defaultDownloadPathSwitchChange"/>
+    </div>
+  </div>
+
+  <div class="setting-item item" v-if="defaultDownloadPathSwitchValue">
+    <div class="left">
+      <el-text class="mx-1">默认下载路径</el-text>
+    </div>
+    <div class="right download-path-row">
+      <el-input
+          v-model="defaultDownloadPathValue"
+          placeholder="请输入或选择下载路径"
+          style="width: 240px"
+          @change="downloadPathChange"
+      />
+      <el-button type="primary" size="small" style="margin-left: 6px" @click="selectDownloadPath">选择</el-button>
     </div>
   </div>
 
@@ -139,5 +180,9 @@ const {
   margin-left: 10px;
 }
 
+.download-path-row {
+  display: flex;
+  align-items: center;
+}
 
 </style>

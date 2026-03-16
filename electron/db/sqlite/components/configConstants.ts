@@ -18,6 +18,9 @@ export const ossSyncAutoUploadSwitch = 'oss_sync_auto_upload_switch';
 export const ossSyncAutoDownloadSwitch = 'oss_sync_auto_download_switch';
 export const imageMigratedFlag = 'image_migrated';
 
+export const defaultDownloadPathSwitch = 'default_download_path_switch';
+export const defaultDownloadPath = 'default_download_path';
+
 export const openMainWindows = 'openMainWindows';
 export const logout = 'logout';
 export const copyUsername = 'copyUsername';

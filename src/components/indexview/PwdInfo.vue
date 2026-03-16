@@ -3,9 +3,9 @@ import {ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
 import RandomPwdGenerate from "./RandomPwdGenerate.vue";
-import ImageGallery from "./ImageGallery.vue";
+import FileGallery from "./FileGallery.vue";
 
-import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Picture, Switch, UserFilled, View,} from "@element-plus/icons-vue";
+import {ChromeFilled, Compass, CopyDocument, EditPen, Folder, Hide, Switch, UserFilled, View,} from "@element-plus/icons-vue";
 import {storeToRefs} from "pinia";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
@@ -103,13 +103,13 @@ function switchMode(mode: number) {
             <EditPen/>
           </el-icon>
         </el-tooltip>
-        <el-tooltip content="图片模式" effect="dark" placement="top">
+        <el-tooltip content="文件模式" effect="dark" placement="top">
           <el-icon
               class="mode-icon"
               :class="{'mode-icon-active': curPwdInfo.type === 1}"
               @click="switchMode(1)"
           >
-            <Picture/>
+            <Folder/>
           </el-icon>
         </el-tooltip>
       </div>
@@ -234,7 +234,7 @@ function switchMode(mode: number) {
       </div>
     </template>
 
-    <ImageGallery v-if="curPwdInfo.type === 1"/>
+    <FileGallery v-if="curPwdInfo.type === 1"/>
   </div>
 
   <RandomPwdGenerate ref="randomPwdGenerateRef" :updatePwdInfo="pwdInfoChange"/>

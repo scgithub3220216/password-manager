@@ -1,12 +1,12 @@
 import useDBOss from "./useDBOss.ts";
 import {onMounted, reactive, ref} from "vue";
-import {OssForm, OssSyncObj, PwdImage, PwdImageSyncMeta, PwdInfo} from "../components/type.ts";
+import {OssForm, OssSyncObj, PwdFile, PwdFileSyncMeta, PwdInfo} from "../components/type.ts";
 import {ElMessage, ElNotification} from "element-plus";
 import {emitterRefreshGroupData, ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import useDBImage from "./useDBImage.ts";
+import useDBFile from "./useDBFile.ts";
 import {
     localVersionField,
     ossSyncAutoDownloadSwitch,
@@ -20,14 +20,14 @@ import emitter from "../utils/emitter.ts";
 export default function () {
     const pwdListKey = "password"
     const ossVersionKey = "ossVersion";
-    const ossImagePrefix = "image/";
+    const ossFilePrefix = "image/";
     const ossStore = useOssStore()
     const {delAllGroup, insertOssGroup} = useDBGroup()
     const {delAllPwdInfo, insertPwdInfoByImport} = useDBPwdInfo()
     const {
-        listAllImages, deleteAllImages, insertImageByImport,
+        listAllFiles, deleteAllFiles, insertFileByImport,
         updateOssUploaded, getEncryptedContent, saveEncryptedContent
-    } = useDBImage()
+    } = useDBFile()
 
     // @ts-ignore database 配置
     const databaseForm = reactive<OssForm>({})
@@ -131,43 +131,44 @@ export default function () {
                 }
             }
 
-            // 图片数据同步（新版：从 OSS 独立下载图片文件）
-            if (ossSyncObj.imageList && ossSyncObj.imageList.length > 0) {
-                // 先删除本地所有图片文件和数据库记录
-                await deleteAllImages()
+            // 文件数据同步（从 OSS 独立下载文件，兼容旧版 imageList 字段）
+            const fileList = ossSyncObj.fileList || ossSyncObj.imageList || [];
+            if (fileList.length > 0) {
+                // 先删除本地所有文件和数据库记录
+                await deleteAllFiles()
 
-                for (const imageMeta of ossSyncObj.imageList) {
+                for (const fileMeta of fileList) {
                     try {
                         // 从 OSS 下载加密文件
-                        const ossKey = `${ossImagePrefix}${imageMeta.data}`;
+                        const ossKey = `${ossFilePrefix}${fileMeta.data}`;
                         const encryptedContent = await getBinaryFile(ossKey);
                         if (encryptedContent) {
                             // 保存加密内容到本地文件
-                            await saveEncryptedContent(imageMeta.data, encryptedContent);
+                            await saveEncryptedContent(fileMeta.data, encryptedContent);
                             // 插入数据库记录
-                            const imageRecord: PwdImage = {
-                                id: imageMeta.id,
-                                pwd_id: imageMeta.pwd_id,
-                                file_name: imageMeta.file_name,
-                                file_size: imageMeta.file_size,
-                                mime_type: imageMeta.mime_type,
-                                data: imageMeta.data,
-                                sort_order: imageMeta.sort_order,
-                                created_at: imageMeta.created_at,
+                            const fileRecord: PwdFile = {
+                                id: fileMeta.id,
+                                pwd_id: fileMeta.pwd_id,
+                                file_name: fileMeta.file_name,
+                                file_size: fileMeta.file_size,
+                                mime_type: fileMeta.mime_type,
+                                data: fileMeta.data,
+                                sort_order: fileMeta.sort_order,
+                                created_at: fileMeta.created_at,
                                 oss_uploaded: 1,
                             };
-                            await insertImageByImport(imageRecord);
-                            console.log(`下载图片成功: ${ossKey}`);
+                            await insertFileByImport(fileRecord);
+                            console.log(`下载文件成功: ${ossKey}`);
                         } else {
-                            console.error(`下载图片失败: ${ossKey}, 内容为空`);
+                            console.error(`下载文件失败: ${ossKey}, 内容为空`);
                         }
                     } catch (e) {
-                        console.error(`下载图片异常: id=${imageMeta.id}`, e);
+                        console.error(`下载文件异常: id=${fileMeta.id}`, e);
                     }
                 }
             } else {
-                // 旧版数据无 imageList 或为空，清空本地图片
-                await deleteAllImages()
+                // 无文件列表，清空本地文件
+                await deleteAllFiles()
             }
         })
         await setConfigValue(String(remoteVersion), localVersionField)
@@ -226,56 +227,56 @@ export default function () {
             let items = await listPwdInfo(group.id);
             pwdInfoList = pwdInfoList.concat(items);
         }
-        // 获取全部图片元数据（data 字段现在是文件路径，体积很小）
-        const allImages = await listAllImages();
+        // 获取全部文件元数据（data 字段现在是文件路径，体积很小）
+        const allFiles = await listAllFiles();
 
         // 构建同步元数据（不含文件内容）
-        const imageListMeta: PwdImageSyncMeta[] = allImages.map((img) => ({
-            id: img.id,
-            pwd_id: img.pwd_id,
-            file_name: img.file_name,
-            file_size: img.file_size,
-            mime_type: img.mime_type,
-            data: img.data,
-            sort_order: img.sort_order,
-            created_at: img.created_at,
+        const fileListMeta: PwdFileSyncMeta[] = allFiles.map((f) => ({
+            id: f.id,
+            pwd_id: f.pwd_id,
+            file_name: f.file_name,
+            file_size: f.file_size,
+            mime_type: f.mime_type,
+            data: f.data,
+            sort_order: f.sort_order,
+            created_at: f.created_at,
         }));
 
         let syncOjb: OssSyncObj = {
             groupList: groupList,
             pwdInfoList: pwdInfoList,
-            imageList: imageListMeta,
+            fileList: fileListMeta,
         }
 
-        // 上传同步 JSON（体积大幅减小，不再包含图片二进制数据）
+        // 上传同步 JSON
         try {
             await putFile(pwdListKey, JSON.stringify(syncOjb));
 
-            // 上传未同步的图片文件到 OSS
-            for (const img of allImages) {
-                if (img.oss_uploaded === 0) {
+            // 上传未同步的文件到 OSS
+            for (const f of allFiles) {
+                if (f.oss_uploaded === 0) {
                     try {
-                        const encryptedContent = await getEncryptedContent(img.data);
+                        const encryptedContent = await getEncryptedContent(f.data);
                         if (encryptedContent) {
-                            const ossKey = `${ossImagePrefix}${img.data}`;
+                            const ossKey = `${ossFilePrefix}${f.data}`;
                             const err = await putBinaryFile(ossKey, encryptedContent);
                             if (!err) {
-                                await updateOssUploaded(img.id, 1);
-                                console.log(`上传图片成功: ${ossKey}`);
+                                await updateOssUploaded(f.id, 1);
+                                console.log(`上传文件成功: ${ossKey}`);
                             } else {
-                                console.error(`上传图片失败: ${ossKey}`, err);
+                                console.error(`上传文件失败: ${ossKey}`, err);
                             }
                         }
                     } catch (e) {
-                        console.error(`上传图片异常: id=${img.id}`, e);
+                        console.error(`上传文件异常: id=${f.id}`, e);
                     }
                 }
             }
 
-            // 清理 OSS 上的孤儿文件（本地已删除但 OSS 上还存在的图片）
+            // 清理 OSS 上的孤儿文件（本地已删除但 OSS 上还存在的文件）
             try {
-                const ossFiles = await listOssFiles(ossImagePrefix);
-                const localPaths = new Set(allImages.map(img => `${ossImagePrefix}${img.data}`));
+                const ossFiles = await listOssFiles(ossFilePrefix);
+                const localPaths = new Set(allFiles.map(f => `${ossFilePrefix}${f.data}`));
                 const orphanKeys = ossFiles.filter(key => !localPaths.has(key));
                 if (orphanKeys.length > 0) {
                     console.log(`清理 OSS 孤儿文件: ${orphanKeys.length} 个`);

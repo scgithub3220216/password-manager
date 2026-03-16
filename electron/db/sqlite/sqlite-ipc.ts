@@ -29,17 +29,17 @@ import {
     IPC_SQLITE_UPDATE_OSS_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
-    IPC_SQLITE_INSERT_IMAGE_DATA,
-    IPC_SQLITE_DELETE_IMAGE_DATA,
-    IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID,
-    IPC_SQLITE_DELETE_ALL_IMAGE_DATA,
-    IPC_SQLITE_SELECT_LIST_IMAGE_META,
-    IPC_SQLITE_SELECT_GET_IMAGE_DATA,
-    IPC_SQLITE_SELECT_ALL_IMAGE_DATA,
-    IPC_SQLITE_SELECT_COUNT_IMAGE_DATA,
-    IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA,
-    IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED,
-    IPC_SQLITE_SELECT_IMAGE_FILE_PATH,
+    IPC_SQLITE_INSERT_FILE_DATA,
+    IPC_SQLITE_DELETE_FILE_DATA,
+    IPC_SQLITE_DELETE_FILES_BY_PWD_ID,
+    IPC_SQLITE_DELETE_ALL_FILE_DATA,
+    IPC_SQLITE_SELECT_LIST_FILE_META,
+    IPC_SQLITE_SELECT_GET_FILE_DATA,
+    IPC_SQLITE_SELECT_ALL_FILE_DATA,
+    IPC_SQLITE_SELECT_COUNT_FILE_DATA,
+    IPC_SQLITE_INSERT_FILE_BY_IMPORT_DATA,
+    IPC_SQLITE_UPDATE_FILE_OSS_UPLOADED,
+    IPC_SQLITE_SELECT_FILE_PATH,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
 import {delAllGroup, delGroup, getIdByTitle, insertGroup, insertGroupByOss, listGroup, updateGroup} from "./mapper/group.ts";
@@ -240,70 +240,70 @@ export const SQLiteIPC = () => {
         return await listShortcutKey();
     });
 
-    // image
-    // ipc sqlite insert image
-    ipcMain.handle(IPC_SQLITE_INSERT_IMAGE_DATA, async (_event, ...args) => {
-        console.log(`IPC_SQLITE_INSERT_IMAGE_DATA  args : ${args}`);
+    // file
+    // ipc sqlite insert file
+    ipcMain.handle(IPC_SQLITE_INSERT_FILE_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_FILE_DATA  args : ${args}`);
         return await insertImage(...args);
     });
 
-    // ipc sqlite insert image by import (OSS sync)
-    ipcMain.handle(IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA, async (_event, ...args) => {
-        console.log(`IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA  args : ${args}`);
+    // ipc sqlite insert file by import (OSS sync)
+    ipcMain.handle(IPC_SQLITE_INSERT_FILE_BY_IMPORT_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_FILE_BY_IMPORT_DATA  args : ${args}`);
         return await insertImageByImport(...args);
     });
 
-    // ipc sqlite delete image
-    ipcMain.handle(IPC_SQLITE_DELETE_IMAGE_DATA, async (_event, args) => {
-        console.log(`IPC_SQLITE_DELETE_IMAGE_DATA  args : ${args}`);
+    // ipc sqlite delete file
+    ipcMain.handle(IPC_SQLITE_DELETE_FILE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_DELETE_FILE_DATA  args : ${args}`);
         return await deleteImage(args);
     });
 
-    // ipc sqlite delete images by pwd_id
-    ipcMain.handle(IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID, async (_event, args) => {
-        console.log(`IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID  args : ${args}`);
+    // ipc sqlite delete files by pwd_id
+    ipcMain.handle(IPC_SQLITE_DELETE_FILES_BY_PWD_ID, async (_event, args) => {
+        console.log(`IPC_SQLITE_DELETE_FILES_BY_PWD_ID  args : ${args}`);
         return await deleteImagesByPwdId(args);
     });
 
-    // ipc sqlite delete all images
-    ipcMain.handle(IPC_SQLITE_DELETE_ALL_IMAGE_DATA, async (_event) => {
-        console.log(`IPC_SQLITE_DELETE_ALL_IMAGE_DATA`);
+    // ipc sqlite delete all files
+    ipcMain.handle(IPC_SQLITE_DELETE_ALL_FILE_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_DELETE_ALL_FILE_DATA`);
         return await deleteAllImages();
     });
 
-    // ipc sqlite select image meta list
-    ipcMain.handle(IPC_SQLITE_SELECT_LIST_IMAGE_META, async (_event, args) => {
-        console.log(`IPC_SQLITE_SELECT_LIST_IMAGE_META  args : ${args}`);
+    // ipc sqlite select file meta list
+    ipcMain.handle(IPC_SQLITE_SELECT_LIST_FILE_META, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_LIST_FILE_META  args : ${args}`);
         return await listImageMeta(args);
     });
 
-    // ipc sqlite select image data
-    ipcMain.handle(IPC_SQLITE_SELECT_GET_IMAGE_DATA, async (_event, args) => {
-        console.log(`IPC_SQLITE_SELECT_GET_IMAGE_DATA  args : ${args}`);
+    // ipc sqlite select file data
+    ipcMain.handle(IPC_SQLITE_SELECT_GET_FILE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_GET_FILE_DATA  args : ${args}`);
         return await getImageData(args);
     });
 
-    // ipc sqlite select all images
-    ipcMain.handle(IPC_SQLITE_SELECT_ALL_IMAGE_DATA, async (_event) => {
-        console.log(`IPC_SQLITE_SELECT_ALL_IMAGE_DATA`);
+    // ipc sqlite select all files
+    ipcMain.handle(IPC_SQLITE_SELECT_ALL_FILE_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_SELECT_ALL_FILE_DATA`);
         return await listAllImages();
     });
 
-    // ipc sqlite select count images
-    ipcMain.handle(IPC_SQLITE_SELECT_COUNT_IMAGE_DATA, async (_event, args) => {
-        console.log(`IPC_SQLITE_SELECT_COUNT_IMAGE_DATA  args : ${args}`);
+    // ipc sqlite select count files
+    ipcMain.handle(IPC_SQLITE_SELECT_COUNT_FILE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_COUNT_FILE_DATA  args : ${args}`);
         return await countImagesByPwdId(args);
     });
 
-    // ipc sqlite select image file path
-    ipcMain.handle(IPC_SQLITE_SELECT_IMAGE_FILE_PATH, async (_event, args) => {
-        console.log(`IPC_SQLITE_SELECT_IMAGE_FILE_PATH  args : ${args}`);
+    // ipc sqlite select file path
+    ipcMain.handle(IPC_SQLITE_SELECT_FILE_PATH, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_FILE_PATH  args : ${args}`);
         return await getImageFilePath(args);
     });
 
-    // ipc sqlite update image oss_uploaded
-    ipcMain.handle(IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED, async (_event, ...args) => {
-        console.log(`IPC_SQLITE_UPDATE_IMAGE_OSS_UPLOADED  args : ${args}`);
+    // ipc sqlite update file oss_uploaded
+    ipcMain.handle(IPC_SQLITE_UPDATE_FILE_OSS_UPLOADED, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_UPDATE_FILE_OSS_UPLOADED  args : ${args}`);
         return await updateOssUploaded(...args);
     });
 

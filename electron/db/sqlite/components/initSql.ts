@@ -10,6 +10,8 @@ import {
     autoStartValue,
     darkSwitch,
     darkSwitchValue,
+    defaultDownloadPath,
+    defaultDownloadPathSwitch,
     defaultPwdValue,
     firstLoginFlag,
     firstLoginFlagValue,
@@ -47,6 +49,8 @@ export const initTable = async () => {
     alterImageTableAddOssUploaded()
     // 迁移旧的 Base64 图片数据到本地文件
     migrateImageDataToFile()
+    // 确保下载路径配置项存在
+    ensureDownloadPathConfig()
     if (flag) {
         return;
     }
@@ -197,6 +201,20 @@ function alterImageTableAddOssUploaded() {
     console.log('pwd_image 表新增 oss_uploaded 字段成功');
 }
 
+function ensureDownloadPathConfig() {
+    const stmt = db.prepare(`SELECT COUNT(*) as count FROM "config" WHERE code = ?`);
+    const switchRow = stmt.get(defaultDownloadPathSwitch);
+    if (switchRow.count === 0) {
+        db.prepare(`INSERT INTO "config" (code, value) VALUES (?, ?)`).run(defaultDownloadPathSwitch, '0');
+        console.log('config 表新增 default_download_path_switch 配置');
+    }
+    const pathRow = stmt.get(defaultDownloadPath);
+    if (pathRow.count === 0) {
+        db.prepare(`INSERT INTO "config" (code, value) VALUES (?, ?)`).run(defaultDownloadPath, '');
+        console.log('config 表新增 default_download_path 配置');
+    }
+}
+
 function migrateImageDataToFile() {
     // 检查是否已迁移
     const configStmt = db.prepare(`SELECT value FROM "config" WHERE code = ?`);
@@ -296,6 +314,8 @@ function insertConfigData() {
         {code: ossSyncSwitch, value: 0},
         {code: ossSyncAutoUploadSwitch, value: 1},
         {code: ossSyncAutoDownloadSwitch, value: 1},
+        {code: defaultDownloadPathSwitch, value: 0},
+        {code: defaultDownloadPath, value: ''},
     ];
 
     const configValues = configInserts.map(({code, value}) => `('${code}', '${value}')`).join(',');
