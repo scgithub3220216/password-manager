@@ -39,6 +39,8 @@ export const initTable = async () => {
     createVersionTable()
     // 检查 图片表是否存在,不存在创建
     createImageTable()
+    // 检查 pwd_info 表是否有 type 字段,没有则新增
+    alterPwdInfoAddType()
     if (flag) {
         return;
     }
@@ -68,7 +70,8 @@ function createTable()
             "username"    TEXT,
             "password"    TEXT,
             "link"        TEXT,
-            "remark"      TEXT
+            "remark"      TEXT,
+            "type"        INTEGER DEFAULT 0
         );
     `);
 
@@ -168,6 +171,14 @@ async function createImageTable() {
     `);
     db.exec(`CREATE INDEX IF NOT EXISTS "idx_pwd_image_pwd_id" ON "pwd_image" ("pwd_id");`);
     console.log('createImageTable 表创建成功');
+}
+
+function alterPwdInfoAddType() {
+    const columns = db.prepare("PRAGMA table_info('pwd_info')").all();
+    const hasType = columns.some((col: any) => col.name === 'type');
+    if (hasType) return;
+    db.exec(`ALTER TABLE "pwd_info" ADD COLUMN "type" INTEGER DEFAULT 0;`);
+    console.log('pwd_info 表新增 type 字段成功');
 }
 
 function insertData() {

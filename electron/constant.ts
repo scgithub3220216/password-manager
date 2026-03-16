@@ -51,6 +51,9 @@ export const IPC_SQLITE_SELECT_ALL_IMAGE_DATA = 'ipc-sqlite-select-all-image-dat
 export const IPC_SQLITE_SELECT_COUNT_IMAGE_DATA = 'ipc-sqlite-select-count-image-data';
 export const IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA = 'ipc-sqlite-insert-image-by-import-data';
 
+// image download
+export const IPC_SAVE_IMAGE_TO_DESKTOP = 'ipc-save-image-to-desktop';
+
 // shortcutKey
 export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-key-data';
 export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-key-data';

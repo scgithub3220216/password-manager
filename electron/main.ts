@@ -2,6 +2,7 @@ import {app, BrowserWindow, ipcMain, Menu, shell} from 'electron'
 import {createRequire} from 'node:module'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
+import fs from 'node:fs'
 import {
     AUTO_HIDE_MENU_BAR,
     CHECK_UPDATE,
@@ -13,6 +14,7 @@ import {
     IPC_MAXIMIZE,
     IPC_MINIMIZE,
     IPC_OPEN_BROWSER,
+    IPC_SAVE_IMAGE_TO_DESKTOP,
     IPC_SAVE_SHORTCUTS,
     TRANSPARENT,
     WINDOW_INDEX_HEIGHT,
@@ -197,6 +199,22 @@ ipcMain.handle(IPC_CLOSE_WIN, () => {
 ipcMain.handle(CHECK_UPDATE, () => {
     console.log(CHECK_UPDATE)
     return updateManager.checkForUpdates(1);
+})
+
+// 图片下载到桌面
+ipcMain.handle(IPC_SAVE_IMAGE_TO_DESKTOP, async (_event, base64Data: string, fileName: string) => {
+    const desktopPath = app.getPath('desktop');
+    const buffer = Buffer.from(base64Data, 'base64');
+    const ext = path.extname(fileName);
+    const nameWithoutExt = path.basename(fileName, ext);
+    let targetPath = path.join(desktopPath, fileName);
+    let counter = 1;
+    while (fs.existsSync(targetPath)) {
+        targetPath = path.join(desktopPath, `${nameWithoutExt}(${counter})${ext}`);
+        counter++;
+    }
+    fs.writeFileSync(targetPath, buffer);
+    return targetPath;
 })
 
 // IPC 事件处理

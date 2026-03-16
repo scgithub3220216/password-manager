@@ -5,14 +5,14 @@ import {baseGetSql, baseInsertSql, baseListSql, baseUpdateSql} from "../componen
 
 export const insertPwdInfo = async (...params: any[]) => {
     console.log(`insertPwdInfo params:${params}`)
-    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title)
-                                VALUES (?, ?);`, ...params);
+    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title, type)
+                                VALUES (?, ?, ?);`, ...params);
 }
 
 export const insertPwdInfoByImport = async (...params: any[]) => {
     console.log(`insertPwdInfo params:${params}`)
-    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title, title, username, password, link, remark)
-                                VALUES (?, ?, ?, ?, ?, ?, ?);`, ...params);
+    return await baseInsertSql(`INSERT INTO "pwd_info" (group_id, group_title, title, username, password, link, remark, type)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?);`, ...params);
 }
 
 export const delPwdInfo = async (id: number) => {
@@ -43,7 +43,8 @@ export const updatePwdInfo = async (...params: any[]) => {
                                     username    = ?,
                                     password    = ?,
                                     link        = ?,
-                                    remark      = ?
+                                    remark      = ?,
+                                    type        = ?
                                 WHERE id = ?;`, ...params);
 }
 

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import {ref, watch, onUnmounted} from "vue";
+import {ref, watch, onMounted, onUnmounted} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import {storeToRefs} from "pinia";
 import useDBImage from "../../hooks/useDBImage.ts";
 import useDataSync from "../../hooks/useDataSync.ts";
 import {PwdImageMeta} from "../type.ts";
 import {ElMessage} from "element-plus";
-import {Delete, Plus, ZoomIn} from "@element-plus/icons-vue";
+import {CopyDocument, Delete, Download, Plus, ZoomIn} from "@element-plus/icons-vue";
+import {IPC_SAVE_IMAGE_TO_DESKTOP} from "../../../electron/constant.ts";
 
 const MAX_IMAGE_COUNT = 20;
 const MAX_IMAGE_SIZE = 20 * 1024 * 1024; // 20MB
@@ -23,6 +24,7 @@ const uploading = ref(false);
 const previewVisible = ref(false);
 const previewIndex = ref(0);
 const previewUrls = ref<string[]>([]);
+const isDragging = ref(false);
 
 // 监听当前密码条目变化，刷新图片列表
 watch(() => curPwdInfo.value.id, async (newId) => {
@@ -34,7 +36,32 @@ watch(() => curPwdInfo.value.id, async (newId) => {
   }
 }, {immediate: true});
 
+// 粘贴上传监听
+function handlePaste(e: ClipboardEvent) {
+  if (!curPwdInfo.value.id) return;
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      const file = items[i].getAsFile();
+      if (file) {
+        // 生成文件名
+        const ext = file.type.split('/')[1] || 'png';
+        const newFile = new File([file], `paste-${Date.now()}.${ext}`, {type: file.type});
+        processFile(newFile);
+      }
+      e.preventDefault();
+      break;
+    }
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('paste', handlePaste);
+});
+
 onUnmounted(() => {
+  document.removeEventListener('paste', handlePaste);
   imageDataUrls.value = new Map();
   imageMetaList.value = [];
 });
@@ -61,9 +88,10 @@ function formatFileSize(size: number): string {
   return (size / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-async function handleUpload(options: any) {
-  const file = options.file as File;
-
+/**
+ * 公共上传处理函数，供按钮上传、粘贴上传、拖拽上传复用
+ */
+async function processFile(file: File) {
   // MIME 类型校验
   if (!ALLOWED_MIME_TYPES.includes(file.type)) {
     ElMessage.error('不支持的图片格式，仅支持 JPG/PNG/GIF/WEBP/BMP');
@@ -103,6 +131,38 @@ async function handleUpload(options: any) {
   }
 }
 
+async function handleUpload(options: any) {
+  const file = options.file as File;
+  await processFile(file);
+}
+
+// 拖拽上传处理
+function handleDragEnter(e: DragEvent) {
+  if (e.dataTransfer?.types.includes('Files')) {
+    isDragging.value = true;
+  }
+}
+
+function handleDragLeave(e: DragEvent) {
+  // 确保离开的是gallery容器本身
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+  if (e.clientX <= rect.left || e.clientX >= rect.right ||
+      e.clientY <= rect.top || e.clientY >= rect.bottom) {
+    isDragging.value = false;
+  }
+}
+
+async function handleDrop(e: DragEvent) {
+  isDragging.value = false;
+  if (!e.dataTransfer?.types.includes('Files')) return;
+  const files = e.dataTransfer.files;
+  for (let i = 0; i < files.length; i++) {
+    if (files[i].type.startsWith('image/')) {
+      await processFile(files[i]);
+    }
+  }
+}
+
 async function handleDelete(id: number) {
   try {
     await deleteImage(id);
@@ -127,13 +187,81 @@ function handlePreview(index: number) {
 function closePreview() {
   previewVisible.value = false;
 }
+
+/**
+ * 复制图片到剪贴板
+ */
+async function handleCopyImage(id: number, mimeType: string) {
+  try {
+    const dataUrl = getImageUrl(id) || await getImageDataUrl(id, mimeType);
+    if (!dataUrl) {
+      ElMessage.error('图片数据加载失败');
+      return;
+    }
+    const img = new Image();
+    img.src = dataUrl;
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error('图片加载失败'));
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0);
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((b) => {
+        if (b) resolve(b);
+        else reject(new Error('转换失败'));
+      }, 'image/png');
+    });
+    await navigator.clipboard.write([
+      new ClipboardItem({'image/png': blob})
+    ]);
+    ElMessage.success('图片已复制到剪贴板');
+  } catch (e) {
+    console.error('图片复制失败:', e);
+    ElMessage.error('图片复制失败');
+  }
+}
+
+/**
+ * 下载图片到桌面
+ */
+async function handleDownloadImage(id: number, mimeType: string, fileName: string) {
+  try {
+    const dataUrl = getImageUrl(id) || await getImageDataUrl(id, mimeType);
+    if (!dataUrl) {
+      ElMessage.error('图片数据加载失败');
+      return;
+    }
+    const base64Data = dataUrl.split(',')[1];
+    const savedPath = await window.ipcRenderer.invoke(IPC_SAVE_IMAGE_TO_DESKTOP, base64Data, fileName);
+    ElMessage.success(`图片已保存到: ${savedPath}`);
+  } catch (e) {
+    console.error('图片下载失败:', e);
+    ElMessage.error('图片下载失败');
+  }
+}
 </script>
 
 <template>
-  <div class="image-gallery" v-if="curPwdInfo.id">
+  <div
+      class="image-gallery"
+      v-if="curPwdInfo.id"
+      @dragover.prevent
+      @dragenter="handleDragEnter"
+      @dragleave="handleDragLeave"
+      @drop.prevent="handleDrop"
+  >
     <div class="gallery-header">
       <span class="gallery-title">图片附件</span>
       <span class="gallery-count">{{ imageMetaList.length }}/{{ MAX_IMAGE_COUNT }}</span>
+    </div>
+
+    <!-- 拖拽上传遮罩 -->
+    <div class="drag-overlay" v-if="isDragging">
+      <span class="drag-overlay-text">拖放图片到此处上传</span>
     </div>
 
     <div class="gallery-grid">
@@ -160,11 +288,14 @@ function closePreview() {
 
         <div class="gallery-item-overlay">
           <el-icon class="overlay-icon" @click="handlePreview(index)"><ZoomIn/></el-icon>
+          <el-icon class="overlay-icon" @click="handleCopyImage(meta.id, meta.mime_type)"><CopyDocument/></el-icon>
+          <el-icon class="overlay-icon" @click="handleDownloadImage(meta.id, meta.mime_type, meta.file_name)"><Download/></el-icon>
           <el-popconfirm
               title="确定删除此图片？"
               confirm-button-text="确定"
               cancel-button-text="取消"
               @confirm="handleDelete(meta.id)"
+              width="160px"
           >
             <template #reference>
               <el-icon class="overlay-icon overlay-delete"><Delete/></el-icon>
@@ -209,6 +340,7 @@ function closePreview() {
 .image-gallery {
   margin-top: 10px;
   width: 98%;
+  position: relative;
 }
 
 .gallery-header {
@@ -259,7 +391,7 @@ function closePreview() {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 6px;
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -270,9 +402,9 @@ function closePreview() {
 
 .overlay-icon {
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 4px;
+  padding: 3px;
   border-radius: 50%;
   transition: transform 0.2s;
 }
@@ -346,5 +478,28 @@ function closePreview() {
   text-align: center;
   padding: 4px;
   word-break: break-all;
+}
+
+/* 拖拽遮罩 */
+.drag-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(64, 158, 255, 0.1);
+  border: 2px dashed var(--el-color-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.drag-overlay-text {
+  font-size: 14px;
+  color: var(--el-color-primary);
+  font-weight: 500;
 }
 </style>

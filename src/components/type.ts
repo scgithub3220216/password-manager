@@ -65,6 +65,8 @@ export interface PwdInfo {
     link: string;
 
     remark: string;
+
+    type?: number; // 0=普通模式, 1=图片模式
 }
 export interface PwdCache{
     id: number;

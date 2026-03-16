@@ -18,16 +18,16 @@ export default function () {
     const {encryptData, decryptList} = useCrypto()
     const {refreshCache} = usePwdListCacheStore()
 
-    async function insertPwdInfo(groupId: number, groupTitle: string): Promise<number> {
+    async function insertPwdInfo(groupId: number, groupTitle: string, type: number = 0): Promise<number> {
         console.log(`useDBPwdInfo.ts insertPwdInfo`)
-        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_PWD_INFO_DATA, groupId, groupTitle);
+        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_PWD_INFO_DATA, groupId, groupTitle, type);
         refreshCache()
         return res;
     }
 
     async function insertPwdInfoByImport(pwdInfo: PwdInfo): Promise<number> {
         console.log(`useDBPwdInfo.ts insertPwdInfoByImport`)
-        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, encryptData(pwdInfo.password), pwdInfo.link, pwdInfo.remark);
+        const res = await window.ipcRenderer.invoke(IPC_SQLITE_INSERT_BY_IMPORT_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, encryptData(pwdInfo.password), pwdInfo.link, pwdInfo.remark, pwdInfo.type ?? 0);
         refreshCache()
         return res;
     }
@@ -57,7 +57,7 @@ export default function () {
         let password = pwdInfo.password;
         if (password) password = encryptData(password);
 
-        const res = await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, password, pwdInfo.link, pwdInfo.remark, pwdInfo.id);
+        const res = await window.ipcRenderer.invoke(IPC_SQLITE_UPDATE_PWD_INFO_DATA, pwdInfo.group_id, pwdInfo.group_title, pwdInfo.title, pwdInfo.username, password, pwdInfo.link, pwdInfo.remark, pwdInfo.type ?? 0, pwdInfo.id);
         refreshCache()
         return res;
     }
