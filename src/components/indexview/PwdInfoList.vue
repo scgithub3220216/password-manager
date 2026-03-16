@@ -9,6 +9,7 @@ import {emitterInsertPwdInfoTopic, updatePwdInfoTitle, emitterPwdInfoDragToGroup
 import {storeToRefs} from "pinia";
 import {useCssSwitchStore} from "../../store/cssSwitch.ts";
 import useDBPwdInfo from "../../hooks/useDBPwdInfo.ts";
+import useDBImage from "../../hooks/useDBImage.ts";
 import {useShortcutKeyStore} from "../../store/shortcutKey.ts";
 
 const userDataInfoStore = useUserDataInfoStore();
@@ -19,6 +20,7 @@ const isHover = ref(false);
 const cssSwitchStore = useCssSwitchStore();
 const {curPwdListIndex} = storeToRefs(cssSwitchStore)
 const {insertPwdInfo, delPwdInfo, listPwdInfo} = useDBPwdInfo();
+const {deleteImagesByPwdId} = useDBImage();
 
 const pwdInfoList = ref<PwdInfo[]>();
 let props = defineProps(['transferInputFocus'])
@@ -135,7 +137,9 @@ function clickPwdInfo(value: PwdInfo, index: number) {
 
 function deletePwdInfo() {
   console.log("deletePwdInfo");
-  delPwdInfo(curPwdInfo.value.id).then(() => queryAndRefreshIndex(curGroup.value.id))
+  deleteImagesByPwdId(curPwdInfo.value.id).then(() => {
+    delPwdInfo(curPwdInfo.value.id).then(() => queryAndRefreshIndex(curGroup.value.id))
+  })
 }
 
 // 拖拽处理函数

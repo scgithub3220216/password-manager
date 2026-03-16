@@ -37,6 +37,8 @@ export const initTable = async () => {
     console.log('initTable flag:', flag)
     // 检查 版本表是否存在,不存在创建
     createVersionTable()
+    // 检查 图片表是否存在,不存在创建
+    createImageTable()
     if (flag) {
         return;
     }
@@ -99,6 +101,21 @@ function createTable()
         );
     `);
 
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS "pwd_image"
+        (
+            "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "pwd_id"     INTEGER NOT NULL,
+            "file_name"  TEXT    NOT NULL,
+            "file_size"  INTEGER NOT NULL,
+            "mime_type"  TEXT    NOT NULL,
+            "data"       TEXT    NOT NULL,
+            "sort_order" INTEGER DEFAULT 0,
+            "created_at" TEXT    DEFAULT (datetime('now','localtime'))
+        );
+    `);
+    db.exec(`CREATE INDEX IF NOT EXISTS "idx_pwd_image_pwd_id" ON "pwd_image" ("pwd_id");`);
+
     console.log('表创建成功');
 
     insertData();
@@ -126,6 +143,31 @@ async function createVersionTable() {
     `);
     insertUpdateVersion()
     console.log('createVersionTable 表创建成功');
+}
+
+async function createImageTable() {
+    const stmt = db.prepare("SELECT COUNT(*) as 'count' FROM sqlite_master WHERE type = 'table' AND name = 'pwd_image'");
+    const count = await stmt.get().count;
+    if (count > 0) {
+        return;
+    }
+    console.log(`count:${count},create pwd_image table`)
+
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS "pwd_image"
+        (
+            "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "pwd_id"     INTEGER NOT NULL,
+            "file_name"  TEXT    NOT NULL,
+            "file_size"  INTEGER NOT NULL,
+            "mime_type"  TEXT    NOT NULL,
+            "data"       TEXT    NOT NULL,
+            "sort_order" INTEGER DEFAULT 0,
+            "created_at" TEXT    DEFAULT (datetime('now','localtime'))
+        );
+    `);
+    db.exec(`CREATE INDEX IF NOT EXISTS "idx_pwd_image_pwd_id" ON "pwd_image" ("pwd_id");`);
+    console.log('createImageTable 表创建成功');
 }
 
 function insertData() {

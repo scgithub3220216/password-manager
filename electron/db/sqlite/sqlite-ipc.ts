@@ -29,6 +29,15 @@ import {
     IPC_SQLITE_UPDATE_OSS_DATA,
     IPC_SQLITE_UPDATE_PWD_INFO_DATA,
     IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA,
+    IPC_SQLITE_INSERT_IMAGE_DATA,
+    IPC_SQLITE_DELETE_IMAGE_DATA,
+    IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID,
+    IPC_SQLITE_DELETE_ALL_IMAGE_DATA,
+    IPC_SQLITE_SELECT_LIST_IMAGE_META,
+    IPC_SQLITE_SELECT_GET_IMAGE_DATA,
+    IPC_SQLITE_SELECT_ALL_IMAGE_DATA,
+    IPC_SQLITE_SELECT_COUNT_IMAGE_DATA,
+    IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA,
 } from '../../constant.ts';
 import {getConfig, updateConfig} from "./mapper/config.ts";
 import {delAllGroup, delGroup, getIdByTitle, insertGroup, insertGroupByOss, listGroup, updateGroup} from "./mapper/group.ts";
@@ -48,6 +57,17 @@ import {
 import {listShortcutKey, updateShortcutKey} from "./mapper/shortcutKey.ts";
 import {getAutoCheckUpateSwitch, updateAutoCheckSwitch,} from "./mapper/version.ts";
 import {getOss, updateOss} from "./mapper/oss.ts";
+import {
+    countImagesByPwdId,
+    deleteAllImages,
+    deleteImage,
+    deleteImagesByPwdId,
+    getImageData,
+    insertImage,
+    insertImageByImport,
+    listAllImages,
+    listImageMeta,
+} from "./mapper/image.ts";
 
 
 // sqlite
@@ -214,6 +234,61 @@ export const SQLiteIPC = () => {
     ipcMain.handle(IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA, async (_event, args) => {
         console.log(`IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA  args : ${args}`);
         return await listShortcutKey();
+    });
+
+    // image
+    // ipc sqlite insert image
+    ipcMain.handle(IPC_SQLITE_INSERT_IMAGE_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_IMAGE_DATA  args : ${args}`);
+        return await insertImage(...args);
+    });
+
+    // ipc sqlite insert image by import (OSS sync)
+    ipcMain.handle(IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA, async (_event, ...args) => {
+        console.log(`IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA  args : ${args}`);
+        return await insertImageByImport(...args);
+    });
+
+    // ipc sqlite delete image
+    ipcMain.handle(IPC_SQLITE_DELETE_IMAGE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_DELETE_IMAGE_DATA  args : ${args}`);
+        return await deleteImage(args);
+    });
+
+    // ipc sqlite delete images by pwd_id
+    ipcMain.handle(IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID, async (_event, args) => {
+        console.log(`IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID  args : ${args}`);
+        return await deleteImagesByPwdId(args);
+    });
+
+    // ipc sqlite delete all images
+    ipcMain.handle(IPC_SQLITE_DELETE_ALL_IMAGE_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_DELETE_ALL_IMAGE_DATA`);
+        return await deleteAllImages();
+    });
+
+    // ipc sqlite select image meta list
+    ipcMain.handle(IPC_SQLITE_SELECT_LIST_IMAGE_META, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_LIST_IMAGE_META  args : ${args}`);
+        return await listImageMeta(args);
+    });
+
+    // ipc sqlite select image data
+    ipcMain.handle(IPC_SQLITE_SELECT_GET_IMAGE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_GET_IMAGE_DATA  args : ${args}`);
+        return await getImageData(args);
+    });
+
+    // ipc sqlite select all images
+    ipcMain.handle(IPC_SQLITE_SELECT_ALL_IMAGE_DATA, async (_event) => {
+        console.log(`IPC_SQLITE_SELECT_ALL_IMAGE_DATA`);
+        return await listAllImages();
+    });
+
+    // ipc sqlite select count images
+    ipcMain.handle(IPC_SQLITE_SELECT_COUNT_IMAGE_DATA, async (_event, args) => {
+        console.log(`IPC_SQLITE_SELECT_COUNT_IMAGE_DATA  args : ${args}`);
+        return await countImagesByPwdId(args);
     });
 
 };

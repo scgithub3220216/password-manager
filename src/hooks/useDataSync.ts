@@ -6,6 +6,7 @@ import {emitterRefreshGroupData, ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
+import useDBImage from "./useDBImage.ts";
 import {
     localVersionField,
     ossSyncAutoDownloadSwitch,
@@ -22,6 +23,7 @@ export default function () {
     const ossStore = useOssStore()
     const {delAllGroup, insertOssGroup} = useDBGroup()
     const {delAllPwdInfo, insertPwdInfoByImport} = useDBPwdInfo()
+    const {listAllImages, deleteAllImages, insertImageByImport} = useDBImage()
 
     // @ts-ignore database 配置
     const databaseForm = reactive<OssForm>({})
@@ -125,6 +127,18 @@ export default function () {
                     })
                 })
             }
+
+            // 图片数据同步（可选字段，兼容旧版数据）
+            if (ossSyncObj.imageList && ossSyncObj.imageList.length > 0) {
+                deleteAllImages().then(() => {
+                    ossSyncObj.imageList!.forEach((image) => {
+                        insertImageByImport(image)
+                    })
+                })
+            } else {
+                // 旧版数据无 imageList，清空本地图片
+                deleteAllImages()
+            }
         })
         await setConfigValue(String(remoteVersion), localVersionField)
         if (type) ElMessage.success('数据拉取成功');
@@ -182,9 +196,13 @@ export default function () {
             let items = await listPwdInfo(group.id);
             pwdInfoList = pwdInfoList.concat(items);
         }
+        // 获取全部图片（已加密数据）
+        const imageList = await listAllImages();
+
         let syncOjb: OssSyncObj = {
             groupList: groupList,
             pwdInfoList: pwdInfoList,
+            imageList: imageList,
         }
         putFile(pwdListKey, JSON.stringify(syncOjb)).then(async () => {
             let localVersion = await getConfigValue(localVersionField);

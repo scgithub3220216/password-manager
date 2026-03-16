@@ -21,6 +21,8 @@ declare module 'vue' {
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElImage: typeof import('element-plus/es')['ElImage']
+    ElImageViewer: typeof import('element-plus/es')['ElImageViewer']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElLink: typeof import('element-plus/es')['ElLink']
@@ -43,6 +45,7 @@ declare module 'vue' {
     Enter: typeof import('./src/components/svg/Enter.vue')['default']
     Group: typeof import('./src/components/indexview/Group.vue')['default']
     Header: typeof import('./src/components/indexview/Header.vue')['default']
+    ImageGallery: typeof import('./src/components/indexview/ImageGallery.vue')['default']
     Import: typeof import('./src/components/topMenu/Import.vue')['default']
     Index: typeof import('./src/components/Index.vue')['default']
     InitSetPwd: typeof import('./src/components/setview/InitSetPwd.vue')['default']
@@ -60,5 +63,8 @@ declare module 'vue' {
     TopMenu: typeof import('./src/components/indexview/TopMenu.vue')['default']
     UpdatePwd: typeof import('./src/components/setview/UpdatePwd.vue')['default']
     WinRestore: typeof import('./src/components/svg/WinRestore.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

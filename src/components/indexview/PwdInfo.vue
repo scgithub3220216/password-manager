@@ -3,6 +3,7 @@ import {ref} from "vue";
 import {useUserDataInfoStore} from "../../store/userDataInfo.ts";
 import useBrowser from "../../hooks/useBrowser.ts";
 import RandomPwdGenerate from "./RandomPwdGenerate.vue";
+import ImageGallery from "./ImageGallery.vue";
 
 import {ChromeFilled, Compass, CopyDocument, EditPen, Hide, Switch, UserFilled, View,} from "@element-plus/icons-vue";
 import {storeToRefs} from "pinia";
@@ -197,12 +198,14 @@ function clickPwdImg() {
     <div>
       <el-input
           v-model="curPwdInfo.remark"
-          :rows="9"
+          :rows="5"
           class="item-textarea input-pwd"
           type="textarea"
           @change="pwdInfoChange()"
       />
     </div>
+
+    <ImageGallery/>
   </div>
 
   <RandomPwdGenerate ref="randomPwdGenerateRef" :updatePwdInfo="pwdInfoChange"/>
@@ -212,6 +215,8 @@ function clickPwdImg() {
 .pwdInfo {
   width: 40%;
   margin-top: 2%;
+  overflow-y: auto;
+  max-height: 85vh;
 }
 
 .pwdInfo-item {

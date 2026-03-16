@@ -40,6 +40,17 @@ export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA = 'ipc-sqlite-select-search-
 export const IPC_SQLITE_SELECT_SEARCH_PWD_INFO_DATA_IDS = 'ipc-sqlite-select-search-pwd-info-data-ids';
 export const IPC_SQLITE_SELECT_COUNT_PWD_INFO_DATA = 'ipc-sqlite-select-count-pwd-info-data';
 
+// image
+export const IPC_SQLITE_INSERT_IMAGE_DATA = 'ipc-sqlite-insert-image-data';
+export const IPC_SQLITE_DELETE_IMAGE_DATA = 'ipc-sqlite-delete-image-data';
+export const IPC_SQLITE_DELETE_IMAGES_BY_PWD_ID = 'ipc-sqlite-delete-images-by-pwd-id';
+export const IPC_SQLITE_DELETE_ALL_IMAGE_DATA = 'ipc-sqlite-delete-all-image-data';
+export const IPC_SQLITE_SELECT_LIST_IMAGE_META = 'ipc-sqlite-select-list-image-meta';
+export const IPC_SQLITE_SELECT_GET_IMAGE_DATA = 'ipc-sqlite-select-get-image-data';
+export const IPC_SQLITE_SELECT_ALL_IMAGE_DATA = 'ipc-sqlite-select-all-image-data';
+export const IPC_SQLITE_SELECT_COUNT_IMAGE_DATA = 'ipc-sqlite-select-count-image-data';
+export const IPC_SQLITE_INSERT_IMAGE_BY_IMPORT_DATA = 'ipc-sqlite-insert-image-by-import-data';
+
 // shortcutKey
 export const IPC_SQLITE_UPDATE_SHORTCUT_KEY_DATA = 'ipc-sqlite-update-shortcut-key-data';
 export const IPC_SQLITE_SELECT_SHORTCUT_KEY_DATA = 'ipc-sqlite-select-shortcut-key-data';
