@@ -4,13 +4,15 @@ import {
     autoLockTime,
     autoLockTimeUnit,
     autoStart,
+    defaultDownloadPath,
+    defaultDownloadPathSwitch,
     ossSyncAutoDownloadSwitch,
     ossSyncAutoUploadSwitch,
     ossSyncSwitch
 } from "../../electron/db/sqlite/components/configConstants.ts";
 import {onMounted, ref} from "vue";
 import {storeToRefs} from "pinia";
-import {IPC_AUTO_START} from "../../electron/constant.ts";
+import {IPC_AUTO_START, IPC_GET_DESKTOP_PATH, IPC_SELECT_DIRECTORY} from "../../electron/constant.ts";
 
 export default function () {
     const userInfoStore = useUserDataInfoStore();
@@ -20,6 +22,8 @@ export default function () {
     const ossSwitchValue = ref(false);
     const ossAutoUploadSwitchValue = ref(true);
     const ossAutoDownloadSwitchValue = ref(true);
+    const defaultDownloadPathSwitchValue = ref(false);
+    const defaultDownloadPathValue = ref('');
 
     onMounted(async () => {
         console.log("BasicSet 挂载完毕");
@@ -28,6 +32,10 @@ export default function () {
         ossAutoUploadSwitchValue.value = await getConfigValue(ossSyncAutoUploadSwitch) === '1';
         ossAutoDownloadSwitchValue.value = await getConfigValue(ossSyncAutoDownloadSwitch) === '1';
         userInfoStore.setLockTime(+await getConfigValue(autoLockTime), +await getConfigValue(autoLockTimeUnit))
+
+        // 下载路径配置
+        defaultDownloadPathSwitchValue.value = await getConfigValue(defaultDownloadPathSwitch) === '1';
+        defaultDownloadPathValue.value = await getConfigValue(defaultDownloadPath) || '';
     });
 
 
@@ -85,6 +93,32 @@ export default function () {
         setConfigValue(ossSwitchValue.value ? '1' : '0', ossSyncSwitch)
     }
 
+    async function defaultDownloadPathSwitchChange() {
+        console.log(`defaultDownloadPathSwitchChange:${defaultDownloadPathSwitchValue.value}`);
+        setConfigValue(defaultDownloadPathSwitchValue.value ? '1' : '0', defaultDownloadPathSwitch)
+        // 首次开启且路径为空时，自动填入桌面路径
+        if (defaultDownloadPathSwitchValue.value && !defaultDownloadPathValue.value) {
+            const desktopPath = await window.ipcRenderer.invoke(IPC_GET_DESKTOP_PATH);
+            if (desktopPath) {
+                defaultDownloadPathValue.value = desktopPath;
+                setConfigValue(desktopPath, defaultDownloadPath)
+            }
+        }
+    }
+
+    async function selectDownloadPath() {
+        const selectedPath = await window.ipcRenderer.invoke(IPC_SELECT_DIRECTORY);
+        if (selectedPath) {
+            defaultDownloadPathValue.value = selectedPath;
+            setConfigValue(selectedPath, defaultDownloadPath)
+        }
+    }
+
+    function downloadPathChange() {
+        console.log(`downloadPathChange:${defaultDownloadPathValue.value}`);
+        setConfigValue(defaultDownloadPathValue.value, defaultDownloadPath)
+    }
+
     return {
         getLockTime,
         setLockTime,
@@ -99,6 +133,11 @@ export default function () {
         ossAutoDownloadSwitchValue,
         ossAutoUploadSwitchValueChange,
         ossAutoDownloadSwitchValueChange,
-        lockTimeChange
+        lockTimeChange,
+        defaultDownloadPathSwitchValue,
+        defaultDownloadPathValue,
+        defaultDownloadPathSwitchChange,
+        selectDownloadPath,
+        downloadPathChange,
     };
 }

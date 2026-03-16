@@ -10,15 +10,19 @@ import {
     autoStartValue,
     darkSwitch,
     darkSwitchValue,
+    defaultDownloadPath,
+    defaultDownloadPathSwitch,
     defaultPwdValue,
     firstLoginFlag,
     firstLoginFlagValue,
+    imageMigratedFlag,
     localVersionField,
     ossSyncAutoDownloadSwitch,
     ossSyncAutoUploadSwitch,
     ossSyncSwitch,
     pwd
 } from "./configConstants.ts";
+import {migrateBase64ToFile} from "../../../image-file.ts";
 
 let db: any;
 // 初始化表结构
@@ -41,6 +45,12 @@ export const initTable = async () => {
     createImageTable()
     // 检查 pwd_info 表是否有 type 字段,没有则新增
     alterPwdInfoAddType()
+    // 检查 pwd_image 表是否有 oss_uploaded 字段,没有则新增
+    alterImageTableAddOssUploaded()
+    // 迁移旧的 Base64 图片数据到本地文件
+    migrateImageDataToFile()
+    // 确保下载路径配置项存在
+    ensureDownloadPathConfig()
     if (flag) {
         return;
     }
@@ -107,14 +117,15 @@ function createTable()
     db.exec(`
         CREATE TABLE IF NOT EXISTS "pwd_image"
         (
-            "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            "pwd_id"     INTEGER NOT NULL,
-            "file_name"  TEXT    NOT NULL,
-            "file_size"  INTEGER NOT NULL,
-            "mime_type"  TEXT    NOT NULL,
-            "data"       TEXT    NOT NULL,
-            "sort_order" INTEGER DEFAULT 0,
-            "created_at" TEXT    DEFAULT (datetime('now','localtime'))
+            "id"           INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "pwd_id"       INTEGER NOT NULL,
+            "file_name"    TEXT    NOT NULL,
+            "file_size"    INTEGER NOT NULL,
+            "mime_type"    TEXT    NOT NULL,
+            "data"         TEXT    NOT NULL,
+            "sort_order"   INTEGER DEFAULT 0,
+            "oss_uploaded" INTEGER DEFAULT 0,
+            "created_at"   TEXT    DEFAULT (datetime('now','localtime'))
         );
     `);
     db.exec(`CREATE INDEX IF NOT EXISTS "idx_pwd_image_pwd_id" ON "pwd_image" ("pwd_id");`);
@@ -159,14 +170,15 @@ async function createImageTable() {
     db.exec(`
         CREATE TABLE IF NOT EXISTS "pwd_image"
         (
-            "id"         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            "pwd_id"     INTEGER NOT NULL,
-            "file_name"  TEXT    NOT NULL,
-            "file_size"  INTEGER NOT NULL,
-            "mime_type"  TEXT    NOT NULL,
-            "data"       TEXT    NOT NULL,
-            "sort_order" INTEGER DEFAULT 0,
-            "created_at" TEXT    DEFAULT (datetime('now','localtime'))
+            "id"           INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            "pwd_id"       INTEGER NOT NULL,
+            "file_name"    TEXT    NOT NULL,
+            "file_size"    INTEGER NOT NULL,
+            "mime_type"    TEXT    NOT NULL,
+            "data"         TEXT    NOT NULL,
+            "sort_order"   INTEGER DEFAULT 0,
+            "oss_uploaded" INTEGER DEFAULT 0,
+            "created_at"   TEXT    DEFAULT (datetime('now','localtime'))
         );
     `);
     db.exec(`CREATE INDEX IF NOT EXISTS "idx_pwd_image_pwd_id" ON "pwd_image" ("pwd_id");`);
@@ -179,6 +191,81 @@ function alterPwdInfoAddType() {
     if (hasType) return;
     db.exec(`ALTER TABLE "pwd_info" ADD COLUMN "type" INTEGER DEFAULT 0;`);
     console.log('pwd_info 表新增 type 字段成功');
+}
+
+function alterImageTableAddOssUploaded() {
+    const columns = db.prepare("PRAGMA table_info('pwd_image')").all();
+    const hasOssUploaded = columns.some((col: any) => col.name === 'oss_uploaded');
+    if (hasOssUploaded) return;
+    db.exec(`ALTER TABLE "pwd_image" ADD COLUMN "oss_uploaded" INTEGER DEFAULT 0;`);
+    console.log('pwd_image 表新增 oss_uploaded 字段成功');
+}
+
+function ensureDownloadPathConfig() {
+    const stmt = db.prepare(`SELECT COUNT(*) as count FROM "config" WHERE code = ?`);
+    const switchRow = stmt.get(defaultDownloadPathSwitch);
+    if (switchRow.count === 0) {
+        db.prepare(`INSERT INTO "config" (code, value) VALUES (?, ?)`).run(defaultDownloadPathSwitch, '0');
+        console.log('config 表新增 default_download_path_switch 配置');
+    }
+    const pathRow = stmt.get(defaultDownloadPath);
+    if (pathRow.count === 0) {
+        db.prepare(`INSERT INTO "config" (code, value) VALUES (?, ?)`).run(defaultDownloadPath, '');
+        console.log('config 表新增 default_download_path 配置');
+    }
+}
+
+function migrateImageDataToFile() {
+    // 检查是否已迁移
+    const configStmt = db.prepare(`SELECT value FROM "config" WHERE code = ?`);
+    const migrated = configStmt.get(imageMigratedFlag);
+    if (migrated && migrated.value === '1') {
+        return;
+    }
+
+    // 查询所有图片记录
+    const images = db.prepare(`SELECT id, pwd_id, file_name, data FROM "pwd_image"`).all();
+    if (!images || images.length === 0) {
+        // 没有图片数据，直接标记已迁移
+        ensureMigratedFlag();
+        return;
+    }
+
+    console.log(`migrateImageDataToFile: 开始迁移 ${images.length} 条图片数据`);
+
+    const updateStmt = db.prepare(`UPDATE "pwd_image" SET data = ?, oss_uploaded = 0 WHERE id = ?`);
+
+    for (const image of images) {
+        // 判断是否已经是路径格式（包含 / 且以 .enc 结尾）
+        if (image.data && image.data.includes('/') && image.data.endsWith('.enc')) {
+            console.log(`migrateImageDataToFile: id=${image.id} 已是路径格式，跳过`);
+            continue;
+        }
+
+        try {
+            // 调用 image-file.ts 的迁移函数：解密旧 Base64 -> 重新加密写入文件 -> 返回路径
+            const relativePath = migrateBase64ToFile(image.pwd_id, image.data, image.file_name);
+            if (relativePath) {
+                updateStmt.run(relativePath, image.id);
+                console.log(`migrateImageDataToFile: id=${image.id} 迁移成功 -> ${relativePath}`);
+            } else {
+                console.error(`migrateImageDataToFile: id=${image.id} 迁移失败，保留原数据`);
+            }
+        } catch (e) {
+            console.error(`migrateImageDataToFile: id=${image.id} 迁移异常:`, e);
+        }
+    }
+
+    ensureMigratedFlag();
+    console.log('migrateImageDataToFile: 迁移完成');
+}
+
+function ensureMigratedFlag() {
+    try {
+        db.prepare(`INSERT OR REPLACE INTO "config" (code, value) VALUES (?, ?)`).run(imageMigratedFlag, '1');
+    } catch (e) {
+        console.error('ensureMigratedFlag 失败:', e);
+    }
 }
 
 function insertData() {
@@ -227,6 +314,8 @@ function insertConfigData() {
         {code: ossSyncSwitch, value: 0},
         {code: ossSyncAutoUploadSwitch, value: 1},
         {code: ossSyncAutoDownloadSwitch, value: 1},
+        {code: defaultDownloadPathSwitch, value: 0},
+        {code: defaultDownloadPath, value: ''},
     ];
 
     const configValues = configInserts.map(({code, value}) => `('${code}', '${value}')`).join(',');

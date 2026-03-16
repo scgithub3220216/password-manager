@@ -5,14 +5,14 @@ import {baseGetSql, baseInsertSql, baseListSql, baseUpdateSql} from "../componen
 
 export const insertImage = async (...params: any[]) => {
     console.log(`insertImage params:${params}`)
-    return await baseInsertSql(`INSERT INTO "pwd_image" (pwd_id, file_name, file_size, mime_type, data, sort_order)
-                                VALUES (?, ?, ?, ?, ?, ?);`, ...params);
+    return await baseInsertSql(`INSERT INTO "pwd_image" (pwd_id, file_name, file_size, mime_type, data, sort_order, oss_uploaded)
+                                VALUES (?, ?, ?, ?, ?, ?, ?);`, ...params);
 }
 
 export const insertImageByImport = async (...params: any[]) => {
     console.log(`insertImageByImport params:${params}`)
-    return await baseInsertSql(`INSERT INTO "pwd_image" (id, pwd_id, file_name, file_size, mime_type, data, sort_order, created_at)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?);`, ...params);
+    return await baseInsertSql(`INSERT INTO "pwd_image" (id, pwd_id, file_name, file_size, mime_type, data, sort_order, created_at, oss_uploaded)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`, ...params);
 }
 
 export const deleteImage = async (id: number) => {
@@ -38,7 +38,7 @@ export const deleteAllImages = async () => {
 export const listImageMeta = async (pwdId: number) => {
     console.log(`listImageMeta pwdId:${pwdId}`)
     if (!pwdId) return [];
-    return await baseListSql(`SELECT id, pwd_id, file_name, file_size, mime_type, sort_order, created_at
+    return await baseListSql(`SELECT id, pwd_id, file_name, file_size, mime_type, sort_order, created_at, oss_uploaded
                               FROM "pwd_image"
                               WHERE pwd_id = ?
                               ORDER BY sort_order, id;`, pwdId);
@@ -47,6 +47,13 @@ export const listImageMeta = async (pwdId: number) => {
 export const getImageData = async (id: number) => {
     console.log(`getImageData id:${id}`)
     return await baseGetSql(`SELECT data
+                             FROM "pwd_image"
+                             WHERE id = ?;`, id);
+}
+
+export const getImageFilePath = async (id: number) => {
+    console.log(`getImageFilePath id:${id}`)
+    return await baseGetSql(`SELECT id, pwd_id, data
                              FROM "pwd_image"
                              WHERE id = ?;`, id);
 }
@@ -64,4 +71,11 @@ export const countImagesByPwdId = async (pwdId: number) => {
     return await baseGetSql(`SELECT count(*) as count
                              FROM "pwd_image"
                              WHERE pwd_id = ?;`, pwdId);
+}
+
+export const updateOssUploaded = async (...params: any[]) => {
+    console.log(`updateOssUploaded params : ${params}`)
+    return await baseUpdateSql(`UPDATE "pwd_image"
+                                SET oss_uploaded = ?
+                                WHERE id = ?;`, ...params);
 }

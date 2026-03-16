@@ -1,12 +1,12 @@
 import useDBOss from "./useDBOss.ts";
 import {onMounted, reactive, ref} from "vue";
-import {OssForm, OssSyncObj, PwdInfo} from "../components/type.ts";
+import {OssForm, OssSyncObj, PwdFile, PwdFileSyncMeta, PwdInfo} from "../components/type.ts";
 import {ElMessage, ElNotification} from "element-plus";
 import {emitterRefreshGroupData, ossTypeAliYun} from "../config/config.ts";
 import useDBGroup from "./useDBGroup.ts";
 import useDBPwdInfo from "./useDBPwdInfo.ts";
 import useDBConfig from "./useDBConfig.ts";
-import useDBImage from "./useDBImage.ts";
+import useDBFile from "./useDBFile.ts";
 import {
     localVersionField,
     ossSyncAutoDownloadSwitch,
@@ -20,10 +20,14 @@ import emitter from "../utils/emitter.ts";
 export default function () {
     const pwdListKey = "password"
     const ossVersionKey = "ossVersion";
+    const ossFilePrefix = "image/";
     const ossStore = useOssStore()
     const {delAllGroup, insertOssGroup} = useDBGroup()
     const {delAllPwdInfo, insertPwdInfoByImport} = useDBPwdInfo()
-    const {listAllImages, deleteAllImages, insertImageByImport} = useDBImage()
+    const {
+        listAllFiles, deleteAllFiles, insertFileByImport,
+        updateOssUploaded, getEncryptedContent, saveEncryptedContent
+    } = useDBFile()
 
     // @ts-ignore database 配置
     const databaseForm = reactive<OssForm>({})
@@ -31,7 +35,11 @@ export default function () {
     const {listGroup} = useDBGroup()
     const {listPwdInfo} = useDBPwdInfo()
     const {getConfigValue, setConfigValue} = useDBConfig()
-    const {login, getFile, putFile} = useOss()
+    const {
+        login, getFile, putFile,
+        putBinaryFile, getBinaryFile,
+        deleteMultiOssFiles, listOssFiles
+    } = useOss()
 
     onMounted(async () => {
         const ossAliYun = await getOss(ossTypeAliYun);
@@ -59,10 +67,7 @@ export default function () {
             ElMessage.error('远程数据同步配置的参数不正确,请正确填写');
             return;
         }
-        // 数据同步太快, 没必要用加载
-        // const loadingInstance = ElLoading.service({ fullscreen: true })
         await downLoadOss(1)
-        // .finally(()=>loadingInstance.close());
     }
 
     async function JudgeOssConfig() {
@@ -99,7 +104,7 @@ export default function () {
         }
 
         // 不一致, 获取 oss 数据
-        getFile(pwdListKey).then((json) => {
+        getFile(pwdListKey).then(async (json) => {
             console.log('syncToLocal json', json)
             // 如果没值, 忽略
             if (!json) {
@@ -111,33 +116,59 @@ export default function () {
             // 判断是否有值
             if (ossSyncObj.groupList && ossSyncObj.groupList.length > 0) {
                 // 插入  先删除 再新增
-                delAllGroup().then(() => {
-                    ossSyncObj.groupList.forEach((group) => {
-                        insertOssGroup(group.id, group.title, group.father_id)
-                    })
-                    emitter.emit(emitterRefreshGroupData, '')
-                })
+                await delAllGroup()
+                for (const group of ossSyncObj.groupList) {
+                    await insertOssGroup(group.id, group.title, group.father_id)
+                }
+                emitter.emit(emitterRefreshGroupData, '')
             }
 
             if (ossSyncObj.pwdInfoList && ossSyncObj.pwdInfoList.length > 0) {
                 // 插入  先删除 再新增
-                delAllPwdInfo().then(() => {
-                    ossSyncObj.pwdInfoList.forEach((pwdInfo) => {
-                        insertPwdInfoByImport(pwdInfo)
-                    })
-                })
+                await delAllPwdInfo()
+                for (const pwdInfo of ossSyncObj.pwdInfoList) {
+                    await insertPwdInfoByImport(pwdInfo)
+                }
             }
 
-            // 图片数据同步（可选字段，兼容旧版数据）
-            if (ossSyncObj.imageList && ossSyncObj.imageList.length > 0) {
-                deleteAllImages().then(() => {
-                    ossSyncObj.imageList!.forEach((image) => {
-                        insertImageByImport(image)
-                    })
-                })
+            // 文件数据同步（从 OSS 独立下载文件，兼容旧版 imageList 字段）
+            const fileList = ossSyncObj.fileList || ossSyncObj.imageList || [];
+            if (fileList.length > 0) {
+                // 先删除本地所有文件和数据库记录
+                await deleteAllFiles()
+
+                for (const fileMeta of fileList) {
+                    try {
+                        // 从 OSS 下载加密文件
+                        const ossKey = `${ossFilePrefix}${fileMeta.data}`;
+                        const encryptedContent = await getBinaryFile(ossKey);
+                        if (encryptedContent) {
+                            // 保存加密内容到本地文件
+                            await saveEncryptedContent(fileMeta.data, encryptedContent);
+                            // 插入数据库记录
+                            const fileRecord: PwdFile = {
+                                id: fileMeta.id,
+                                pwd_id: fileMeta.pwd_id,
+                                file_name: fileMeta.file_name,
+                                file_size: fileMeta.file_size,
+                                mime_type: fileMeta.mime_type,
+                                data: fileMeta.data,
+                                sort_order: fileMeta.sort_order,
+                                created_at: fileMeta.created_at,
+                                oss_uploaded: 1,
+                            };
+                            await insertFileByImport(fileRecord);
+                            console.log(`下载文件成功: ${ossKey}`);
+                        } else {
+                            console.error(`下载文件失败: ${ossKey}, 内容为空`);
+                        }
+                    } catch (e) {
+                        console.error(`下载文件异常: id=${fileMeta.id}`, e);
+                    }
+                }
             } else {
-                // 旧版数据无 imageList，清空本地图片
-                deleteAllImages()
+                // 无文件列表，清空本地文件
+                await deleteAllFiles()
             }
         })
         await setConfigValue(String(remoteVersion), localVersionField)
@@ -196,26 +227,72 @@ export default function () {
             let items = await listPwdInfo(group.id);
             pwdInfoList = pwdInfoList.concat(items);
         }
-        // 获取全部图片（已加密数据）
-        const imageList = await listAllImages();
+        // 获取全部文件元数据（data 字段现在是文件路径，体积很小）
+        const allFiles = await listAllFiles();
+
+        // 构建同步元数据（不含文件内容）
+        const fileListMeta: PwdFileSyncMeta[] = allFiles.map((f) => ({
+            id: f.id,
+            pwd_id: f.pwd_id,
+            file_name: f.file_name,
+            file_size: f.file_size,
+            mime_type: f.mime_type,
+            data: f.data,
+            sort_order: f.sort_order,
+            created_at: f.created_at,
+        }));
 
         let syncOjb: OssSyncObj = {
             groupList: groupList,
             pwdInfoList: pwdInfoList,
-            imageList: imageList,
+            fileList: fileListMeta,
         }
-        putFile(pwdListKey, JSON.stringify(syncOjb)).then(async () => {
+
+        // 上传同步 JSON
+        try {
+            await putFile(pwdListKey, JSON.stringify(syncOjb));
+
+            // 上传未同步的文件到 OSS
+            for (const f of allFiles) {
+                if (f.oss_uploaded === 0) {
+                    try {
+                        const encryptedContent = await getEncryptedContent(f.data);
+                        if (encryptedContent) {
+                            const ossKey = `${ossFilePrefix}${f.data}`;
+                            const err = await putBinaryFile(ossKey, encryptedContent);
+                            if (!err) {
+                                await updateOssUploaded(f.id, 1);
+                                console.log(`上传文件成功: ${ossKey}`);
+                            } else {
+                                console.error(`上传文件失败: ${ossKey}`, err);
+                            }
+                        }
+                    } catch (e) {
+                        console.error(`上传文件异常: id=${f.id}`, e);
+                    }
+                }
+            }
+
+            // 清理 OSS 上的孤儿文件（本地已删除但 OSS 上还存在的文件）
+            try {
+                const ossFiles = await listOssFiles(ossFilePrefix);
+                const localPaths = new Set(allFiles.map(f => `${ossFilePrefix}${f.data}`));
+                const orphanKeys = ossFiles.filter(key => !localPaths.has(key));
+                if (orphanKeys.length > 0) {
+                    console.log(`清理 OSS 孤儿文件: ${orphanKeys.length} 个`);
+                    await deleteMultiOssFiles(orphanKeys);
+                }
+            } catch (e) {
+                console.error('清理 OSS 孤儿文件异常:', e);
+            }
+
+            // 上传版本号
             let localVersion = await getConfigValue(localVersionField);
-            putFile(ossVersionKey, localVersion)
-                .then()
-                .catch((err: any) => {
-                    ElMessage.error('上传失败')
-                    console.error('上传版本号失败:', err)
-                })
-        }).catch((err: any) => {
+            await putFile(ossVersionKey, localVersion);
+        } catch (err: any) {
             ElMessage.error('上传失败')
             console.error('上传数据失败:', err)
-        })
+        }
     }
 
     async function getSyncSwitch() {
